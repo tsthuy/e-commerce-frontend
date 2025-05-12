@@ -1,0 +1,506 @@
+.custom-form {
+  &-item {
+    &__wrapper {
+      @apply mb-2;
+      @apply last:mb-0;
+    }
+
+    &--overlap {
+      @apply relative mb-4;
+      @apply last:mb-0;
+    }
+
+    &--dynamic {
+      @apply relative mb-4;
+      @apply last:mb-0;
+    }
+
+    &--inset {
+      @apply relative mb-4;
+
+      input,
+      button.custom-form-control__select,
+      button.custom-form-control__select-search {
+        @apply h-16 pt-6;
+      }
+
+      textarea {
+        @apply pt-6;
+      }
+    }
+  }
+
+  &-label {
+    &__wrapper {
+      @apply leading-[2];
+    }
+
+    &__required {
+      @apply text-destructive;
+    }
+
+    &__select,
+    &__select-search {
+      &--dynamic {
+        @apply pointer-events-none;
+
+        @apply has-[+div>button[data-state="open"]]:top-0 has-[+div>button[data-state="open"]]:cursor-default has-[+div>button[data-state="open"]]:font-medium has-[+div>button[data-state="open"]]:text-foreground;
+
+        @apply has-[+div>button:not([data-placeholder])]:top-0 has-[+div>button:not([data-placeholder])]:cursor-default has-[+div>button:not([data-placeholder])]:font-medium has-[+div>button:not([data-placeholder])]:text-foreground;
+      }
+    }
+
+    &__select-search {
+      &--dynamic {
+        @apply has-[+div>button:not([data-placeholder="true"])]:top-0 has-[+div>button:not([data-placeholder="true"])]:cursor-default has-[+div>button:not([data-placeholder="true"])]:font-medium has-[+div>button:not([data-placeholder="true"])]:text-foreground;
+      }
+    }
+
+    &__checkbox {
+      &--line-through {
+        @apply relative;
+
+        @apply after:absolute after:left-0 after:top-1/2 after:h-px after:w-full after:origin-bottom after:-translate-y-1/2 after:scale-x-0 after:bg-muted-foreground after:transition-transform after:ease-in-out;
+
+        @apply peer-data-[state=checked]:text-muted-foreground peer-data-[state=checked]:after:origin-bottom peer-data-[state=checked]:after:scale-x-100;
+      }
+    }
+
+    &--overlap {
+      @apply absolute left-3 top-0 z-[1] -translate-x-1 -translate-y-1/2 px-1 leading-[1];
+      @apply after:absolute after:left-0 after:top-1/2 after:z-[-1] after:h-[1px] after:w-full after:bg-background after:content-[''];
+    }
+
+    &--dynamic {
+      @apply pointer-events-none absolute left-3 top-1/2 z-[1] -translate-x-1 -translate-y-1/2 cursor-text px-1 font-normal leading-[1] text-muted-foreground transition-all;
+      @apply after:absolute after:left-0 after:top-1/2 after:z-[-1] after:h-[1px] after:w-full after:bg-background after:content-[''];
+
+      &:not(.custom-form-label__select--dynamic) {
+        @apply group-focus-within:top-0 group-focus-within:cursor-default group-focus-within:font-medium group-focus-within:text-foreground;
+      }
+
+      @apply has-[+div>input:not(:placeholder-shown)]:top-0 has-[+div>input:not(:placeholder-shown)]:cursor-default has-[+div>input:not(:placeholder-shown)]:font-medium has-[+div>input:not(:placeholder-shown)]:text-foreground;
+    }
+
+    &--inset {
+      @apply absolute left-3 top-2 z-[1] leading-[1];
+    }
+  }
+
+  &-control {
+    &__wrapper {
+      @apply appearance-none shadow-none outline-none ring-0 ring-offset-0 #{!important};
+      @apply transition-all duration-300 ease-in-out;
+      @apply hover:border-foreground;
+      @apply focus:border-primary #{!important};
+
+      &::-webkit-input-placeholder {
+        @apply text-muted-foreground;
+      }
+      &::-moz-input-placeholder {
+        @apply text-muted-foreground;
+      }
+
+      &[aria-invalid='true'] {
+        @apply border-destructive text-destructive;
+
+        &::-webkit-input-placeholder {
+          @apply text-destructive/85;
+        }
+        &::-moz-input-placeholder {
+          @apply text-destructive/85;
+        }
+      }
+    }
+
+    &__date {
+      &-button {
+        @apply transition-all duration-300 ease-in-out;
+        @apply w-full border-input bg-background px-3 py-2 font-normal;
+        @apply hover:border-foreground hover:bg-background;
+        @apply focus:border-primary #{!important};
+
+        &[data-state='open'] {
+          @apply border-primary #{!important};
+        }
+
+        &[aria-invalid='true'] {
+          @apply border-destructive text-destructive;
+
+          & > span {
+            @apply text-destructive/85;
+          }
+
+          & > svg {
+            @apply text-destructive;
+          }
+        }
+      }
+    }
+
+    &__tel {
+      @apply h-10 rounded-md border border-input bg-background px-3 font-normal;
+      @apply focus-within:border-primary #{!important};
+
+      &.PhoneInput {
+        &--disabled {
+          @apply cursor-not-allowed opacity-50;
+
+          & > * {
+            @apply cursor-not-allowed;
+          }
+        }
+
+        &--readOnly {
+          & > * {
+            @apply cursor-not-allowed;
+          }
+        }
+      }
+
+      input {
+        @apply appearance-none border-none shadow-none outline-none ring-0 ring-offset-0 #{!important};
+        @apply h-full bg-transparent text-sm font-normal text-foreground;
+
+        &::-webkit-input-placeholder {
+          @apply text-muted-foreground;
+        }
+        &::-moz-input-placeholder {
+          @apply text-muted-foreground;
+        }
+      }
+
+      &--invalid {
+        @apply border-destructive text-destructive;
+
+        & > input {
+          @apply text-destructive;
+
+          &::-webkit-input-placeholder {
+            @apply text-destructive/85;
+          }
+          &::-moz-input-placeholder {
+            @apply text-destructive/85;
+          }
+        }
+      }
+    }
+
+    &__otp {
+      &--invalid {
+        & > div > div {
+          @apply border-destructive text-destructive;
+        }
+      }
+    }
+
+    &__textarea {
+      field-sizing: content;
+
+      @apply min-h-[4lh] resize-none;
+
+      &--counter {
+        @apply pb-9;
+      }
+
+      & ~ .custom-form-spinner__wrapper {
+        @apply top-3 translate-y-0;
+      }
+    }
+
+    &__card {
+      &-number,
+      &-expiry-date,
+      &-code,
+      &-bank-account {
+        @apply rounded-md border border-input bg-background px-3 py-2 text-sm font-normal text-foreground;
+
+        &.StripeElement {
+          &--focus {
+            @apply border-primary #{!important};
+          }
+
+          &--invalid {
+            @apply border-destructive;
+          }
+        }
+      }
+    }
+
+    &__tags {
+      &-input {
+        @apply appearance-none shadow-none outline-none ring-0 ring-offset-0 #{!important};
+        @apply h-10 px-3 py-2 transition-all duration-300 ease-in-out;
+        @apply hover:border-foreground;
+        @apply focus:border-primary #{!important};
+
+        &::-webkit-input-placeholder {
+          @apply text-muted-foreground;
+        }
+        &::-moz-input-placeholder {
+          @apply text-muted-foreground;
+        }
+
+        &--invalid {
+          @apply border-destructive text-destructive;
+
+          &::-webkit-input-placeholder {
+            @apply text-destructive/85;
+          }
+          &::-moz-input-placeholder {
+            @apply text-destructive/85;
+          }
+        }
+      }
+
+      &-list {
+        @apply gap-1;
+
+        &--invalid {
+          @apply border-destructive;
+        }
+
+        &--inline {
+          @apply px-3 py-2 transition-all duration-300 ease-in-out;
+          @apply hover:border-foreground;
+          @apply focus-within:border-primary #{!important};
+
+          .custom-form-control__tags-input {
+            @apply h-[22px] p-0;
+          }
+        }
+      }
+
+      &-item {
+        @apply relative h-7 cursor-text rounded-md border border-input bg-background pe-7 ps-2 text-xs font-medium text-foreground transition-colors;
+        @apply hover:bg-accent hover:text-accent-foreground;
+      }
+
+      &-close {
+        @apply absolute -inset-y-px -end-px flex size-7 rounded-e-lg rounded-s-none p-0 text-muted-foreground outline-0 transition-colors;
+        @apply hover:text-destructive;
+        @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70;
+      }
+    }
+
+    &__select,
+    &__select-search {
+      & > svg {
+        @apply text-muted-foreground opacity-100 transition-all;
+      }
+
+      &--readonly {
+        @apply opacity-100 #{!important};
+      }
+
+      &--loading {
+        & > svg {
+          @apply hidden;
+        }
+      }
+
+      &:hover {
+        & > svg {
+          @apply text-foreground;
+        }
+
+        &[aria-invalid='true'] {
+          & > svg {
+            @apply text-destructive;
+          }
+        }
+      }
+
+      &[data-state='open'] {
+        & > svg {
+          @apply rotate-180;
+        }
+      }
+
+      &[data-placeholder] {
+        & > span {
+          @apply text-muted-foreground;
+        }
+      }
+
+      &[aria-invalid='true'] {
+        & > span {
+          @apply text-destructive;
+        }
+
+        & > svg {
+          @apply text-destructive/85;
+        }
+
+        &[data-placeholder] {
+          & > span {
+            @apply text-destructive/85;
+          }
+        }
+      }
+    }
+
+    &__select-search {
+      @apply hover:bg-background;
+
+      &[data-placeholder='false'] {
+        & > span {
+          @apply text-foreground;
+        }
+      }
+    }
+
+    &__select-multiple {
+      @apply focus-within:border-primary #{!important};
+    }
+
+    &__checkbox {
+      &--wrapper {
+        @apply flex w-fit items-center gap-2;
+
+        .custom-form-label__wrapper {
+          @apply cursor-pointer leading-normal transition-opacity;
+          @apply hover:opacity-85;
+        }
+      }
+
+      &--readonly {
+        .custom-form-control__checkbox,
+        .custom-form-label__wrapper {
+          @apply opacity-100 #{!important};
+        }
+
+        .custom-form-label__wrapper {
+          @apply hover:opacity-85 #{!important};
+        }
+      }
+
+      &--invalid {
+        .custom-form-control__checkbox {
+          @apply border-destructive;
+        }
+      }
+
+      &--fancy {
+        @apply rounded-full data-[state=checked]:border-emerald-500 data-[state=checked]:bg-emerald-500;
+      }
+    }
+
+    &__radio {
+      &--wrapper {
+        @apply flex w-fit items-center gap-2;
+
+        .custom-form-label__wrapper {
+          @apply cursor-pointer leading-normal transition-opacity;
+          @apply hover:opacity-85;
+        }
+      }
+
+      &--disabled {
+        .custom-form-label__wrapper {
+          @apply cursor-not-allowed opacity-70;
+        }
+      }
+
+      &--invalid {
+        .custom-form-control__radio {
+          @apply border-destructive text-destructive;
+        }
+      }
+    }
+
+    &__radios {
+      &--wrapper {
+        &[data-disabled] {
+          .custom-form-label__wrapper {
+            @apply cursor-not-allowed opacity-70;
+          }
+        }
+      }
+
+      &--readonly {
+        .custom-form-control__radio,
+        .custom-form-label__wrapper {
+          @apply opacity-100 #{!important};
+        }
+
+        .custom-form-label__wrapper {
+          @apply hover:opacity-85 #{!important};
+        }
+      }
+    }
+
+    &__switch {
+      &--wrapper {
+        @apply flex w-fit items-center gap-2;
+
+        .custom-form-label__wrapper {
+          @apply cursor-pointer leading-normal transition-opacity;
+          @apply hover:opacity-85;
+        }
+      }
+
+      &--readonly {
+        .custom-form-control__switch,
+        .custom-form-label__wrapper {
+          @apply opacity-100 #{!important};
+        }
+
+        .custom-form-label__wrapper {
+          @apply hover:opacity-85 #{!important};
+        }
+      }
+    }
+
+    &__upload {
+      &-image {
+        @apply relative rounded-md border border-dashed border-input bg-background p-4;
+        @apply transition-all duration-300 ease-in-out;
+        @apply hover:border-foreground;
+        @apply focus-within:border-primary #{!important};
+
+        &:hover {
+          .custom-form-control__upload-image--placeholder {
+            @apply text-foreground;
+          }
+        }
+
+        &--placeholder {
+          @apply mt-4 text-muted-foreground transition-colors;
+        }
+      }
+    }
+  }
+
+  &-message {
+    &__wrapper {
+      @apply text-xs leading-tight;
+      @apply mt-1 #{!important};
+    }
+  }
+
+  &-description {
+    &__wrapper {
+      @apply text-xs leading-tight;
+      @apply mt-1 #{!important};
+    }
+  }
+}
+
+.ckeditor-wrapper {
+  &.invalid {
+    .ck {
+      &-editor__main {
+        .ck {
+          &.ck-content {
+            @apply border-destructive #{!important};
+
+            &:focus {
+              @apply border-primary #{!important};
+            }
+          }
+        }
+      }
+    }
+  }
+}

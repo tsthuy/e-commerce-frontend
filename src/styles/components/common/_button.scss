@@ -1,0 +1,130 @@
+.button-custom {
+  @apply appearance-none shadow-none outline-none ring-0 ring-offset-0 #{!important};
+  @apply relative cursor-pointer overflow-hidden transition-all duration-300 ease-in-out;
+
+  &.size {
+    /* &--default {
+    } */
+
+    /* &--sm {
+    } */
+
+    /* &--lg {
+    } */
+
+    /* &--icon {
+    } */
+  }
+
+  &.variant {
+    &--default {
+      @apply border border-custom-primary-bg-hover;
+      @apply hover:bg-custom-primary-bg-hover;
+
+      &.color {
+        &--black {
+          @apply border-transparent bg-foreground;
+          @apply hover:bg-primary;
+        }
+
+        &--success {
+          @apply border-custom-green-bg-hover bg-custom-green;
+          @apply hover:bg-custom-green-bg-hover;
+        }
+
+        &--warning {
+          @apply border-custom-yellow-bg-hover bg-custom-yellow;
+          @apply hover:bg-custom-yellow-bg-hover;
+        }
+      }
+    }
+
+    &--destructive {
+      @apply border border-custom-destructive-bg-hover;
+      @apply hover:bg-custom-destructive-bg-hover;
+    }
+
+    &--outline {
+      &.color {
+        &--primary {
+          @apply border-primary text-primary;
+          @apply hover:bg-primary/5;
+        }
+
+        &--destructive {
+          @apply border-destructive text-destructive;
+          @apply hover:bg-destructive/5;
+        }
+
+        &--success {
+          @apply border-custom-green text-custom-green;
+          @apply hover:bg-custom-green/5;
+        }
+
+        &--warning {
+          @apply border-custom-yellow text-custom-yellow;
+          @apply hover:bg-custom-yellow/5;
+        }
+      }
+    }
+
+    &--secondary {
+      &.color {
+        &--primary {
+          @apply bg-primary/10 text-primary;
+          @apply hover:bg-primary/15;
+        }
+
+        &--destructive {
+          @apply bg-custom-destructive-secondary text-destructive;
+          @apply hover:bg-destructive/15;
+        }
+
+        &--success {
+          @apply bg-custom-green-secondary text-custom-green;
+          @apply hover:bg-custom-green/15;
+        }
+
+        &--warning {
+          @apply bg-custom-yellow-secondary text-custom-yellow;
+          @apply hover:bg-custom-yellow/15;
+        }
+
+        &--white {
+          @apply bg-white text-primary;
+          @apply hover:bg-primary hover:text-white;
+        }
+      }
+    }
+
+    /* &--ghost {
+    } */
+
+    &--link {
+      @apply overflow-visible;
+      @apply hover:text-custom-primary-bg-hover;
+    }
+  }
+
+  &.animation {
+    &__line {
+      @apply relative hover:no-underline hover:underline-offset-0;
+
+      &--hide {
+        @apply after:absolute after:bottom-2 after:h-[1px] after:w-2/3 after:origin-bottom-left after:scale-x-100 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out;
+        @apply hover:after:origin-bottom-right hover:after:scale-x-0 hover:after:bg-custom-primary-bg-hover;
+      }
+
+      &--show {
+        @apply after:absolute after:bottom-2 after:h-[1px] after:w-2/3 after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out;
+        @apply hover:after:origin-bottom-left hover:after:scale-x-100 hover:after:bg-custom-primary-bg-hover;
+      }
+    }
+  }
+
+  &__rounded-custom {
+    border-radius: 50px 70px 100px 50px / 100px 50px 70px 50px !important;
+
+    @apply font-good-dog-new text-base;
+  }
+}

@@ -1,0 +1,20 @@
+import { create } from 'zustand';
+
+type State = {
+  counter: number;
+};
+
+type Action = {
+  increase: () => void;
+  decrease: () => void;
+};
+
+const initialState: State = {
+  counter: 0
+};
+
+export const useCounter = create<State & Action>((set) => ({
+  ...initialState,
+  increase: () => set((state) => ({ ...state, counter: state.counter + 1 })),
+  decrease: () => set((state) => ({ ...state, counter: state.counter - 1 }))
+}));

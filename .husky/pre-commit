@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+# Source Husky script
+. "$(dirname -- "$0")/_/husky.sh" || exit 1
+
+# Change to project root directory
+cd "$(dirname -- "$0")/.." || exit 1
+
+# Validate branch name
+echo "\033[33m==================== Validate branch name: Load ====================\033[0m"
+npx validate-branch-name || exit 1
+echo "\033[32m==================== Validate branch name: Successfully! ====================\033[0m"
+
+# Run lint-staged
+echo "\033[33m==================== Run lint-staged: Load ====================\033[0m"
+npx lint-staged --concurrent false || exit 1
+echo "\033[32m==================== Run lint-staged: Successfully! ====================\033[0m"
+
+# Run build after lint-staged
+echo "\033[33m==================== Run build source: Load ====================\033[0m"
+npm run build:dev || exit 1
+echo "\033[32m==================== Run build source: Successfully! ====================\033[0m"
+
+echo "\033[33m==================== Commit message: Load ====================\033[0m"

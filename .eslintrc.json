@@ -1,0 +1,306 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.eslint.json",
+    "tsconfigRootDir": "./"
+  },
+  "plugins": ["prettier", "@typescript-eslint", "check-file", "react", "import", "vitest", "jsx-a11y"],
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:prettier/recommended",
+    "plugin:jsx-a11y/recommended"
+  ],
+  "ignorePatterns": ["ckeditor"],
+  "rules": {
+    /* general */
+    "consistent-return": "off",
+    "array-callback-return": "off",
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "radix": "off",
+    "max-len": "off",
+    "camelcase": "off",
+    "dot-notation": "off",
+    "default-case": "off",
+    "linebreak-style": "off",
+    "one-var": "off",
+    "one-var-declaration-per-line": "off",
+    "no-console": ["warn", { "allow": ["error", "warn", "info"] }],
+    "no-debugger": "warn",
+    "no-alert": "off",
+    "no-else-return": "off",
+    "no-shadow": "off",
+    "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 1 }],
+    "no-unused-expressions": "off",
+    "no-param-reassign": "off",
+    "no-nested-ternary": "off",
+    "no-confusing-arrow": "off",
+    "no-use-before-define": "off",
+    "no-await-in-loop": "error",
+    "no-promise-executor-return": "error",
+    "no-self-compare": "error",
+    "no-template-curly-in-string": "error",
+    "no-unmodified-loop-condition": "error",
+    "no-unreachable-loop": "error",
+
+    /* react */
+    "react/no-unescaped-entities": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": [
+      "off",
+      {
+        "additionalHooks": "(useRecoilCallback|useRecoilTransaction_UNSTABLE)"
+      }
+    ],
+    "react/display-name": "off",
+    "react/jsx-sort-props": [
+      "error",
+      {
+        "reservedFirst": true,
+        "shorthandFirst": true,
+        "callbacksLast": true,
+        "multiline": "last",
+        "ignoreCase": true,
+        "noSortAlphabetically": false
+      }
+    ],
+    "react/prop-types": "off",
+    "react/no-unknown-property": "off",
+    "react/jsx-boolean-value": "error",
+    "react/jsx-no-target-blank": "off",
+
+    /* jsx-a11y */
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+
+    /* typescript */
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/explicit-member-accessibility": "error",
+    "@typescript-eslint/explicit-module-boundary-types": "error",
+    "@typescript-eslint/no-require-imports": "error",
+    "@typescript-eslint/no-useless-empty-export": "error",
+
+    /* import */
+    "import/no-named-as-default": "off",
+    "import/no-named-as-default-member": "off",
+    "import/no-anonymous-default-export": "off",
+    "import/no-unresolved": "off",
+    "import/prefer-default-export": "off",
+    "import/newline-after-import": ["error", { "count": 1 }],
+    "import/order": [
+      "warn",
+      {
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "react/**",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "~/constants",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/types",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/locales",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/locales/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/styles",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/styles/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/providers",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/wrappers",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/libs",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/queries",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/services",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/stores",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/hooks",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/utils",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/layouts",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/components",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/components/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/routes",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/pages",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/pages/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/assets",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "~/assets/**",
+            "group": "internal",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "newlines-between": "always",
+        "distinctGroup": true,
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+
+    /* check-file */
+    "check-file/no-index": "off",
+    "check-file/folder-match-with-fex": [
+      "error",
+      {
+        "**/*.d.ts": "**/types/**",
+        "**/*.util.ts": "**/utils/**",
+        "**/*.store.ts": "**/stores/**",
+        "**/*.api.ts": "**/services/**",
+        "**/*.route.ts": "**/routes/**",
+        "**/*.query.ts": "**/queries/**",
+        "**/*.provider.ts": "**/providers/**",
+        "**/*.wrapper.ts": "**/wrappers/**",
+        "**/*.layout.ts": "**/layouts/**",
+        "**/*.lib.ts": "**/libs/**",
+        "**/*.hook.ts": "**/hooks/**",
+        "**/*.const.ts": "**/constants/**"
+      }
+    ],
+    "check-file/filename-naming-convention": [
+      "error",
+      {
+        "src/**/*.{ts,tsx}": "KEBAB_CASE"
+      },
+      { "ignoreMiddleExtensions": true }
+    ],
+    "check-file/folder-naming-convention": [
+      "error",
+      {
+        "src/**/": "KEBAB_CASE"
+      }
+    ]
+  },
+  "overrides": [
+    /* check-file */
+    {
+      "files": ["src/App.tsx", "src/components/ui/*.{ts,tsx}", "src/components/ckeditor5/**"],
+      "rules": {
+        "check-file/filename-naming-convention": "off"
+      }
+    },
+    {
+      "files": ["src/components/ckeditor5/**"],
+      "rules": {
+        "check-file/filename-naming-convention": "off",
+        "check-file/folder-naming-convention": "off"
+      }
+    },
+    {
+      "files": ["@types/**", "src/components/ckeditor5/**"],
+      "rules": {
+        "check-file/folder-match-with-fex": "off"
+      }
+    },
+
+    /* typescript */
+    {
+      "files": ["src/components/ui/**", "**/*.mjs"],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/consistent-type-imports": "off"
+      }
+    },
+
+    /* jsx-a11y */
+    {
+      "files": ["src/components/ui/**"],
+      "rules": {
+        "jsx-a11y/heading-has-content": "off"
+      }
+    }
+  ]
+}

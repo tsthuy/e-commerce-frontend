@@ -1,0 +1,32 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.codeActionsOnSave.rules": null,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[json][jsonc][yaml]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "files.associations": {
+    "*.js": "javascript",
+    "*.jsx": "javascriptreact",
+    "*.ts": "typescript",
+    "*.tsx": "typescriptreact",
+    "*.scss": "tailwindcss",
+    "*.css": "tailwindcss"
+  },
+  "i18n-ally.localesPaths": ["src/locales"],
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.sourceLanguage": "en-au",
+  "search.exclude": {
+    "src/components/ckeditor5/build": true,
+    "src/components/ui": true,
+    "package-lock.json": true
+  }
+}

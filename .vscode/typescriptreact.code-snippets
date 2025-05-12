@@ -1,0 +1,56 @@
+{
+  "useState": {
+    "prefix": [
+      "us",
+      "usestate"
+    ],
+    "body": [
+      "const [${1}, set${1/(^[a-zA-Z])(.*)/${1:/upcase}${2}/}] = useState<${3:Props}>(${2:initialState})$0"
+    ]
+  },
+  "useEffect": {
+    "prefix": [
+      "ue",
+      "useeffect"
+    ],
+    "body": [
+      "useEffect(() => {",
+      "  $2",
+      "}, [${1:deps}])$0"
+    ]
+  },
+  "useRef": {
+    "prefix": [
+      "ur",
+      "useref"
+    ],
+    "body": [
+      "const ${1:ref} = useRef($2)$0"
+    ]
+  },
+  "ComponentProps": {
+    "prefix": [
+      "cp"
+    ],
+    "body": [
+      "import type { ReactNode } from 'react';",
+      "import { memo } from 'react';",
+      "",
+      "type ${1:Component}Props = {",
+      "  children: ReactNode",
+      "}",
+      "",
+      "export const ${1:Component} = memo(({ children }: ${1:Component}Props) => {",
+      "",
+      "  $2",
+      "",
+      "  return (",
+      "    <>",
+      "      {children}",
+      "    </>",
+      "  )",
+      "});",
+      "$0"
+    ]
+  },
+}

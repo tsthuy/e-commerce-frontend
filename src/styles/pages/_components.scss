@@ -1,0 +1,19 @@
+.components {
+  &__wrapper {
+    @apply mx-auto grid max-w-6xl grid-cols-1 overflow-hidden;
+    @apply sm:grid-cols-2;
+    @apply lg:grid-cols-3;
+
+    @apply [&>*]:relative [&>*]:px-1 [&>*]:py-12;
+    @apply sm:[&>*]:px-8;
+    @apply xl:[&>*]:px-12;
+
+    @apply [&>*]:before:absolute [&>*]:before:bg-border/70 [&>*]:before:[block-size:100vh] [&>*]:before:[inline-size:1px] [&>*]:before:[inset-block-start:0] [&>*]:before:[inset-inline-start:-1px];
+
+    @apply [&>*]:after:absolute [&>*]:after:bg-border/70 [&>*]:after:[block-size:1px] [&>*]:after:[inline-size:100vw] [&>*]:after:[inset-block-start:-1px] [&>*]:after:[inset-inline-start:0];
+  }
+
+  &__item {
+    @apply relative text-center;
+  }
+}

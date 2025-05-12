@@ -1,0 +1,102 @@
+.ckeditor-wrapper {
+  margin: 0 !important;
+
+  @apply text-sm;
+}
+.ckeditor-wrapper .ck.ck-editor__main .ck.ck-toolbar {
+  border-top-left-radius: calc(var(--radius) - 2px) !important;
+  border-top-right-radius: calc(var(--radius) - 2px) !important;
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+  background-color: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--input)) !important;
+  border-bottom: 0px !important;
+}
+.ckeditor-wrapper .ck.ck-editor__main .ck.ck-toolbar .ck.ck-button {
+  @apply cursor-pointer;
+}
+.ckeditor-wrapper .ck.ck-editor__main .ck-content {
+  border-bottom-left-radius: calc(var(--radius) - 2px) !important;
+  border-bottom-right-radius: calc(var(--radius) - 2px) !important;
+  background-color: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--input)) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.ckeditor-wrapper .ck.ck-editor__main .ck-content:focus-within {
+  border-color: hsl(var(--primary)) !important;
+}
+
+.ck.ck-editor__editable_inline {
+  background: #f8f8f8 !important;
+  min-height: 176px;
+  border-radius: 0px 0px 8px 8px !important;
+}
+.ck.ck-balloon-panel.ck-powered-by-balloon[class*='position_border'] {
+  display: none !important;
+}
+
+.dropArea {
+  position: relative;
+}
+.dropArea::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background-color: #ebebeb;
+}
+
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+input,
+.StripeElement {
+  background-color: #f8f8f8;
+  height: 40px;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.StripeElement.IdealBankElement,
+.StripeElement.FpxBankElement,
+.StripeElement.PaymentRequestButton {
+  padding: 0;
+}
+
+.StripeElement.PaymentRequestButton {
+  height: 40px;
+}
+.print-content {
+  width: 900px;
+}
+
+.print-content .MuiDataGrid-virtualScrollerRenderZone {
+  display: inline-block;
+  page-break-inside: auto;
+}
+.print-content .MuiDataGrid-row {
+  break-inside: avoid;
+  vertical-align: top;
+  margin-bottom: -16px;
+}
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    size: landscape;
+  }
+}
+
+.MuiTelInput-Flag {
+  margin-right: 8px;
+}
