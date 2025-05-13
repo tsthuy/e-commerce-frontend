@@ -106,6 +106,7 @@ export const DEFAULT_IMG_EMPTY = '/gifs/empty.gif';
 export const DEFAULT_IMG_SEARCHING = '/gifs/searching.gif';
 export const DEFAULT_IMG_SKELETONS = '/gifs/skeletons.gif';
 export const DEFAULT_IMG_PLACEHOLDER = '/images/common/placeholder.webp';
+export const DEFAULT_IMG_PAYMENT = '/images/footer/payment.webp';
 
 export const MAX_PRICE_VALUE = 1000000;
 
@@ -163,5 +164,38 @@ export const SPONSORS = [
     id: 5,
     name: 'Amazon',
     logoUrl: '/images/sponsor/amazon.jpg'
+  }
+] as const;
+
+export const FOOTER_SECTIONS = [
+  {
+    title: 'Company',
+    links: [
+      { label: 'About us', href: '/about' },
+      { label: 'Careers', href: '/careers' },
+      { label: 'Store Locations', href: '/locations' },
+      { label: 'Our Blog', href: '/blog' },
+      { label: 'Reviews', href: '/reviews' }
+    ]
+  },
+  {
+    title: 'Shop',
+    links: [
+      { label: 'Game & Video', href: '/shop/games' },
+      { label: 'Phone & Tablets', href: '/shop/phones' },
+      { label: 'Computers & Laptop', href: '/shop/computers' },
+      { label: 'Sport Watches', href: '/shop/watches' },
+      { label: 'Events', href: '/events' }
+    ]
+  },
+  {
+    title: 'Support',
+    links: [
+      { label: 'FAQ', href: '/faq' },
+      { label: 'Reviews', href: '/reviews' },
+      { label: 'Contact Us', href: '/contact' },
+      { label: 'Shipping', href: '/shipping' },
+      { label: 'Live chat', href: '/chat' }
+    ]
   }
 ] as const;

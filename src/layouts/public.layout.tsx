@@ -11,7 +11,7 @@ export const PublicLayout = memo(() => {
   const location = useLocation();
 
   const isHiddenHeader = useMemo(() => [OTHER_ROUTES[404].path()].includes(location.pathname), [location]);
-  const isHiddenFooter = useMemo(() => [OTHER_ROUTES[404].path(), PUBLIC_ROUTES.index.path()].includes(location.pathname), [location]);
+  const isHiddenFooter = useMemo(() => [OTHER_ROUTES[404].path()].includes(location.pathname), [location]);
 
   return (
     <WrapperPublicLayout>

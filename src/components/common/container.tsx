@@ -14,7 +14,7 @@ export const Container = memo(({ isFullWidth, isFitScreen, className, children }
   return (
     <div
       className={cn(
-        'mx-auto w-full max-w-[calc(1280px+4px*4*2)] px-4',
+        'mx-auto w-full max-w-[calc(1280px+4px*4*2)]',
         {
           'max-w-full px-0': isFullWidth,
           'h-[calc(100svh-(var(--header-public)*2)-(var(--footer-public)))]': isFitScreen

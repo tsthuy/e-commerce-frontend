@@ -15,7 +15,7 @@ import { PUBLIC_ROUTES } from '~/routes';
 
 export const TopHeaderPublicLayout = memo(() => {
   return (
-    <header className="sticky top-0 z-10 h-header-public w-full border-b bg-white py-2">
+    <header className="sticky top-0 z-10 h-header-public w-full border-b bg-white py-2 shadow">
       <div className="mx-auto flex size-full max-w-[calc(1280px+4px*4*2)] items-center justify-between gap-x-10 px-4">
         <Link className="flex flex-shrink-0 transition-opacity hover:opacity-85" to={PUBLIC_ROUTES.index.path()}>
           <img alt={SEO_AUTHOR} className="h-[45px] w-auto" src={LOGO} />
