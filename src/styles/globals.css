@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --custom-green: 127 38% 50%;
+    --custom-green: 122 80% 48%;
     --custom-green-bg-hover: 127 38% 45%;
     --custom-green-secondary: 130 40% 94%;
 
@@ -12,7 +12,7 @@
     --custom-yellow-bg-hover: 38 99% 28%;
     --custom-yellow-secondary: 37 57% 93%;
 
-    --custom-primary-bg-hover: 22 84% 55%;
+    --custom-primary-bg-hover: 39 100% 67%;
 
     --custom-destructive-bg-hover: 6 100% 41%;
     --custom-destructive-secondary: 7 100% 95%;
@@ -25,7 +25,7 @@
     --card-foreground: 20 14.3% 4.1%;
     --popover: 0 0% 100%;
     --popover-foreground: 20 14.3% 4.1%;
-    --primary: 39, 100%, 61%;
+    --primary: 229, 69%, 54%;
     --primary-foreground: 60 9.1% 97.8%;
     --secondary: 60 4.8% 95.9%;
     --secondary-foreground: 24 9.8% 10%;

@@ -74,8 +74,23 @@ export const SIDEBAR_PUBLIC: Array<SidebarItemType> = [
         permission: null
       },
       {
-        href: PUBLIC_ROUTES.explore.path(),
-        label: 'Explore',
+        href: PUBLIC_ROUTES.bestSelling.path(),
+        label: 'Best Selling',
+        permission: null
+      },
+      {
+        href: PUBLIC_ROUTES.products.path(),
+        label: 'Products',
+        permission: null
+      },
+      {
+        href: PUBLIC_ROUTES.events.path(),
+        label: 'Events',
+        permission: null
+      },
+      {
+        href: PUBLIC_ROUTES.faq.path(),
+        label: 'FAQ',
         permission: null
       }
     ]

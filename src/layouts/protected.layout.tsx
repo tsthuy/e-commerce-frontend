@@ -15,7 +15,7 @@ import { getErrorMessage } from '~/utils';
 
 import { LoadingScreen } from '~/components/common';
 import { MainProtectedLayout } from '~/components/layouts/protected';
-import { FooterPublicLayout, HeaderPublicLayout } from '~/components/layouts/public';
+import { FooterPublicLayout, TopHeaderPublicLayout } from '~/components/layouts/public';
 
 import { AUTH_ROUTES, OTHER_ROUTES, PROTECTED_ROUTES } from '~/routes';
 
@@ -54,7 +54,7 @@ export const ProtectedLayout = memo(() => {
 
   return (
     <>
-      <HeaderPublicLayout />
+      <TopHeaderPublicLayout />
       <MainProtectedLayout>
         <AnimatePresence mode="wait">
           <Switch key={location.pathname} location={location}>

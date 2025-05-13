@@ -3,7 +3,7 @@ import { memo, useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
-import { FooterPublicLayout, HeaderPublicLayout, MainPublicLayout, WrapperPublicLayout } from '~/components/layouts/public';
+import { FooterPublicLayout, HeaderPublicLayout, MainPublicLayout, TopHeaderPublicLayout, WrapperPublicLayout } from '~/components/layouts/public';
 
 import { OTHER_ROUTES, PUBLIC_ROUTES } from '~/routes';
 
@@ -15,7 +15,9 @@ export const PublicLayout = memo(() => {
 
   return (
     <WrapperPublicLayout>
+      {!isHiddenHeader && <TopHeaderPublicLayout />}
       {!isHiddenHeader && <HeaderPublicLayout />}
+
       <MainPublicLayout>
         <AnimatePresence mode="wait">
           <Switch key={location.pathname} location={location}>

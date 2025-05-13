@@ -14,6 +14,6 @@ export type AuthRouteKeys = 'login' | 'signup' | 'forgetPassword';
 
 export type ProtectedRoueKeys = 'message' | 'profile';
 
-export type PublicRouteKeys = 'index' | 'explore';
+export type PublicRouteKeys = 'index' | 'explore' | 'bestSelling' | 'products' | 'events' | 'faq';
 
 export type OtherRouteKeys = 'blank' | '404';

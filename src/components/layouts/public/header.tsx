@@ -1,47 +1,57 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
-import { Link, useLocation } from 'react-router-dom';
-
-import { LOGO, SEO_AUTHOR, SIDEBAR_PUBLIC } from '~/constants';
-
-import { cn } from '~/libs';
+import { ChevronDown, ChevronRight, Menu } from 'lucide-react';
+import { z } from 'zod';
 
 import { Button } from '~/components/common';
-
-import { PUBLIC_ROUTES } from '~/routes';
+import { CustomForm, CustomInputSearch } from '~/components/form';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '~/components/ui';
 
 export const HeaderPublicLayout = memo(() => {
-  const { pathname } = useLocation();
-
   return (
-    <header className="sticky top-0 z-10 h-header-public w-full bg-white py-2">
-      <div className="mx-auto flex size-full max-w-[calc(1280px+4px*4*2)] items-center justify-between gap-x-6 px-4">
-        <Link className="flex flex-shrink-0 transition-opacity hover:opacity-85" to={PUBLIC_ROUTES.index.path()}>
-          <img alt={SEO_AUTHOR} className="h-[75px] w-auto" src={LOGO} />
-        </Link>
-        <ul className="flex flex-shrink-0 items-center gap-x-6">
-          {SIDEBAR_PUBLIC.map(({ menu }, index1) =>
-            menu.map(({ label, href }, index2) => (
-              <li key={`${index1}-${index2}`}>
-                <Link
-                  to={href}
-                  className={cn('block text-base transition-all hover:text-primary hover:opacity-85', {
-                    '!text-primary underline underline-offset-4': href === PUBLIC_ROUTES.index.path() ? pathname === href : pathname.includes(href)
-                  })}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))
-          )}
-        </ul>
+    <header className="h-header-public bg-primary">
+      <div className="mx-auto flex size-full max-w-[calc(1280px+4px*4*2)] items-center justify-between gap-x-10 px-4">
+        <div className="flex flex-shrink-0">
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex min-w-64 justify-between rounded-md bg-white px-2 py-2">
+              <Menu />
+              All Categories <ChevronDown />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="min-w-64">
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Billing</DropdownMenuItem>
+              <DropdownMenuItem>Team</DropdownMenuItem>
+              <DropdownMenuItem>Subscription</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="hidden flex-grow items-center gap-x-6 md:flex">
+          <SearchBar />
+        </div>
         {/* <div className="flex-grow"></div> */}
         <div className="flex flex-shrink-0 items-center justify-end gap-x-5">
-          <Button roundedCustom className="min-w-[120px]" color="white" size="sm" variant="secondary">
-            Sign in
+          <Button className="min-w-[120px]" color="primary" size="sm" variant="default">
+            Become Seller <ChevronRight />
           </Button>
         </div>
       </div>
     </header>
+  );
+});
+
+export const SearchBar = memo(() => {
+  const schema = useMemo(() => z.object({ searchTerm: z.string().optional() }), []);
+
+  const defaultValues = useMemo(() => ({ searchTerm: '' }), []);
+
+  const handleSearch = async (values: string): Promise<void> => {
+    console.log(values);
+  };
+
+  return (
+    <CustomForm className="w-full" options={{ defaultValues }} schema={schema}>
+      <CustomInputSearch className="w-full" handleOnChange={(e) => handleSearch(e.target.value)} name="searchTerm" placeholder="Search products..." />
+    </CustomForm>
   );
 });

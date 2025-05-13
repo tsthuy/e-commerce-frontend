@@ -18,8 +18,8 @@
 
   &.variant {
     &--default {
-      @apply border border-custom-primary-bg-hover;
       @apply hover:bg-custom-primary-bg-hover;
+      @apply hover:text-black;
 
       &.color {
         &--black {
