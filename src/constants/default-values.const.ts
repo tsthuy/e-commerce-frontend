@@ -29,7 +29,6 @@ export const SEO_GUARANTEES = [
     description: '100% protected payments'
   }
 ] as const;
-
 export const SEO_CATEGORY = [
   {
     id: 1,
@@ -92,6 +91,11 @@ export const SEO_CATEGORY = [
     image_Url: '/images/category/other.webp'
   }
 ];
+export const SEO_SECTION_HEADINGS = {
+  BEST_DEALS: 'Best Deals',
+  POPULAR_EVENTS: 'Popular Events',
+  FEATURED_PRODUCTS: 'Featured Products'
+} as const;
 
 export const LOGO = '/images/logo/logo.svg';
 export const BG = '/images/bg.avif';
@@ -103,3 +107,32 @@ export const DEFAULT_IMG_SKELETONS = '/gifs/skeletons.gif';
 export const DEFAULT_IMG_PLACEHOLDER = '/images/common/placeholder.webp';
 
 export const MAX_PRICE_VALUE = 1000000;
+
+export const FAQ_DATA = [
+  {
+    question: 'What is your return policy?',
+    answer:
+      "If you're not satisfied with your purchase, we accept returns within 30 days of delivery. To initiate a return, please email us at support@myecommercestore.com with your order number and a brief explanation of why you're returning the item."
+  },
+  {
+    question: 'How do I track my order?',
+    answer: 'You can track your order by clicking the tracking link in your shipping confirmation email, or by logging into your account on our website and viewing the order details.'
+  },
+  {
+    question: 'How do I contact customer support?',
+    answer: 'You can contact our customer support team by emailing us at support@myecommercestore.com, or by calling us at (555) 123-4567 between the hours of 9am and 5pm EST, Monday through Friday.'
+  },
+  {
+    question: 'Can I change or cancel my order?',
+    answer:
+      "Unfortunately, once an order has been placed, we are not able to make changes or cancellations. If you no longer want the items you've ordered, you can return them for a refund within 30 days of delivery."
+  },
+  {
+    question: 'Do you offer international shipping?',
+    answer: 'Currently, we only offer shipping within the United States.'
+  },
+  {
+    question: 'What payment methods do you accept?',
+    answer: 'We accept visa, mastercard, paypal payment method also we have cash on delivery system.'
+  }
+] as const;

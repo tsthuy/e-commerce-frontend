@@ -12,8 +12,8 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        urbanist: ['"Urbanist"', 'sans-serif'],
-        'good-dog-new': ['"GoodDogNew"', 'sans-serif']
+        urbanist: ['Urbanist"', 'sans-serif'],
+        'good-dog-new': ['GoodDogNew"', 'sans-serif']
       },
       colors: {
         custom: {
@@ -108,12 +108,38 @@ module.exports = {
       },
       keyframes: {
         ripple: {
-          '0%': { width: '0px', height: '0px', opacity: '0.5' },
-          '100%': { width: '500px', height: '500px', opacity: '0' }
+          '0%': {
+            width: '0px',
+            height: '0px',
+            opacity: '0.5'
+          },
+          '100%': {
+            width: '500px',
+            height: '500px',
+            opacity: '0'
+          }
+        },
+        'accordion-down': {
+          from: {
+            height: '0'
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)'
+          }
+        },
+        'accordion-up': {
+          from: {
+            height: 'var(--radix-accordion-content-height)'
+          },
+          to: {
+            height: '0'
+          }
         }
       },
       animation: {
-        ripple: 'ripple 1s linear forwards'
+        ripple: 'ripple 1s linear forwards',
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out'
       }
     }
   },
