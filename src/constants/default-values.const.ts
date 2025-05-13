@@ -94,7 +94,8 @@ export const SEO_CATEGORY = [
 export const SEO_SECTION_HEADINGS = {
   BEST_DEALS: 'Best Deals',
   POPULAR_EVENTS: 'Popular Events',
-  FEATURED_PRODUCTS: 'Featured Products'
+  FEATURED_PRODUCTS: 'Featured Products',
+  SPONSOR: 'Our Trusted Partners'
 } as const;
 
 export const LOGO = '/images/logo/logo.svg';
@@ -134,5 +135,33 @@ export const FAQ_DATA = [
   {
     question: 'What payment methods do you accept?',
     answer: 'We accept visa, mastercard, paypal payment method also we have cash on delivery system.'
+  }
+] as const;
+
+export const SPONSORS = [
+  {
+    id: 1,
+    name: 'Apple',
+    logoUrl: '/images/sponsor/apple.png'
+  },
+  {
+    id: 2,
+    name: 'Dell',
+    logoUrl: '/images/sponsor/dell.png'
+  },
+  {
+    id: 3,
+    name: 'LQ',
+    logoUrl: '/images/sponsor/LG.png'
+  },
+  {
+    id: 4,
+    name: 'Microsoft',
+    logoUrl: '/images/sponsor/microsoft.png'
+  },
+  {
+    id: 5,
+    name: 'Amazon',
+    logoUrl: '/images/sponsor/amazon.jpg'
   }
 ] as const;

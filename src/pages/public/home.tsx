@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { Container } from '~/components/common';
-import { Categories, Hero } from '~/components/pages/public/home';
+import { Categories, Hero, Sponsor } from '~/components/pages/public/home';
 import { Guarantee } from '~/components/pages/public/home/guarantee';
 import { SectionHeading } from '~/components/session';
 
@@ -12,6 +12,7 @@ export const HomePage = memo(() => {
       <Guarantee />
       <Categories />
       <SectionHeading section={'BEST_DEALS'} />
+      <Sponsor />
     </Container>
   );
 });
