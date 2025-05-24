@@ -125,6 +125,31 @@ class CloudinaryService {
 
     return `https://res.cloudinary.com/${cloudName}/image/upload/${transformations}/${publicId}`;
   }
+
+  /**
+   * Delete an image from Cloudinary using public_id
+   */
+  public async deleteImage(publicId: string): Promise<boolean> {
+    if (!publicId) return false;
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/cloudinary/delete`, { publicId });
+
+      return response.status === 200;
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+      return false;
+    }
+  }
+
+  /**
+   * Delete multiple images from Cloudinary
+   */
+  public async deleteMultipleImages(publicIds: string[]): Promise<boolean[]> {
+    if (!publicIds || publicIds.length === 0) return [];
+
+    return Promise.all(publicIds.map((id) => this.deleteImage(id)));
+  }
 }
 
 export const cloudinaryService = new CloudinaryService();

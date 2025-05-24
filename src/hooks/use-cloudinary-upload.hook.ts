@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import { toast } from 'sonner';
 
+import { getErrorMessage } from '~/utils';
+
 import { cloudinaryService } from '~/services/cloudinary.service';
 import type { CloudinaryUploadResponse } from '~/types/cloudinary';
 
@@ -11,15 +13,15 @@ interface UseCloudinaryUploadOptions {
 
 export interface UseCloudinaryUploadReturn {
   uploadFile: (file: File) => Promise<CloudinaryUploadResponse>;
-
   uploadFiles: (files: File[]) => Promise<CloudinaryUploadResponse[]>;
+
+  deleteUploadedImage: (publicId: string) => Promise<boolean>;
+  deleteUploadedImages: (publicIds: string[]) => Promise<boolean[]>;
 
   resetUpload: () => void;
 
   isUploading: boolean;
-
   progress: { [fileName: string]: number };
-
   uploadedFiles: CloudinaryUploadResponse[];
 }
 
@@ -48,7 +50,7 @@ export function useCloudinaryUpload(options?: UseCloudinaryUploadOptions): UseCl
       });
 
       setUploadedFiles((prev) => [...prev, response]);
-      // toast.success(`${file.name} uploaded successfully`);
+
       return response;
     } catch (error) {
       toast.error(`Failed to upload ${file.name}`);
@@ -65,7 +67,6 @@ export function useCloudinaryUpload(options?: UseCloudinaryUploadOptions): UseCl
     if (!files.length) return [];
 
     setIsUploading(true);
-    // Initialize progress for each file
     const initialProgress = files.reduce(
       (acc, file) => {
         acc[file.name] = 0;
@@ -88,7 +89,6 @@ export function useCloudinaryUpload(options?: UseCloudinaryUploadOptions): UseCl
         }
       });
 
-      // toast.success(`${files.length} files uploaded successfully`);
       return responses;
     } catch (error) {
       toast.error('Some files failed to upload');
@@ -106,10 +106,40 @@ export function useCloudinaryUpload(options?: UseCloudinaryUploadOptions): UseCl
     setProgress({});
   };
 
+  /**
+   * Delete a image uploaded
+   */
+  const deleteUploadedImage = async (publicId: string): Promise<boolean> => {
+    if (!publicId) return false;
+
+    try {
+      return await cloudinaryService.deleteImage(publicId);
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+      return false;
+    }
+  };
+
+  /**
+   * Delete images uploaded
+   */
+  const deleteUploadedImages = async (publicIds: string[]): Promise<boolean[]> => {
+    if (!publicIds?.length) return [];
+
+    try {
+      return await cloudinaryService.deleteMultipleImages(publicIds);
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+      return publicIds.map(() => false);
+    }
+  };
+
   return {
     uploadFile,
     uploadFiles,
     resetUpload,
+    deleteUploadedImage,
+    deleteUploadedImages,
     isUploading,
     progress,
     uploadedFiles

@@ -62,11 +62,13 @@ export const SignUpPage = memo(() => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { uploadFile, isUploading, progress } = useCloudinaryUpload({
+  const { uploadFile, isUploading, progress, deleteUploadedImage } = useCloudinaryUpload({
     folder: CLOUDINARY_FOLDERS.USERS
   });
   const handleSignUp = async (values: DataForm<typeof schema>): Promise<void> => {
     if (isLoading) return;
+
+    let uploadedImagePublicId = '';
 
     try {
       setIsLoading(true);
@@ -75,12 +77,12 @@ export const SignUpPage = memo(() => {
       if (image && image.length > 0) {
         const responses = await uploadFile(image[0]);
         const avatarUrl = responses.secure_url;
-        const publicId = responses.public_id;
+        uploadedImagePublicId = responses.public_id;
 
         try {
           const {
             data: { accessToken, refreshToken }
-          } = await authApi.signup({ data: { email, password, fullName, avatarUrl, publicId } });
+          } = await authApi.signup({ data: { email, password, fullName, avatarUrl, publicId: uploadedImagePublicId } });
 
           if (!!accessToken && !!refreshToken) {
             Cookie.set(COOKIE_KEYS.accessToken, accessToken, COOKIE_OPTIONS);
@@ -92,7 +94,8 @@ export const SignUpPage = memo(() => {
             throw new Error();
           }
         } catch (error) {
-          throw error;
+          await deleteUploadedImage(uploadedImagePublicId);
+          toast.error(getErrorMessage(error));
         }
       }
     } catch (error) {
