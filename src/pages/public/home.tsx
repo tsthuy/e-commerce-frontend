@@ -3,6 +3,7 @@ import { memo } from 'react';
 import { Container } from '~/components/common';
 import { Categories, Contact, Hero, Sponsor } from '~/components/pages/public/home';
 import { Guarantee } from '~/components/pages/public/home/guarantee';
+import { ProductCard } from '~/components/product';
 import { SectionHeading } from '~/components/session';
 
 export const HomePage = memo(() => {
@@ -12,6 +13,7 @@ export const HomePage = memo(() => {
       <Guarantee />
       <Categories />
       <SectionHeading section={'BEST_DEALS'} />
+      <ProductCard />
       <Sponsor />
       <Contact />
     </Container>

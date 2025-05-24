@@ -1,4 +1,5 @@
 export * from './use-click-outside.hook';
+export * from './use-cloudinary-upload.hook';
 export * from './use-custom-form.hook';
 export * from './use-data-table';
 export * from './use-debounce.hook';

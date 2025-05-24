@@ -102,6 +102,7 @@ export const LOGO = '/images/logo/logo.svg';
 export const BG = '/images/bg.avif';
 export const DEFAULT_IMG_BANNER = '/images/common/banner.svg';
 export const DEFAULT_IMG_AVATAR = '/images/common/no-avatar.webp';
+export const DEFAULT_IMG_SAMPLE = '/images/sample.jpg';
 export const DEFAULT_IMG_EMPTY = '/gifs/empty.gif';
 export const DEFAULT_IMG_SEARCHING = '/gifs/searching.gif';
 export const DEFAULT_IMG_SKELETONS = '/gifs/skeletons.gif';
@@ -171,31 +172,31 @@ export const FOOTER_SECTIONS = [
   {
     title: 'Company',
     links: [
-      { label: 'About us', href: '/about' },
-      { label: 'Careers', href: '/careers' },
-      { label: 'Store Locations', href: '/locations' },
-      { label: 'Our Blog', href: '/blog' },
-      { label: 'Reviews', href: '/reviews' }
+      { label: 'About us', href: '#' },
+      { label: 'Careers', href: '#' },
+      { label: 'Store Locations', href: '#' },
+      { label: 'Our Blog', href: '#' },
+      { label: 'Reviews', href: '#' }
     ]
   },
   {
     title: 'Shop',
     links: [
-      { label: 'Game & Video', href: '/shop/games' },
-      { label: 'Phone & Tablets', href: '/shop/phones' },
-      { label: 'Computers & Laptop', href: '/shop/computers' },
-      { label: 'Sport Watches', href: '/shop/watches' },
-      { label: 'Events', href: '/events' }
+      { label: 'Game & Video', href: '#' },
+      { label: 'Phone & Tablets', href: '#' },
+      { label: 'Computers & Laptop', href: '#' },
+      { label: 'Sport Watches', href: '#' },
+      { label: 'Events', href: '#' }
     ]
   },
   {
     title: 'Support',
     links: [
-      { label: 'FAQ', href: '/faq' },
-      { label: 'Reviews', href: '/reviews' },
-      { label: 'Contact Us', href: '/contact' },
-      { label: 'Shipping', href: '/shipping' },
-      { label: 'Live chat', href: '/chat' }
+      { label: 'FAQ', href: '#' },
+      { label: 'Reviews', href: '#' },
+      { label: 'Contact Us', href: '#' },
+      { label: 'Shipping', href: '#' },
+      { label: 'Live chat', href: '#' }
     ]
   }
 ] as const;

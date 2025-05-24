@@ -4,8 +4,6 @@ import Cookie from 'js-cookie';
 
 import { API_HAVE_SLASH_IN_END, COOKIE_KEYS, COOKIE_OPTIONS } from '~/constants';
 
-import { AUTH_ROUTES } from '~/routes';
-
 import { authApi } from './auth.api';
 
 class Http {
@@ -73,7 +71,7 @@ httpBase.instance.interceptors.response.use(
       const refreshToken = Cookie.get(COOKIE_KEYS.refreshToken);
 
       if (!!!refreshToken || refreshTokenHttpBase >= limitRefetchToken) {
-        await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
+        // await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
 
         return Promise.reject(error);
       } else {
@@ -94,12 +92,12 @@ httpBase.instance.interceptors.response.use(
 
           return axios(originalConfig);
         } else {
-          await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
+          // await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
 
           return Promise.reject(error);
         }
       } catch {
-        await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
+        // await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
 
         return Promise.reject(error);
       }

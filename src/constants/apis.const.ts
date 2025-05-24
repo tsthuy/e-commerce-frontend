@@ -1,6 +1,6 @@
 const API_PREFIX_GENERAL = '/general';
-const API_PREFIX_AUTH = '/authentication';
-export const API_HAVE_SLASH_IN_END = true;
+const API_PREFIX_AUTH = '/auth';
+export const API_HAVE_SLASH_IN_END = false;
 
 export const API_URLS = {
   general: {
@@ -11,7 +11,7 @@ export const API_URLS = {
     }
   },
   auth: {
-    getStarted: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/get-started`,
+    signup: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/signup`,
     login: {
       email: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login`,
       social: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login-social`

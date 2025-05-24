@@ -1,19 +1,25 @@
 import { memo, useMemo, useState } from 'react';
 
+import Cookie from 'js-cookie';
 import { LockKeyhole, Mail, User } from 'lucide-react';
 import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { LOGO, SEO_AUTHOR } from '~/constants';
+import { CLOUDINARY_FOLDERS, COOKIE_KEYS, COOKIE_OPTIONS, LOGO, SEO_AUTHOR } from '~/constants';
 
 import type { DataForm } from '~/types';
+
+import { authApi } from '~/services';
+
+import { useCloudinaryUpload } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
 
 import { AuthLayoutContent } from '~/layouts';
 
 import { Button, Helmet } from '~/components/common';
+import { UploadProgress } from '~/components/common/cloudinary';
 import { CustomForm, CustomInput, CustomInputImage, CustomInputPassword } from '~/components/form';
 
 import { AUTH_ROUTES, PUBLIC_ROUTES } from '~/routes';
@@ -56,16 +62,41 @@ export const SignUpPage = memo(() => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const { uploadFile, isUploading, progress } = useCloudinaryUpload({
+    folder: CLOUDINARY_FOLDERS.USERS
+  });
   const handleSignUp = async (values: DataForm<typeof schema>): Promise<void> => {
     if (isLoading) return;
 
     try {
       setIsLoading(true);
       const { fullName, email, password, image } = values;
-      console.log(fullName, email, password, image);
+
+      if (image && image.length > 0) {
+        const responses = await uploadFile(image[0]);
+        const avatarUrl = responses.secure_url;
+        const publicId = responses.public_id;
+
+        try {
+          const {
+            data: { accessToken, refreshToken }
+          } = await authApi.signup({ data: { email, password, fullName, avatarUrl, publicId } });
+
+          if (!!accessToken && !!refreshToken) {
+            Cookie.set(COOKIE_KEYS.accessToken, accessToken, COOKIE_OPTIONS);
+            Cookie.set(COOKIE_KEYS.refreshToken, refreshToken, COOKIE_OPTIONS);
+
+            push(PUBLIC_ROUTES.index.path());
+            toast.success('Signed Up Successfully');
+          } else {
+            throw new Error();
+          }
+        } catch (error) {
+          throw error;
+        }
+      }
     } catch (error) {
       toast.error(getErrorMessage(error));
-      push(PUBLIC_ROUTES.index.path());
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +115,9 @@ export const SignUpPage = memo(() => {
 
               <CustomInputPassword isRequired disabled={isLoading} label="Password" name="password" placeholder="********" startIcon={LockKeyhole} />
 
-              <CustomInputImage isRequired alt="Avatar" disabled={isLoading} label="Avatar" name="image" />
+              <CustomInputImage isRequired multiple alt="Avatar" disabled={isLoading} label="Avatar" name="image" />
+
+              <UploadProgress isUploading={isUploading} mode="single" progress={progress} />
             </div>
             <Button className="w-full" color="black" disabled={isLoading} type="submit">
               Sign Up

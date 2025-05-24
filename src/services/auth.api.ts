@@ -3,24 +3,13 @@ import Cookie from 'js-cookie';
 
 import { API_URLS, COOKIE_KEYS } from '~/constants';
 
-import type {
-  ApiParams,
-  GetStartedBody,
-  GetStartedResponse,
-  LoginWithEmailBody,
-  LoginWithEmailResponse,
-  LoginWithSocialBody,
-  LoginWithSocialResponse,
-  LogoutBody,
-  RefreshTokenBody,
-  RefreshTokenResponse
-} from '~/types';
+import type { ApiParams, LoginWithEmailBody, LoginWithEmailResponse, LoginWithSocialBody, LoginWithSocialResponse, LogoutBody, RefreshTokenBody, RefreshTokenResponse, SignUpBody } from '~/types';
 
 import { httpBase } from '~/services';
 
 export const authApi = {
-  getStarted({ data, config }: ApiParams<GetStartedBody>): AxiosPromise<GetStartedResponse> {
-    return httpBase.post<GetStartedBody, GetStartedResponse>(API_URLS.auth.getStarted, data, config);
+  signup({ data, config }: ApiParams<SignUpBody>): AxiosPromise<LoginWithEmailResponse> {
+    return httpBase.post<SignUpBody, LoginWithEmailResponse>(API_URLS.auth.signup, data, config);
   },
   loginWithEmail({ data, config }: ApiParams<LoginWithEmailBody>): AxiosPromise<LoginWithEmailResponse> {
     return httpBase.post<LoginWithEmailBody, LoginWithEmailResponse>(API_URLS.auth.login.email, data, config);

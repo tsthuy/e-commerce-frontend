@@ -1,5 +1,6 @@
 export * from './api';
 export * from './auth';
+export * from './cloudinary';
 export * from './common';
 export * from './firebase';
 export * from './form';

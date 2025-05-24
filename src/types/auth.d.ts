@@ -1,28 +1,23 @@
-export type GetStartedBody = {
+export type SignUpBody = {
   email: string;
+  password: string;
+  fullName: string;
+  avatarUrl: string;
+  publicId: string;
 };
-export type GetStartedResponse = {
+export type SignupResponse = {
   id: string;
-  email: string;
-  completed_signup: boolean;
-  is_verified: boolean;
-  is_active: boolean;
-  is_staff: boolean;
-  use_long_polling: boolean;
-  is_allow_reset_password: boolean;
-  is_verified_reset_password_email: boolean;
-  auth_provider: unknown;
-  total_trackers: number;
-  total_tracking: number;
+  emailResponse: string;
+  fullName: String;
 };
 
 export type LoginWithEmailBody = {
-  id: string;
+  email: string;
   password: string;
 };
 export type LoginWithEmailResponse = {
-  token: string;
-  refresh: string;
+  accessToken: string;
+  refreshToken: string;
 };
 
 export type LoginWithSocialBody = {
