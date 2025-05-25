@@ -9,7 +9,7 @@ export const profileQueries = createQueryKeys('profile', {
     queryKey: [''],
     queryFn: async (): Promise<ProfileResponse> => {
       const { data } = await profileApi.getProfile({});
-      return data;
+      return data.result;
     }
   })
 });

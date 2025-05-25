@@ -1,26 +1,46 @@
 import type { StringOrNull } from './common';
 
+export type UserRole = {
+  name: string;
+  description: StringOrNull;
+  permissions: StringOrNull;
+};
+
+export type UserAvatar = {
+  publicId: string;
+  url: string;
+};
+
+export type UserAddress = {
+  id: string;
+  street: string;
+  city: string;
+  state: string;
+  country: string;
+  zipCode: string;
+  isDefault: boolean;
+};
+
+export type ProfileApiResponse = {
+  code: number;
+  result: ProfileResponse;
+};
+
 export type ProfileResponse = {
   id: string;
-  username: string;
   email: string;
-  phone: string;
-  first_name: string;
-  last_name: string;
-  image: string;
-  is_verified_email: boolean;
-  verified_email_on: string;
-  is_notification_on: boolean;
-  is_active: boolean;
-  is_staff: boolean;
-  address: unknown;
-  is_required_change_password: boolean;
-  date_of_birth: StringOrNull;
-  bio: string;
-  is_locked: boolean;
-  provider: unknown;
-  profile_overview: {
-    total_trackers: number;
-    total_tracking: number;
-  };
+  fullName: string;
+  phone: StringOrNull;
+  roles: UserRole[];
+  avatar: UserAvatar;
+  addresses: UserAddress[];
+  defaultAddress: UserAddress | null;
+};
+
+export type UpdateProfileRequest = {
+  fullName?: StringOrNull;
+  phone?: StringOrNull;
+  avatarUrl?: StringOrNull;
+  avatarPublicId?: StringOrNull;
+  password: string;
 };

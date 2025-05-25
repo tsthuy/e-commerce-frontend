@@ -1,17 +1,39 @@
 import { memo } from 'react';
 
-import { CircleUserRound, Heart, Menu, ShoppingCart } from 'lucide-react';
+import Cookie from 'js-cookie';
+import { Heart, LogOut, Menu, ShoppingCart, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 
-import { LOGO, SEO_AUTHOR, SIDEBAR_PUBLIC } from '~/constants';
+import { COOKIE_KEYS, DEFAULT_IMG_AVATAR, LOGO, SEO_AUTHOR, SIDEBAR_PUBLIC } from '~/constants';
 
 import { cn } from '~/libs';
 
+import { authApi } from '~/services';
+
+import { useProfile } from '~/hooks';
+
+import { getErrorMessage } from '~/utils';
+
 import { Button } from '~/components/common';
 import { SearchBar } from '~/components/layouts/public/header';
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from '~/components/ui';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger
+} from '~/components/ui';
 
-import { PUBLIC_ROUTES } from '~/routes';
+import { AUTH_ROUTES, PROTECTED_ROUTES, PUBLIC_ROUTES } from '~/routes';
 
 export const TopHeaderPublicLayout = memo(() => {
   return (
@@ -52,19 +74,59 @@ export const TopHeaderPublicLayout = memo(() => {
   );
 });
 
-export const UserActions = memo(() => (
-  <>
-    <Button size="icon" variant="default">
-      <Heart className="size-6" color="white" />
-    </Button>
-    <Button size="icon" variant="default">
-      <ShoppingCart className="size-6" color="white" />
-    </Button>
-    <Button size="icon" variant="default">
-      <CircleUserRound className="size-6" color="white" />
-    </Button>
-  </>
-));
+export const UserActions = memo(() => {
+  const loggedStatus = !!Cookie.get(COOKIE_KEYS.accessToken) && !!Cookie.get(COOKIE_KEYS.refreshToken);
+  const { data: profile } = useProfile({ enabled: loggedStatus });
+
+  const handleLogout = async (): Promise<void> => {
+    try {
+      await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
+      toast.success('Logged out successfully');
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Something went wrong! Please try again.'));
+    }
+  };
+  return (
+    <>
+      <Button size="icon" variant="default">
+        <Heart className="size-6" color="white" />
+      </Button>
+      <Button size="icon" variant="default">
+        <ShoppingCart className="size-6" color="white" />
+      </Button>
+      {loggedStatus ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger className="rounded-full focus:outline-none focus:ring-[2px] focus:ring-primary focus:ring-offset-2">
+            <Avatar>
+              <AvatarImage alt="avatar" src={profile?.avatar.url || DEFAULT_IMG_AVATAR} />
+              <AvatarFallback>AB</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56 gap-2">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link to={PROTECTED_ROUTES.profile.path()}>
+                <User className="mr-2 size-6" /> Profile
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem className="cursor-pointer text-destructive focus:bg-destructive/10" onClick={handleLogout}>
+              <LogOut className="mr-2 size-6" /> Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <Link to={AUTH_ROUTES.login.path()}>
+          <Avatar>
+            <AvatarImage alt="avatar" src={DEFAULT_IMG_AVATAR} />
+            <AvatarFallback>GU</AvatarFallback>
+          </Avatar>
+        </Link>
+      )}
+    </>
+  );
+});
 
 export const NavItems = memo(({ className, isMobile = false }: { className?: string; isMobile?: boolean }) => {
   const { pathname } = useLocation();

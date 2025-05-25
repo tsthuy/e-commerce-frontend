@@ -34,3 +34,8 @@ export type RefreshTokenResponse = LoginResponse;
 export type LogoutBody = {
   directUri?: string;
 };
+
+export type LogoutRequest = {
+  token: string;
+  refreshToken: string;
+};

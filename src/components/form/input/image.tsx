@@ -25,6 +25,7 @@ import { FormField, FormItem, Input } from '~/components/ui';
 
 type CustomInputImageProps = Partial<InputHTMLAttributes<HTMLInputElement>> & {
   name: string;
+  id?: string;
   className?: HTMLDivElement['className'];
   isRequired?: boolean;
 } & {
@@ -51,6 +52,7 @@ type CustomInputImageProps = Partial<InputHTMLAttributes<HTMLInputElement>> & {
 export const CustomInputImage = memo((props: CustomInputImageProps) => {
   const {
     name,
+    id,
     className,
     classNameInput,
     isRequired,
@@ -221,6 +223,7 @@ export const CustomInputImage = memo((props: CustomInputImageProps) => {
                   ref={fileInputRef}
                   accept={accept ?? '.jpg, .png, .jpeg'}
                   disabled={disabled}
+                  id={id}
                   multiple={multiple}
                   name={name}
                   readOnly={readOnly}

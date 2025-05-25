@@ -16,10 +16,11 @@ export const API_URLS = {
       email: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login`,
       social: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login-social`
     },
-    logout: '/logout',
+    logout: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/logout`,
     refreshToken: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/refresh-token`
   },
   profile: {
-    getProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile`
+    getProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile`,
+    updateProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/update`
   }
 };

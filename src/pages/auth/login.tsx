@@ -42,7 +42,7 @@ export const LoginPage = memo(() => {
   );
   const defaultValues = useMemo(
     () => ({
-      email: 'huy1@gmail.com',
+      email: 'doughdevx7@gmail.com',
       password: '12345678'
     }),
     []
