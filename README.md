@@ -1,8 +1,8 @@
-# Boilerplate and Starter for React 18
+# 🛍️ Second-hand Store – React (TypeScript) Migration
 
-🚀 Boilerplate and Starter for React with React Router, Tailwind CSS and TypeScript ⚡️ Made with developer experience first: React, TypeScript, ESLint, Prettier, Husky, Lint-Staged, Commitlint, Tailwind CSS, Multi-language (i18n), and more.
+🚀 Migration for a second-hand e-commerce platform. Transitioned from a full JavaScript stack (ReactJS + Node.js + MongoDB) to a robust React (TypeScript) + Spring Boot + PostgreSQL architecture for better type-safety, performance, and scalability.
 
-## Features
+## Frontend Stack
 
 Developer experience first, extremely flexible code structure and only keep what you need:
 
@@ -20,20 +20,25 @@ Developer experience first, extremely flexible code structure and only keep what
 - 💡 Absolute Imports using **`~`** prefix
 - 🗂 VSCode configuration: **Settings** and **Extensions**
 
-## Table of Contents
+## Key features
 
-- [Boilerplate and Starter for React 18](#boilerplate-and-starter-for-react-18)
-  - [Features](#features)
-  - [Table of Contents](#table-of-contents)
-  - [Getting Started](#getting-started)
-  - [Scripts Overview](#scripts-overview)
-  - [Project Structure](#project-structure)
-  - [Commit Message Format](#commit-message-format)
-  - [TanStack Query](#tanstack-query)
-  - [Multi-language](#multi-language)
-  - [State Management - Zustand](#state-management---zustand)
-  - [VSCode information (optional)](#vscode-information-optional)
-  - [License](#license)
+- 🎨 Modern Frontend Stack: Built with React (TypeScript), Shadcn UI, Tailwind CSS, SCSS, and Framer Motion for a responsive, clean and animated UI.
+
+- 🧑‍💼 Role-Based UI & SEO Support: Supports multiple roles: user, seller, and admin. Routing is structured and dynamic. SEO-friendly pages using Helmet.
+
+- 🔐 Typed API Integration: Well-defined API contracts via TypeScript, with a custom Axios instance that handles refresh tokens and auto-retry for better authentication flow.
+
+- 🛒 Product Variants System: Designed a flexible and extensible product schema to support multiple product attributes and variants, allowing sellers to customize their listings in detail.
+
+- ✅ Form Handling & Validation: Utilizes React Hook Form + Zod for type-safe validation and enhanced UX with realtime error handling.
+
+- 🛡️ Frontend Security Practices: Followed defensive UI design: disabled fields, controlled inputs, no client-side trust, secure localStorage handling.
+
+- 🚀 Performance Optimization: Employed memoization strategies with React.memo, useMemo, useCallback to prevent unnecessary renders and improve speed.
+
+- 🧰 Developer Experience: Setup includes ESLint, Prettier, Husky, Lint-Staged, and Commitlint to maintain consistent and clean codebase.
+
+- 🧪 Custom Hooks & State Management: Extracted reusable hooks and used Zustand for scalable state management.
 
 ## Getting Started
 
@@ -123,14 +128,6 @@ npm run commit
 
 One of the benefits of using Conventional Commits is that it allows us to automatically generate a `CHANGELOG` file. It also allows us to automatically determine the next version number based on the types of commits that are included in a release.
 
-## TanStack Query
-
-...
-
-## Multi-language
-
-...
-
 ## State Management - Zustand
 
 - Create a store
@@ -156,13 +153,3 @@ const useStore = create<State<StoreState & StoreActions>>((set) => ({
 
 export { useStore };
 ```
-
-## VSCode information (optional)
-
-If you are VSCode users, you can have a better integration with VSCode by installing the suggested extension in `.vscode/extension.json`. The starter code comes up with Settings for a seamless integration with VSCode. The Debug configuration is also provided for frontend and backend debugging experience.
-
-With the plugins installed on your VSCode, ESLint and Prettier can automatically fix the code and show you the errors. Same goes for testing, you can install VSCode Jest extension to automatically run your tests and it also show the code coverage in context.
-
-## License
-
-Copyright © 2024
