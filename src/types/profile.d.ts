@@ -13,17 +13,13 @@ export type UserAvatar = {
 
 export type UserAddress = {
   id: string;
-  street: string;
+  address: string;
   city: string;
-  state: string;
   country: string;
   zipCode: string;
+  addressType: string;
   isDefault: boolean;
-};
-
-export type ProfileApiResponse = {
-  code: number;
-  result: ProfileResponse;
+  recipientPhone: string;
 };
 
 export type ProfileResponse = {
@@ -35,6 +31,7 @@ export type ProfileResponse = {
   avatar: UserAvatar;
   addresses: UserAddress[];
   defaultAddress: UserAddress | null;
+  availableAddressTypes: string[];
 };
 
 export type UpdateProfileRequest = {
@@ -43,4 +40,14 @@ export type UpdateProfileRequest = {
   avatarUrl?: StringOrNull;
   avatarPublicId?: StringOrNull;
   password: string;
+};
+
+export type CreateAddressRequest = {
+  country: string;
+  city: string;
+  address: string;
+  recipientPhone: string;
+  zipCode: string;
+  addressType: string;
+  isDefault: boolean;
 };

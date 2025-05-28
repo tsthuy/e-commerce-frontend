@@ -27,7 +27,7 @@ export type LoginWithSocialBody = {
 export type LoginWithSocialResponse = LoginWithEmailResponse;
 
 export type RefreshTokenBody = {
-  refresh: string;
+  refreshToken: string;
 };
 export type RefreshTokenResponse = LoginResponse;
 
@@ -38,4 +38,9 @@ export type LogoutBody = {
 export type LogoutRequest = {
   token: string;
   refreshToken: string;
+};
+
+export type ChangePasswordBody = {
+  password: string;
+  newPassword: string;
 };

@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { BookUser, LockKeyhole, LogOut, MessageCircleMore, Package, TicketSlash, TramFront, User } from 'lucide-react';
 
 import { Container, Helmet } from '~/components/common';
-import { ProfileContent } from '~/components/pages/protected/profile';
+import { ChangePassword, ProfileAddress, ProfileContent } from '~/components/pages/protected/profile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui';
 
 const tabs = [
@@ -53,7 +53,7 @@ const tabs = [
 export const ProfilePage = memo(() => {
   return (
     <Helmet title="Profile">
-      <Container isFitScreen className="pt-8">
+      <Container isFitScreen className="px-2 py-8">
         <Tabs className="flex w-full items-start gap-4" defaultValue={tabs[0].value} orientation="vertical">
           <TabsList className="grid h-full shrink-0 grid-cols-1 gap-3 bg-background p-0">
             {tabs.map((tab) => (
@@ -63,8 +63,16 @@ export const ProfilePage = memo(() => {
             ))}
           </TabsList>
           <div className="mb-10 flex h-full w-full flex-col justify-start rounded-md border">
-            <TabsContent className="mt-0 w-full" value="profile">
+            <TabsContent className="mt-0 w-full p-8" value="profile">
               <ProfileContent />
+            </TabsContent>
+
+            <TabsContent className="mt-0 w-full p-8" value="change_password">
+              <ChangePassword />
+            </TabsContent>
+
+            <TabsContent className="mt-0 w-full p-8" value="address">
+              <ProfileAddress />
             </TabsContent>
           </div>
         </Tabs>

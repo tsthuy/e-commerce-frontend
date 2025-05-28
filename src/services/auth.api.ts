@@ -1,4 +1,5 @@
 import type { AxiosPromise } from 'axios';
+import axios from 'axios';
 import Cookie from 'js-cookie';
 import { toast } from 'sonner';
 
@@ -6,6 +7,7 @@ import { API_URLS, COOKIE_KEYS } from '~/constants';
 
 import type {
   ApiParams,
+  ChangePasswordBody,
   LoginWithEmailBody,
   LoginWithEmailResponse,
   LoginWithSocialBody,
@@ -13,13 +15,14 @@ import type {
   LogoutBody,
   LogoutRequest,
   RefreshTokenBody,
-  RefreshTokenResponse,
   SignUpBody
 } from '~/types';
 
 import { httpBase } from '~/services';
 
 import { getErrorMessage } from '~/utils';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const authApi = {
   signup({ data, config }: ApiParams<SignUpBody>): AxiosPromise<LoginWithEmailResponse> {
@@ -37,7 +40,7 @@ export const authApi = {
       const refreshToken = Cookie.get(COOKIE_KEYS.refreshToken);
 
       if (token && refreshToken) {
-        await httpBase.post<LogoutRequest, void>(API_URLS.auth.logout, { token, refreshToken }, config);
+        await axios.post<LogoutRequest, void>(`${API_BASE_URL}${API_URLS.auth.logout}`, { token, refreshToken }, config);
       }
     } catch (error) {
       toast.error(getErrorMessage(error));
@@ -50,7 +53,10 @@ export const authApi = {
       }
     }
   },
-  refreshToken({ data, config }: ApiParams<RefreshTokenBody>): AxiosPromise<RefreshTokenResponse> {
-    return httpBase.post<RefreshTokenBody, RefreshTokenResponse>(API_URLS.auth.refreshToken, data, config);
+  refreshToken({ data, config }: ApiParams<RefreshTokenBody>): AxiosPromise<LoginWithEmailResponse> {
+    return axios.post<LoginWithEmailResponse>(`${API_BASE_URL}${API_URLS.auth.refreshToken}`, data, config);
+  },
+  changePassword({ data, config }: ApiParams<ChangePasswordBody>): AxiosPromise<void> {
+    return httpBase.post<ChangePasswordBody, void>(API_URLS.auth.changePassword, data, config);
   }
 };

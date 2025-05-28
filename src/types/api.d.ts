@@ -46,3 +46,9 @@ export type ErrorResponse = AxiosError<
     message: string;
   }>
 >;
+
+export type ApiResponse<T = AnyType> = {
+  code?: number;
+  message?: string;
+  result: T;
+};

@@ -4,6 +4,8 @@ import Cookie from 'js-cookie';
 
 import { API_HAVE_SLASH_IN_END, COOKIE_KEYS, COOKIE_OPTIONS } from '~/constants';
 
+import { AUTH_ROUTES } from '~/routes';
+
 import { authApi } from './auth.api';
 
 class Http {
@@ -68,10 +70,10 @@ httpBase.instance.interceptors.response.use(
     const originalConfig = error.config;
 
     if (error.response && error.response.status === 401) {
-      const refreshToken = Cookie.get(COOKIE_KEYS.refreshToken);
+      const refresh = Cookie.get(COOKIE_KEYS.refreshToken);
 
-      if (!!!refreshToken || refreshTokenHttpBase >= limitRefetchToken) {
-        // await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
+      if (!!!refresh || refreshTokenHttpBase >= limitRefetchToken) {
+        await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
 
         return Promise.reject(error);
       } else {
@@ -79,25 +81,25 @@ httpBase.instance.interceptors.response.use(
       }
 
       try {
-        const { data } = await authApi.refreshToken({ data: { refresh: refreshToken } });
-        const { token, refresh } = data;
+        const { data } = await authApi.refreshToken({ data: { refreshToken: refresh } });
+        const { accessToken, refreshToken } = data;
 
-        if (token && refresh) {
+        if (accessToken && refreshToken) {
           refreshTokenHttpBase = 0;
 
-          Cookie.set(COOKIE_KEYS.accessToken, token, COOKIE_OPTIONS);
-          Cookie.set(COOKIE_KEYS.refreshToken, refresh, COOKIE_OPTIONS);
+          Cookie.set(COOKIE_KEYS.accessToken, accessToken, COOKIE_OPTIONS);
+          Cookie.set(COOKIE_KEYS.refreshToken, refreshToken, COOKIE_OPTIONS);
 
-          originalConfig.headers.Authorization = `Bearer ${token}`;
+          originalConfig.headers.Authorization = `Bearer ${accessToken}`;
 
           return axios(originalConfig);
         } else {
-          // await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
+          await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
 
           return Promise.reject(error);
         }
       } catch {
-        // await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
+        await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
 
         return Promise.reject(error);
       }

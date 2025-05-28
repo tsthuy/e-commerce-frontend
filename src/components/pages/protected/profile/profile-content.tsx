@@ -125,7 +125,6 @@ export const ProfileContent = memo(() => {
       if (response.status == 200) {
         await refetch();
         toast.success('Profile updated successfully');
-        setIsEditing(false);
       }
     } catch (error) {
       toast.error(getErrorMessage(error, 'Failed to update profile'));
@@ -134,13 +133,14 @@ export const ProfileContent = memo(() => {
       setAvatarPreview(null);
       setSelectedAvatar(null);
       setIsLoading(false);
+      setIsEditing(false);
     }
   };
 
   return (
-    <div className="w-full py-6">
+    <div className="flex h-full w-full">
       <Card className="w-full border-none shadow-none">
-        <CardContent className="flex flex-col gap-8">
+        <CardContent className="flex flex-col gap-8 p-0">
           <CustomForm options={{ defaultValues }} schema={schema} onSubmit={handleUpdateProfile}>
             <div className="flex flex-col items-center justify-center">
               <div className="relative">
