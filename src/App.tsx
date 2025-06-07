@@ -1,8 +1,8 @@
 import { Route, Switch } from 'react-router-dom';
 
-import { PREFIX_ADMIN_ROUTE, PREFIX_AUTH_ROUTE, PREFIX_PROTECTED_ROUTE, PREFIX_PUBLIC_ROUTE } from '~/constants';
+import { PREFIX_ADMIN_ROUTE, PREFIX_AUTH_ROUTE, PREFIX_PROTECTED_ROUTE, PREFIX_PUBLIC_ROUTE, PREFIX_SELLER_ROUTE } from '~/constants';
 
-import { AdminLayout, AuthLayout, ProtectedLayout, PublicLayout } from '~/layouts';
+import { AdminLayout, AuthLayout, ProtectedLayout, PublicLayout, SellerLayout } from '~/layouts';
 
 function App(): React.JSX.Element {
   return (
@@ -18,6 +18,9 @@ function App(): React.JSX.Element {
           <AdminLayout />
         </Route>
       )}
+      <Route path={PREFIX_SELLER_ROUTE}>
+        <SellerLayout />
+      </Route>
       <Route path={PREFIX_PUBLIC_ROUTE}>
         <PublicLayout />
       </Route>

@@ -1,8 +1,9 @@
-import { PREFIX_AUTH_ROUTE } from '~/constants';
+import { PREFIX_AUTH_ROUTE, PREFIX_SELLER_ROUTE } from '~/constants';
 
 import type { AuthRouteKeys, RouteType } from '~/types';
 
 import { ForgotPasswordPage, LoginPage } from '~/pages/auth';
+import { SellerLoginPage, SellerSignUpPage } from '~/pages/auth/seller';
 import { SignUpPage } from '~/pages/auth/sign-up';
 
 export const AUTH_ROUTES: {
@@ -22,5 +23,15 @@ export const AUTH_ROUTES: {
     path: (): string => `${PREFIX_AUTH_ROUTE}/sign-up`,
     permission: null,
     Element: SignUpPage
+  },
+  sellerSignup: {
+    path: (): string => `${PREFIX_AUTH_ROUTE}${PREFIX_SELLER_ROUTE}/sign-up`,
+    permission: null,
+    Element: SellerSignUpPage
+  },
+  sellerLogin: {
+    path: (): string => `${PREFIX_AUTH_ROUTE}${PREFIX_SELLER_ROUTE}/login`,
+    permission: null,
+    Element: SellerLoginPage
   }
 };

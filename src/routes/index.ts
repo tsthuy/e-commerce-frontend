@@ -3,3 +3,4 @@ export * from './auth.route';
 export * from './other.route';
 export * from './protected.route';
 export * from './public.route';
+export * from './seller.route';

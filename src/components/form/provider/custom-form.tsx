@@ -41,7 +41,6 @@ export const CustomForm = <T extends FieldValues = FieldValues>({
 }: CustomFormProps<T>): React.JSX.Element => {
   const { form } = useCustomForm<T>(schema, options);
   const formInstance = provider || form;
-
   const {
     handleSubmit,
     formState: { errors, isValid, isSubmitting },

@@ -5,12 +5,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Cookie from 'js-cookie';
 import { Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
 
-import { COOKIE_KEYS } from '~/constants';
+import { COOKIE_KEYS, PREFIX_SELLER_ROUTE } from '~/constants';
 
 import { CardCustom } from '~/components/common';
 import { CardContent } from '~/components/ui';
 
 import { AUTH_ROUTES, OTHER_ROUTES, PUBLIC_ROUTES } from '~/routes';
+
+import { SELLER_ROUTES } from '~/routes/seller.route';
 
 export const AuthLayout = memo(() => {
   const location = useLocation();
@@ -19,10 +21,11 @@ export const AuthLayout = memo(() => {
   const { pathname } = location;
   const loggedStatus = !!Cookie.get(COOKIE_KEYS.accessToken) && !!Cookie.get(COOKIE_KEYS.refreshToken);
 
+  const redirectPath: string = useMemo(() => (pathname.includes(PREFIX_SELLER_ROUTE) ? SELLER_ROUTES.dashboard.path() : PUBLIC_ROUTES.index.path()), [pathname]);
   const ignoreRedirect: Array<string> = useMemo(() => [], []);
 
   if (loggedStatus && !ignoreRedirect.includes(pathname)) {
-    push(PUBLIC_ROUTES.index.path());
+    push(redirectPath);
     return null;
   }
 

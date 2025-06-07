@@ -1,1 +1,5 @@
-export const PERMISSIONS = {} as const;
+export const PERMISSIONS = {
+  ADMIN: 'admin',
+  USER: 'user',
+  SELLER: 'seller'
+} as const;

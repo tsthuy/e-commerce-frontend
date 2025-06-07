@@ -10,7 +10,9 @@ export type RouteType = {
 
 export type AdminRouteKeys = 'components' | 'buttons' | 'inputs' | 'selects' | 'checkboxRadioSwitch' | 'dialog' | 'tooltip' | 'dropdownPopover' | 'avatarBadge' | 'tab';
 
-export type AuthRouteKeys = 'login' | 'signup' | 'forgetPassword';
+export type SellerRouteKeys = 'dashboard';
+
+export type AuthRouteKeys = 'login' | 'signup' | 'forgetPassword' | 'sellerLogin' | 'sellerSignup';
 
 export type ProtectedRoueKeys = 'message' | 'profile';
 
