@@ -122,7 +122,7 @@ export const SignUpPage = memo(() => {
 
               <UploadProgress isUploading={isUploading} mode="single" progress={progress} />
             </div>
-            <Button className="w-full" color="black" disabled={isLoading || isUploading} isLoading={isLoading || isUploading} type="submit">
+            <Button className="w-full" disabled={isLoading || isUploading} isLoading={isLoading || isUploading} type="submit">
               Sign Up
             </Button>
 

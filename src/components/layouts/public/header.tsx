@@ -1,11 +1,14 @@
 import { memo, useMemo } from 'react';
 
 import { ChevronDown, ChevronRight, Menu } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
 import { Button } from '~/components/common';
 import { CustomForm, CustomInputSearch } from '~/components/form';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '~/components/ui';
+
+import { AUTH_ROUTES } from '~/routes';
 
 export const HeaderPublicLayout = memo(() => {
   return (
@@ -31,9 +34,11 @@ export const HeaderPublicLayout = memo(() => {
         </div>
         {/* <div className="flex-grow"></div> */}
         <div className="flex flex-shrink-0 items-center justify-end gap-x-5">
-          <Button className="min-w-[120px]" color="primary" size="sm" variant="default">
-            Become Seller <ChevronRight />
-          </Button>
+          <Link to={`${AUTH_ROUTES.sellerSignup.path()}`}>
+            <Button className="min-w-[120px]" color="primary" size="sm" variant="default">
+              Become Seller <ChevronRight />
+            </Button>
+          </Link>
         </div>
       </div>
     </header>

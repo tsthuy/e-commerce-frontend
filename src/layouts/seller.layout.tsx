@@ -10,7 +10,6 @@ import { OTHER_ROUTES, SELLER_ROUTES } from '~/routes';
 
 export const SellerLayout = memo(() => {
   const location = useLocation();
-  console.log('hehe');
 
   return (
     <>
