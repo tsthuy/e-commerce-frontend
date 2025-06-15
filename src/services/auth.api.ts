@@ -8,6 +8,7 @@ import { API_URLS, COOKIE_KEYS } from '~/constants';
 import type {
   ApiParams,
   ChangePasswordBody,
+  CustomerSignUpBody,
   LoginWithEmailBody,
   LoginWithEmailResponse,
   LoginWithSocialBody,
@@ -15,7 +16,7 @@ import type {
   LogoutBody,
   LogoutRequest,
   RefreshTokenBody,
-  SignUpBody
+  SellerSignUpBody
 } from '~/types';
 
 import { httpBase } from '~/services';
@@ -25,8 +26,11 @@ import { getErrorMessage } from '~/utils';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const authApi = {
-  signup({ data, config }: ApiParams<SignUpBody>): AxiosPromise<LoginWithEmailResponse> {
-    return httpBase.post<SignUpBody, LoginWithEmailResponse>(API_URLS.auth.signup, data, config);
+  signupAsCustomer({ data, config }: ApiParams<CustomerSignUpBody>): AxiosPromise<LoginWithEmailResponse> {
+    return httpBase.post<CustomerSignUpBody, LoginWithEmailResponse>(API_URLS.auth.signupAsCustomer, data, config);
+  },
+  signupAsSeller({ data, config }: ApiParams<SellerSignUpBody>): AxiosPromise<LoginWithEmailResponse> {
+    return httpBase.post<SellerSignUpBody, LoginWithEmailResponse>(API_URLS.auth.signupAsSeller, data, config);
   },
   loginWithEmail({ data, config }: ApiParams<LoginWithEmailBody>): AxiosPromise<LoginWithEmailResponse> {
     return httpBase.post<LoginWithEmailBody, LoginWithEmailResponse>(API_URLS.auth.login.email, data, config);

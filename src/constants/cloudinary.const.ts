@@ -9,7 +9,8 @@ export const CLOUDINARY_FOLDERS = {
   PRODUCTS: 'products',
   USERS: 'users',
   LOGOS: 'logos',
-  BANNERS: 'banners'
+  BANNERS: 'banners',
+  SELLERS: 'sellers'
 } as const;
 
 export const CLOUDINARY_DEFAULT_TRANSFORMATIONS = {

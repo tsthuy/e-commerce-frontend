@@ -1,4 +1,4 @@
-export type SignUpBody = {
+export type CustomerSignUpBody = {
   email: string;
   password: string;
   fullName: string;
@@ -44,3 +44,15 @@ export type ChangePasswordBody = {
   password: string;
   newPassword: string;
 };
+
+export type SellerSignUpBody = {
+  email: string;
+  password: string;
+  shopName: string;
+  shopAvatarUrl: string;
+  shopAvatarId: string;
+  address: string;
+  phone: string;
+};
+
+export type UserRole = 'CUSTOMER' | 'SELLER' | 'ADMIN';

@@ -55,7 +55,7 @@ export const ProfileAddress = memo(() => {
         <CreateAddressForm />
       </div>
       <div className="flex flex-col gap-4 pt-4">
-        {profile?.addresses.map((add) => (
+        {profile?.addresses?.map((add) => (
           <div key={add.addressType} className="flex items-center justify-between rounded border px-2 py-4">
             <h2 className="font-medium">{add.addressType}</h2>
             <p>{`${add.address}, ${add.city}, ${add.country}`}</p>

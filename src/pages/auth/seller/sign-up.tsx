@@ -1,21 +1,32 @@
 import { memo, useMemo, useState } from 'react';
 
+import Cookie from 'js-cookie';
 import { FolderPen, LockKeyhole, Mail, MapPin } from 'lucide-react';
+import { useHistory } from 'react-router-dom';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { LOGO, SEO_AUTHOR } from '~/constants';
+import { CLOUDINARY_FOLDERS, COOKIE_KEYS, COOKIE_OPTIONS, LOGO, SEO_AUTHOR } from '~/constants';
 
 import type { DataForm } from '~/types';
+
+import { authApi } from '~/services';
+
+import { useCloudinaryUpload } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
 
 import { AuthLayoutContent } from '~/layouts';
 
 import { Button, Helmet } from '~/components/common';
+import { UploadProgress } from '~/components/common/cloudinary';
 import { CustomForm, CustomInput, CustomInputImage, CustomInputPassword, CustomInputTel } from '~/components/form';
 
+import { SELLER_ROUTES } from '~/routes';
+
 export const SellerSignUpPage = memo(() => {
+  const { push } = useHistory();
+
   const schema = useMemo(
     () =>
       z.object({
@@ -47,16 +58,45 @@ export const SellerSignUpPage = memo(() => {
   );
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { uploadFile, deleteUploadedImage, isUploading, progress } = useCloudinaryUpload({ folder: CLOUDINARY_FOLDERS.SELLERS });
   const handleSellerSignup = async (values: DataForm<typeof schema>): Promise<void> => {
-    alert('???');
     if (isLoading) return;
+
+    let uploadedImagePublicId = '';
 
     try {
       setIsLoading(true);
-      const { shopName, image } = values;
-      console.log(shopName, image[0]);
+      const { shopName, image, address, email, password, phone } = values;
+
+      if (image && image.length > 0) {
+        const response = await uploadFile(image[0]);
+        const shopAvatarUrl = response.secure_url;
+        uploadedImagePublicId = response.public_id;
+
+        try {
+          const {
+            data: { accessToken, refreshToken }
+          } = await authApi.signupAsSeller({ data: { shopName, email, password, phone, address, shopAvatarUrl, shopAvatarId: uploadedImagePublicId } });
+
+          if (!!accessToken && !!refreshToken) {
+            Cookie.set(COOKIE_KEYS.accessToken, accessToken, COOKIE_OPTIONS);
+            Cookie.set(COOKIE_KEYS.refreshToken, refreshToken, COOKIE_OPTIONS);
+
+            push(SELLER_ROUTES.dashboard.path());
+            toast.success('Signed Up Successfully');
+          } else {
+            throw new Error();
+          }
+        } catch (error) {
+          await deleteUploadedImage(uploadedImagePublicId);
+          toast.error(getErrorMessage(error));
+        }
+      }
     } catch (error) {
       toast.error(getErrorMessage(error));
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -78,9 +118,11 @@ export const SellerSignUpPage = memo(() => {
               <CustomInputPassword isRequired disabled={isLoading} label="Password" name="password" placeholder="********" startIcon={LockKeyhole} />
 
               <CustomInputImage disabled={isLoading} name="image" />
+
+              <UploadProgress isUploading={isUploading} mode="single" progress={progress} />
             </div>
-            <Button className="w-full" type="submit">
-              Submit
+            <Button className="w-full" disabled={isLoading || isUploading} isLoading={isLoading || isUploading} type="submit">
+              Sign Up
             </Button>
           </div>
         </CustomForm>

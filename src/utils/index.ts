@@ -1,5 +1,6 @@
 export * from './api-utils';
 export * from './array-to-file-list.util';
+export * from './auth.util';
 export * from './convert-query-string.util';
 export * from './cookie.util';
 export * from './copy-to-clipboard.util';

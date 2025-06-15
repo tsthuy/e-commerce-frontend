@@ -82,7 +82,7 @@ export const SignUpPage = memo(() => {
         try {
           const {
             data: { accessToken, refreshToken }
-          } = await authApi.signup({ data: { email, password, fullName, avatarUrl, publicId: uploadedImagePublicId } });
+          } = await authApi.signupAsCustomer({ data: { email, password, fullName, avatarUrl, publicId: uploadedImagePublicId } });
 
           if (!!accessToken && !!refreshToken) {
             Cookie.set(COOKIE_KEYS.accessToken, accessToken, COOKIE_OPTIONS);

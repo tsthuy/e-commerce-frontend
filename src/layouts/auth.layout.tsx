@@ -2,10 +2,11 @@ import type { ReactNode } from 'react';
 import { memo, useMemo } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import Cookie from 'js-cookie';
 import { Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
 
-import { COOKIE_KEYS, PREFIX_SELLER_ROUTE } from '~/constants';
+import { PREFIX_SELLER_ROUTE } from '~/constants';
+
+import { hasRole, isAuthenticated } from '~/utils';
 
 import { CardCustom } from '~/components/common';
 import { CardContent } from '~/components/ui';
@@ -19,12 +20,33 @@ export const AuthLayout = memo(() => {
   const { push } = useHistory();
 
   const { pathname } = location;
-  const loggedStatus = !!Cookie.get(COOKIE_KEYS.accessToken) && !!Cookie.get(COOKIE_KEYS.refreshToken);
+  const loggedStatus = isAuthenticated();
 
-  const redirectPath: string = useMemo(() => (pathname.includes(PREFIX_SELLER_ROUTE) ? SELLER_ROUTES.dashboard.path() : PUBLIC_ROUTES.index.path()), [pathname]);
+  const isSellerRoute = pathname.includes(PREFIX_SELLER_ROUTE);
+
+  const isCustomer = hasRole('CUSTOMER');
+  const isSeller = hasRole('SELLER');
+
+  const shouldRedirect = useMemo(() => {
+    if (!loggedStatus) return false;
+
+    if (!isSellerRoute && isCustomer) return true;
+
+    if (isSellerRoute && isSeller) return true;
+
+    return false;
+  }, [loggedStatus, isSellerRoute, isCustomer, isSeller]);
+
+  const redirectPath = useMemo(() => {
+    if (isSellerRoute && isSeller) {
+      return SELLER_ROUTES.dashboard.path();
+    }
+    return PUBLIC_ROUTES.index.path();
+  }, [isSellerRoute, isSeller]);
+
   const ignoreRedirect: Array<string> = useMemo(() => [], []);
 
-  if (loggedStatus && !ignoreRedirect.includes(pathname)) {
+  if (shouldRedirect && !ignoreRedirect.includes(pathname)) {
     push(redirectPath);
     return null;
   }
