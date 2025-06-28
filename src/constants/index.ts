@@ -6,6 +6,7 @@ export * from './languages.const';
 export * from './local-storage-keys.const';
 export * from './permissions.const';
 export * from './product.const';
+export * from './query-keys.const';
 export * from './query-router.const';
 export * from './routes.const';
 export * from './sidebar.const';

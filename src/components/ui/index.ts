@@ -1,5 +1,6 @@
 import MultipleSelector from './multiselect';
 
+export * from './accordion';
 export * from './alert-dialog';
 export * from './avatar';
 export * from './badge';

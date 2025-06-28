@@ -10,7 +10,21 @@ export type RouteType = {
 
 export type AdminRouteKeys = 'components' | 'buttons' | 'inputs' | 'selects' | 'checkboxRadioSwitch' | 'dialog' | 'tooltip' | 'dropdownPopover' | 'avatarBadge' | 'tab';
 
-export type SellerRouteKeys = 'dashboard';
+export type SellerRouteKeys =
+  | 'dashboard'
+  | 'allOrders'
+  | 'allProducts'
+  | 'createProduct'
+  | 'editProduct'
+  | 'productView'
+  | 'allEvents'
+  | 'createEvent'
+  | 'withdrawMoney'
+  | 'shopInbox'
+  | 'discountCodes'
+  | 'refunds'
+  | 'settings'
+  | 'categories';
 
 export type AuthRouteKeys = 'login' | 'signup' | 'forgetPassword' | 'sellerLogin' | 'sellerSignup';
 

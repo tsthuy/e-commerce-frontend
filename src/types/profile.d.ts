@@ -1,11 +1,5 @@
 import type { StringOrNull } from './common';
 
-export type UserRole = {
-  name: string;
-  description: StringOrNull;
-  permissions: StringOrNull;
-};
-
 export type UserAvatar = {
   publicId: string;
   url: string;

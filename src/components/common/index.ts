@@ -4,7 +4,6 @@ export * from './card';
 export * from './container';
 export * from './details';
 export * from './divider';
-export * from './firebase';
 export * from './helmet';
 export * from './html-render';
 export * from './image-lightbox';

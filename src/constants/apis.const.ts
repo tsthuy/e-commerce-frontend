@@ -27,5 +27,22 @@ export const API_URLS = {
     updateProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/update`,
     createAddress: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/address`,
     deleteAddress: (addressId: string): string => `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/address/${addressId}`
+  },
+  category: {
+    getAll: '/api/categories',
+    getAllPaged: '/api/categories/paged',
+    create: '/api/categories',
+    update: (id: string): string => `/api/categories/${id}`,
+    delete: (id: string): string => `/api/categories/${id}`,
+    detail: (id: string): string => `/api/categories/${id}`
+  },
+  product: {
+    getAll: '/api/products',
+    getAllPaged: '/api/products/paged',
+    getSellerPaged: '/api/products/seller/paged',
+    create: '/api/products',
+    update: (id: string): string => `/api/products/${id}`,
+    delete: (id: string): string => `/api/products/${id}`,
+    detail: (id: string): string => `/api/products/${id}`
   }
 };
