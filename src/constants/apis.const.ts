@@ -44,5 +44,30 @@ export const API_URLS = {
     update: (id: string): string => `/api/products/${id}`,
     delete: (id: string): string => `/api/products/${id}`,
     detail: (id: string): string => `/api/products/${id}`
+  },
+  cart: {
+    list: '/api/cart',
+    add: '/api/cart/add',
+    updateItem: (itemId: string): string => `/api/cart/items/${itemId}`,
+    removeItem: (itemId: string): string => `/api/cart/items/${itemId}`,
+    clear: '/api/cart/clear'
+  },
+  wishlist: {
+    list: '/api/v1/wishlist',
+    toggle: '/api/v1/wishlist/toggle',
+    removeItem: (productId: string): string => `/api/v1/wishlist/items/${productId}`,
+    check: (productId: string): string => `/api/v1/wishlist/check?productId=${productId}`,
+    clear: '/api/v1/wishlist/clear'
   }
+};
+
+export const API_ENDPOINTS = {
+  // Sao chép từ API_URLS cho tương thích
+  AUTH: API_URLS.auth,
+  PROFILE: API_URLS.profile,
+  CATEGORY: API_URLS.category,
+  PRODUCT: API_URLS.product,
+  CART: API_URLS.cart,
+  WISHLIST: API_URLS.wishlist,
+  GENERAL: API_URLS.general
 };

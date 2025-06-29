@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import Cookie from 'js-cookie';
-import { Heart, LogOut, Menu, ShoppingCart, User } from 'lucide-react';
+import { Heart, LogOut, Menu, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -15,6 +15,7 @@ import { useProfile } from '~/hooks';
 
 import { getErrorMessage } from '~/utils';
 
+import { CartIcon } from '~/components/cart';
 import { Button } from '~/components/common';
 import { SearchBar } from '~/components/layouts/public/header';
 import {
@@ -32,6 +33,8 @@ import {
   SheetContent,
   SheetTrigger
 } from '~/components/ui';
+import { WishlistIcon } from '~/components/wishlist/wishlist-icon';
+import { WishlistSheet } from '~/components/wishlist/wishlist-sheet';
 
 import { AUTH_ROUTES, PROTECTED_ROUTES, PUBLIC_ROUTES } from '~/routes';
 
@@ -88,12 +91,14 @@ export const UserActions = memo(() => {
   };
   return (
     <>
-      <Button size="icon" variant="default">
-        <Heart className="size-6" color="white" />
-      </Button>
-      <Button size="icon" variant="default">
-        <ShoppingCart className="size-6" color="white" />
-      </Button>
+      <WishlistSheet>
+        <Button size="icon" variant="default">
+          <WishlistIcon>
+            <Heart className="size-6" color="white" />
+          </WishlistIcon>
+        </Button>
+      </WishlistSheet>
+      <CartIcon />
       {loggedStatus ? (
         <DropdownMenu>
           <DropdownMenuTrigger className="rounded-full focus:outline-none focus:ring-[2px] focus:ring-primary focus:ring-offset-2">

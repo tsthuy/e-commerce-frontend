@@ -168,15 +168,33 @@ export type ProductResponse = {
   price: number;
   salePrice?: number;
   stock: number;
-  categoryId: string;
-  categoryName?: string;
-  sellerId: string;
-  sellerShopName?: string;
+  isNew?: boolean;
   status: 'ACTIVE' | 'INACTIVE' | 'DRAFT';
   isPublished: boolean;
-  images: ProductImage[];
+  defaultImageUrl?: string;
+  averageRating?: number;
+  reviewCount?: number;
+  soldCount?: number;
+  sellerName?: string;
+  categoryName?: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type SimpleProduct = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  salePrice?: number;
+  defaultImageUrl?: string;
+  averageRating?: number;
+  reviewCount?: number;
+  soldCount?: number;
+  categoryName?: string;
+  sellerName?: string;
+  status: 'ACTIVE' | 'INACTIVE' | 'DRAFT';
+  isNew?: boolean;
 };
 
 export type ProductListResponse = {

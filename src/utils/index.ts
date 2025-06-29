@@ -13,6 +13,7 @@ export * from './get-link-storage.util';
 export * from './get-mime-type.util';
 export * from './get-time-zone-info.uitl';
 export * from './handle-input-error.util';
+export * from './product.util';
 export * from './render-pagination.util';
 export * from './render-placeholder-image.util';
 export * from './typed-entries.util';

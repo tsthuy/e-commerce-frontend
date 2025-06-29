@@ -53,7 +53,8 @@ export const SearchBar = memo(() => {
   const defaultValues = useMemo(() => ({ searchTerm: '' }), []);
 
   const handleSearch = async (values: string): Promise<void> => {
-    console.log(values);
+    // TODO: Implement search functionality
+    void values;
   };
 
   return (

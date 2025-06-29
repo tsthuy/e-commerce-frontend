@@ -2,7 +2,7 @@ import { PREFIX_PUBLIC_ROUTE } from '~/constants';
 
 import type { PublicRouteKeys, RouteType } from '~/types';
 
-import { BestSellingPage, ExplorePage, HomePage, ProductsPage } from '~/pages/public';
+import { BestSellingPage, ExplorePage, HomePage, ProductDetailPage, ProductsPage } from '~/pages/public';
 import { EventsPage } from '~/pages/public/events';
 import { FAQPage } from '~/pages/public/faq';
 
@@ -28,6 +28,11 @@ export const PUBLIC_ROUTES: {
     path: (): string => `${PREFIX_PUBLIC_ROUTE}products`,
     permission: null,
     Element: ProductsPage
+  },
+  productDetail: {
+    path: (productId?: string): string => `${PREFIX_PUBLIC_ROUTE}products/${productId || ':productId'}`,
+    permission: null,
+    Element: ProductDetailPage
   },
   events: {
     path: (): string => `${PREFIX_PUBLIC_ROUTE}events`,

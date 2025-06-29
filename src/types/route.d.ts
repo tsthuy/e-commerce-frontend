@@ -30,6 +30,6 @@ export type AuthRouteKeys = 'login' | 'signup' | 'forgetPassword' | 'sellerLogin
 
 export type ProtectedRoueKeys = 'message' | 'profile';
 
-export type PublicRouteKeys = 'index' | 'explore' | 'bestSelling' | 'products' | 'events' | 'faq';
+export type PublicRouteKeys = 'index' | 'explore' | 'bestSelling' | 'products' | 'productDetail' | 'events' | 'faq';
 
 export type OtherRouteKeys = 'blank' | '404';
