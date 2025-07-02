@@ -74,7 +74,7 @@ export const SellerSideBar = memo(() => {
   const location = useLocation();
 
   return (
-    <div className="flex h-full w-64 flex-col border-r bg-background p-4">
+    <div className="fixed left-0 top-[var(--header-public)] z-20 flex h-[calc(100vh-var(--header-public))] w-64 flex-col border-r bg-background p-4">
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-foreground">Seller Dashboard</h2>
       </div>

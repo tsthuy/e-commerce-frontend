@@ -58,6 +58,17 @@ export const API_URLS = {
     removeItem: (productId: string): string => `/api/v1/wishlist/items/${productId}`,
     check: (productId: string): string => `/api/v1/wishlist/check?productId=${productId}`,
     clear: '/api/v1/wishlist/clear'
+  },
+  order: {
+    // Customer endpoints
+    list: '/api/orders',
+    create: '/api/orders',
+    detail: (orderId: string): string => `/api/orders/${orderId}`,
+    cancel: (orderId: string): string => `/api/orders/${orderId}/cancel`,
+
+    // Seller endpoints
+    sellerList: '/api/orders/seller',
+    updateStatus: (orderId: string): string => `/api/orders/${orderId}/status`
   }
 };
 
@@ -69,5 +80,6 @@ export const API_ENDPOINTS = {
   PRODUCT: API_URLS.product,
   CART: API_URLS.cart,
   WISHLIST: API_URLS.wishlist,
+  ORDER: API_URLS.order,
   GENERAL: API_URLS.general
 };

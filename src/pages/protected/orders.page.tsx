@@ -1,22 +1,23 @@
 import { memo, useState } from 'react';
 
 import { CalendarClock, ShoppingBag } from 'lucide-react';
+import { useHistory } from 'react-router-dom';
 
 import { formatDate, formatPrice } from '~/utils';
 
-import { Button, Container, Helmet, SpinnerLineSpinner } from '~/components/common';
+import { Button, Helmet, SpinnerLineSpinner } from '~/components/common';
 import { Badge, Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui';
 
-import { useSellerOrders } from '~/hooks/use-order.hook';
-import { useUpdateOrderStatusMutation } from '~/queries/order.mutation';
+import { useCustomerOrders } from '~/hooks/use-order.hook';
+import { PROTECTED_ROUTES } from '~/routes/protected.route';
 import type { OrderStatus } from '~/types/order';
 
-export const AllOrders = memo(() => {
+export const OrdersPage = memo(() => {
+  const { push } = useHistory();
   const [currentStatus, setCurrentStatus] = useState<OrderStatus | 'ALL'>('ALL');
   const [currentPage, setCurrentPage] = useState<number>(0);
 
-  // Get seller orders with optional status filter
-  const { data: orderData, isLoading } = useSellerOrders({
+  const { data: orderData, isLoading } = useCustomerOrders({
     data: {
       page: currentPage,
       size: 10,
@@ -26,11 +27,13 @@ export const AllOrders = memo(() => {
     }
   });
 
-  const updateOrderStatus = useUpdateOrderStatusMutation();
+  const handleGoToCheckout = () => {
+    push(PROTECTED_ROUTES.checkout.path());
+  };
 
-  const getStatusBadge = (status: OrderStatus): JSX.Element => {
+  const getStatusBadge = (status: OrderStatus) => {
     const statusConfig = {
-      PENDING: { label: 'Chờ xác nhận', color: 'warning' },
+      PENDING: { label: 'Đang xử lý', color: 'warning' },
       CONFIRMED: { label: 'Đã xác nhận', color: 'success' },
       PROCESSING: { label: 'Đang chuẩn bị', color: 'info' },
       SHIPPED: { label: 'Đang giao hàng', color: 'info' },
@@ -44,28 +47,10 @@ export const AllOrders = memo(() => {
     return <Badge color={config.color as any}>{config.label}</Badge>;
   };
 
-  const getNextStatus = (currentStatus: OrderStatus): OrderStatus | null => {
-    const statusFlow = {
-      PENDING: 'CONFIRMED',
-      CONFIRMED: 'PROCESSING',
-      PROCESSING: 'SHIPPED',
-      SHIPPED: 'DELIVERED',
-      DELIVERED: 'COMPLETED'
-    };
-    return (statusFlow[currentStatus] as OrderStatus) || null;
-  };
-
-  const handleStatusUpdate = (orderId: string, newStatus: OrderStatus): void => {
-    updateOrderStatus.mutate({
-      orderId,
-      data: { status: newStatus }
-    });
-  };
-
   return (
-    <Helmet title="Quản lý đơn hàng">
-      <Container className="px-6 py-8">
-        <h1 className="mb-6 text-2xl font-bold">Quản lý đơn hàng</h1>
+    <Helmet title="Đơn hàng của tôi">
+      <div className="p-6">
+        <h1 className="mb-6 text-2xl font-bold">Đơn hàng của tôi</h1>
 
         <Tabs className="mb-6" defaultValue="all">
           <TabsList>
@@ -73,9 +58,6 @@ export const AllOrders = memo(() => {
               Tất cả
             </TabsTrigger>
             <TabsTrigger value="pending" onClick={() => setCurrentStatus('PENDING')}>
-              Chờ xác nhận
-            </TabsTrigger>
-            <TabsTrigger value="processing" onClick={() => setCurrentStatus('PROCESSING')}>
               Đang xử lý
             </TabsTrigger>
             <TabsTrigger value="shipping" onClick={() => setCurrentStatus('SHIPPED')}>
@@ -83,6 +65,9 @@ export const AllOrders = memo(() => {
             </TabsTrigger>
             <TabsTrigger value="completed" onClick={() => setCurrentStatus('COMPLETED')}>
               Hoàn thành
+            </TabsTrigger>
+            <TabsTrigger value="cancelled" onClick={() => setCurrentStatus('CANCELLED')}>
+              Đã hủy
             </TabsTrigger>
           </TabsList>
 
@@ -95,7 +80,8 @@ export const AllOrders = memo(() => {
               <div className="flex flex-col items-center justify-center rounded-lg bg-white p-10 text-center shadow">
                 <ShoppingBag className="mb-4 h-16 w-16 text-muted-foreground" />
                 <h2 className="mb-2 text-xl font-medium">Không tìm thấy đơn hàng nào</h2>
-                <p className="text-muted-foreground">Chưa có đơn hàng nào trong cửa hàng của bạn.</p>
+                <p className="mb-6 text-muted-foreground">Bạn chưa có đơn hàng nào.</p>
+                <Button onClick={handleGoToCheckout}>Mua sắm ngay</Button>
               </div>
             ) : (
               <div className="space-y-4">
@@ -108,19 +94,12 @@ export const AllOrders = memo(() => {
                           <CalendarClock className="mr-1 inline-block h-4 w-4" />
                           Đặt ngày {formatDate(order.createdAt)}
                         </p>
-                        <p className="text-sm text-muted-foreground">Khách hàng: {order.customerName}</p>
                       </div>
-                      <div className="flex items-center gap-3">
-                        {getStatusBadge(order.status)}
-                        {getNextStatus(order.status) && (
-                          <Button disabled={updateOrderStatus.isPending} size="sm" onClick={() => handleStatusUpdate(order.id, getNextStatus(order.status)!)}>
-                            Cập nhật trạng thái
-                          </Button>
-                        )}
-                      </div>
+                      {getStatusBadge(order.status)}
                     </div>
 
                     <div className="p-4">
+                      <p className="mb-2 font-medium">Người bán: {order.sellerShopName}</p>
                       <div className="space-y-3">
                         {order.items.map((item) => (
                           <div key={item.id} className="flex items-center gap-3">
@@ -145,10 +124,6 @@ export const AllOrders = memo(() => {
                         <div className="text-sm">
                           <p>Tổng tiền ({order.items.reduce((sum, item) => sum + item.quantity, 0)} sản phẩm):</p>
                           <p className="text-muted-foreground">Phí vận chuyển: {formatPrice(order.shippingFee)}</p>
-                          <p className="text-muted-foreground">
-                            Địa chỉ giao hàng: {order.shippingAddress.address}, {order.shippingAddress.city}
-                          </p>
-                          <p className="text-muted-foreground">SĐT: {order.shippingAddress.recipientPhone}</p>
                         </div>
                         <div className="text-lg font-medium text-primary">{formatPrice(order.total)}</div>
                       </div>
@@ -163,10 +138,6 @@ export const AllOrders = memo(() => {
             {/* Content will be loaded through the status filter */}
           </TabsContent>
 
-          <TabsContent className="pt-4" value="processing">
-            {/* Content will be loaded through the status filter */}
-          </TabsContent>
-
           <TabsContent className="pt-4" value="shipping">
             {/* Content will be loaded through the status filter */}
           </TabsContent>
@@ -174,8 +145,12 @@ export const AllOrders = memo(() => {
           <TabsContent className="pt-4" value="completed">
             {/* Content will be loaded through the status filter */}
           </TabsContent>
+
+          <TabsContent className="pt-4" value="cancelled">
+            {/* Content will be loaded through the status filter */}
+          </TabsContent>
         </Tabs>
-      </Container>
+      </div>
     </Helmet>
   );
 });

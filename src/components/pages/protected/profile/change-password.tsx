@@ -59,7 +59,7 @@ export const ChangePassword = memo(() => {
     }
   };
   return (
-    <div className="w-full">
+    <div className="w-full p-6">
       <h2 className="text-center text-xl font-bold">Change password</h2>
       <CustomForm className="flex flex-col gap-4" provider={form} onSubmit={handleChangePassword}>
         <CustomInputPassword disabled={isLoading} label="Enter your old password" name="password" placeholder="********" />

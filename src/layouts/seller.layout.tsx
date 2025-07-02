@@ -17,7 +17,7 @@ export const SellerLayout = memo(() => {
 
       <MainSellerLayout>
         <SellerSideBar />
-        <div className="flex-1 overflow-auto">
+        <div className="ml-64 min-h-[calc(100vh-var(--header-public))] flex-1 overflow-auto">
           <AnimatePresence mode="wait">
             <Switch key={location.pathname} location={location}>
               {Object.values(SELLER_ROUTES).map(

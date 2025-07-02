@@ -49,7 +49,7 @@ export const ProfileAddress = memo(() => {
   }, [addressToDelete, refetch]);
 
   return (
-    <div className="w-full py-6">
+    <div className="w-full p-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold">My Address</h2>
         <CreateAddressForm />

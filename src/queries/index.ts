@@ -4,6 +4,7 @@ import { profileQueries } from './profile.query';
 
 import { cartQueries } from '~/queries/cart.query';
 import { categoryQueries } from '~/queries/category.query';
+import { orderQueries } from '~/queries/order.query';
 import { wishlistQueries } from '~/queries/wishlist.query';
 
-export const queries = mergeQueryKeys(profileQueries, categoryQueries, cartQueries, wishlistQueries);
+export const queries = mergeQueryKeys(profileQueries, categoryQueries, cartQueries, wishlistQueries, orderQueries);

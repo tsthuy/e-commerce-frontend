@@ -14,7 +14,7 @@ import { useProfile } from '~/hooks';
 import { getErrorMessage } from '~/utils';
 
 import { LoadingScreen } from '~/components/common';
-import { MainProtectedLayout } from '~/components/layouts/protected';
+import { CustomerSidebar, MainProtectedCustomerLayout } from '~/components/layouts/protected';
 import { FooterPublicLayout, TopHeaderPublicLayout } from '~/components/layouts/public';
 
 import { AUTH_ROUTES, OTHER_ROUTES, PROTECTED_ROUTES } from '~/routes';
@@ -55,22 +55,25 @@ export const ProtectedLayout = memo(() => {
   return (
     <>
       <TopHeaderPublicLayout />
-      <MainProtectedLayout>
-        <AnimatePresence mode="wait">
-          <Switch key={location.pathname} location={location}>
-            {Object.values(PROTECTED_ROUTES).map(
-              ({ path, Element }) =>
-                !!Element && (
-                  <Route key={path()} exact path={path()}>
-                    <Element />
-                  </Route>
-                )
-            )}
+      <MainProtectedCustomerLayout>
+        <CustomerSidebar />
+        <div className="ml-64 min-h-[calc(100vh-var(--header-public))] flex-1 overflow-auto">
+          <AnimatePresence mode="wait">
+            <Switch key={location.pathname} location={location}>
+              {Object.values(PROTECTED_ROUTES).map(
+                ({ path, Element }) =>
+                  !!Element && (
+                    <Route key={path()} exact path={path()}>
+                      <Element />
+                    </Route>
+                  )
+              )}
 
-            <Redirect to={OTHER_ROUTES[404].path()} />
-          </Switch>
-        </AnimatePresence>
-      </MainProtectedLayout>
+              <Redirect to={OTHER_ROUTES[404].path()} />
+            </Switch>
+          </AnimatePresence>
+        </div>
+      </MainProtectedCustomerLayout>
       <FooterPublicLayout />
     </>
   );

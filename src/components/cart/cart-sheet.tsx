@@ -15,6 +15,7 @@ import { CartVariantSelector } from './cart-variant-selector';
 
 import { useRemoveCartItem, useUpdateCartItem } from '~/hooks/use-cart-mutation.hook';
 import { useCartList } from '~/hooks/use-cart.hook';
+import { PROTECTED_ROUTES } from '~/routes/protected.route';
 
 interface CartSheetProps {
   children: React.ReactNode;
@@ -203,7 +204,7 @@ export const CartSheet = ({ children }: CartSheetProps): JSX.Element => {
                   </div>
                 </div>
 
-                <Button className="w-full" disabled={cart.totalItems === 0} size="lg">
+                <Button className="w-full" disabled={cart.totalItems === 0} size="lg" onClick={() => (window.location.href = PROTECTED_ROUTES.checkout.path())}>
                   Thanh toán ({cart.totalItems})
                 </Button>
               </div>

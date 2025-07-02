@@ -138,7 +138,7 @@ export const ProfileContent = memo(() => {
   };
 
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-full w-full p-6">
       <Card className="w-full border-none shadow-none">
         <CardContent className="flex flex-col gap-8 p-0">
           <CustomForm options={{ defaultValues }} schema={schema} onSubmit={handleUpdateProfile}>

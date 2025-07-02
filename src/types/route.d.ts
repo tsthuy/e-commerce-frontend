@@ -28,7 +28,7 @@ export type SellerRouteKeys =
 
 export type AuthRouteKeys = 'login' | 'signup' | 'forgetPassword' | 'sellerLogin' | 'sellerSignup';
 
-export type ProtectedRoueKeys = 'message' | 'profile';
+export type ProtectedRoueKeys = 'message' | 'profile' | 'orders' | 'checkout' | 'refunds' | 'tracks' | 'changePassword' | 'address';
 
 export type PublicRouteKeys = 'index' | 'explore' | 'bestSelling' | 'products' | 'productDetail' | 'events' | 'faq';
 
