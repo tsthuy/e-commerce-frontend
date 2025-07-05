@@ -196,7 +196,6 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
   const products = productsResponse?.result?.content || [];
   const pageCount = productsResponse?.result?.totalPages || 0;
 
-  // Update table options with fetched data
   table.options.data = products;
   table.options.pageCount = pageCount;
 
