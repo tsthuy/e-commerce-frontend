@@ -1,16 +1,20 @@
 import { memo } from 'react';
 
+import { useTranslation } from '~/hooks';
+
 import { Container, Helmet } from '~/components/common';
 
 export const Dashboard = memo(() => {
+  const { t } = useTranslation();
+
   return (
-    <Helmet title="Seller Dashboard">
+    <Helmet title={t('Seller.sellerDashboard')}>
       <Container className="px-6 py-8">
-        <h1 className="mb-6 text-2xl font-bold">Dashboard Overview</h1>
+        <h1 className="mb-6 text-2xl font-bold">{t('Seller.dashboardOverview')}</h1>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <DashboardCard title="Total Sales" value="$24,560" />
-          <DashboardCard title="Total Orders" value="345" />
-          <DashboardCard title="Total Products" value="132" />
+          <DashboardCard title={t('Seller.totalSales')} value="$24,560" />
+          <DashboardCard title={t('Seller.totalOrders')} value="345" />
+          <DashboardCard title={t('Seller.totalProducts')} value="132" />
         </div>
         {/* Add more dashboard content here */}
       </Container>

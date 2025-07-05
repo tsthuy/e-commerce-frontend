@@ -4,9 +4,13 @@ import { Link } from 'react-router-dom';
 
 import { BG, SEO_QUOTE } from '~/constants';
 
+import { useTranslation } from '~/hooks';
+
 import { Button } from '~/components/common';
 
 export const Hero = memo(() => {
+  const { t } = useTranslation();
+
   return (
     <div
       className={'relative flex min-h-[70svh] w-full items-center bg-no-repeat lg:min-h-[80svh]'}
@@ -23,7 +27,7 @@ export const Hero = memo(() => {
         </h1>
 
         <Link className="inline-block pt-4" to="/products">
-          <Button size={'lg'}>Shop Now</Button>
+          <Button size={'lg'}>{t('Common.shopNow')}</Button>
         </Link>
       </div>
     </div>

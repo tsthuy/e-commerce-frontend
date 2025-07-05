@@ -1,5 +1,4 @@
 export * from './all-events';
-export * from './all-orders';
 export * from './all-products';
 export * from './categories';
 export * from './create-event';

@@ -5,7 +5,7 @@ import { API_ENDPOINTS } from '~/constants';
 import type { ApiResponse } from '~/types';
 
 import { httpBase } from '~/services/config.service';
-import type { CreateOrderRequest, OrderListResponse, OrderPaginationParams, OrderResponse, UpdateOrderStatusRequest } from '~/types/order';
+import type { CreateOrderRequest, OrderListResponse, OrderPaginationParams, OrderResponse, OrderStatusTransition, UpdateOrderStatusRequest } from '~/types/order';
 
 export const orderApi = {
   // Customer APIs
@@ -38,5 +38,10 @@ export const orderApi = {
   // Update order status (seller only)
   updateOrderStatus: (orderId: string, data: UpdateOrderStatusRequest): AxiosPromise<ApiResponse<OrderResponse>> => {
     return httpBase.put(API_ENDPOINTS.ORDER.updateStatus(orderId), data);
+  },
+
+  // Get available status transitions for an order
+  getStatusTransitions: (orderId: string): AxiosPromise<ApiResponse<OrderStatusTransition[]>> => {
+    return httpBase.get(API_ENDPOINTS.ORDER.statusTransitions(orderId));
   }
 };

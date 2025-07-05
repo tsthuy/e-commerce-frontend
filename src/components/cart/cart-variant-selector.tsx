@@ -1,10 +1,13 @@
 import { useCallback } from 'react';
 
+import type { AnyType } from '~/types';
+
+import { useProductDetail, useTranslation } from '~/hooks';
+
 import { formatPrice } from '~/utils';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui';
 
-import { useProductDetail } from '~/hooks/use-product.hook';
 import type { CartItemResponse } from '~/types/cart';
 
 interface CartVariantSelectorProps {
@@ -13,7 +16,8 @@ interface CartVariantSelectorProps {
 }
 
 export const CartVariantSelector = ({ item, onVariantChange }: CartVariantSelectorProps): JSX.Element => {
-  const { data: product, isLoading } = useProductDetail({ productId: item.product.id });
+  const { data: product, isLoading } = useProductDetail({ data: { productId: item.product.id } });
+  const { t } = useTranslation();
 
   const handleVariantChange = useCallback(
     (variantId: string) => {
@@ -26,7 +30,7 @@ export const CartVariantSelector = ({ item, onVariantChange }: CartVariantSelect
   if (isLoading) {
     return (
       <div className="space-y-2">
-        <p className="text-sm font-medium">Phân loại:</p>
+        <p className="text-sm font-medium">{t('Product.variant')}:</p>
         <div className="h-8 w-full animate-pulse rounded-md bg-gray-200" />
       </div>
     );
@@ -36,13 +40,13 @@ export const CartVariantSelector = ({ item, onVariantChange }: CartVariantSelect
   if (!product?.variants || product.variants.length <= 1) {
     return (
       <div className="space-y-2">
-        <p className="text-sm font-medium">Phân loại:</p>
-        <div className="text-sm text-muted-foreground">{item.variantName || 'Mặc định'}</div>
+        <p className="text-sm font-medium">{t('Product.variant')}:</p>
+        <div className="text-sm text-muted-foreground">{item.variantName || t('Product.defaultVariant')}</div>
       </div>
     );
   }
 
-  const currentVariant = product.variants.find((v) => v.id === item.variantId);
+  const currentVariant = product.variants.find((v: AnyType) => v.id === item.variantId);
 
   // Nếu item không có variantId nhưng product có variants, có thể là do backend chưa assign variant
   const shouldShowSelector = product.variants.length > 1;
@@ -50,16 +54,16 @@ export const CartVariantSelector = ({ item, onVariantChange }: CartVariantSelect
 
   return (
     <div className="space-y-2">
-      <p className="text-sm font-medium">Phân loại:</p>
+      <p className="text-sm font-medium">{t('Product.variant')}:</p>
       {shouldShowSelector ? (
         <Select value={effectiveVariantId} onValueChange={handleVariantChange}>
           <SelectTrigger className="h-8">
-            <SelectValue placeholder="Chọn phân loại" />
+            <SelectValue placeholder={t('Product.selectVariant')} />
           </SelectTrigger>
           <SelectContent>
-            {product.variants.map((variant) => {
+            {product.variants.map((variant: AnyType) => {
               // Tạo tên variant từ attributes
-              const variantName = variant.attributes.map((attr) => attr.attributeValueLabel).join(', ');
+              const variantName = variant.attributes.map((attr: AnyType) => attr.attributeValueLabel).join(', ');
               const isOutOfStock = variant.stock <= 0;
 
               // Get effective prices for comparison
@@ -72,7 +76,7 @@ export const CartVariantSelector = ({ item, onVariantChange }: CartVariantSelect
                   <div className="flex w-full items-center justify-between gap-2">
                     <span className={isOutOfStock ? 'text-muted-foreground' : ''}>
                       {variantName}
-                      {isOutOfStock && ' (Hết hàng)'}
+                      {isOutOfStock && ` (${t('Product.outOfStock')})`}
                     </span>
                     {showVariantPrice && <span className="text-xs text-primary">{formatPrice(variantEffectivePrice)}</span>}
                   </div>
@@ -82,14 +86,22 @@ export const CartVariantSelector = ({ item, onVariantChange }: CartVariantSelect
           </SelectContent>
         </Select>
       ) : (
-        <div className="text-sm text-muted-foreground">{currentVariant ? currentVariant.attributes.map((attr) => attr.attributeValueLabel).join(', ') : item.variantName || 'Mặc định'}</div>
+        <div className="text-sm text-muted-foreground">
+          {currentVariant ? currentVariant.attributes.map((attr: AnyType) => attr.attributeValueLabel).join(', ') : item.variantName || t('Product.defaultVariant')}
+        </div>
       )}
 
       {/* Hiển thị thông tin variant hiện tại */}
       {currentVariant && (
         <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>Còn lại: {currentVariant.stock}</span>
-          {(currentVariant.salePrice || currentVariant.price) !== (product.salePrice || product.price) && <span>Giá: {formatPrice(currentVariant.salePrice || currentVariant.price)}</span>}
+          <span>
+            {t('Product.stockRemaining')}: {currentVariant.stock}
+          </span>
+          {(currentVariant.salePrice || currentVariant.price) !== (product.salePrice || product.price) && (
+            <span>
+              {t('Product.price')}: {formatPrice(currentVariant.salePrice || currentVariant.price)}
+            </span>
+          )}
         </div>
       )}
     </div>

@@ -27,7 +27,7 @@ export const ProductGrid = memo(() => {
     );
   }
 
-  if (isError || !data?.result?.content) {
+  if (isError || !data?.content) {
     return (
       <div className="flex h-64 items-center justify-center">
         <p className="text-gray-500">Failed to load products</p>
@@ -35,7 +35,7 @@ export const ProductGrid = memo(() => {
     );
   }
 
-  const simpleProducts = mapToSimpleProducts(data.result.content);
+  const simpleProducts = mapToSimpleProducts(data.content);
 
   return (
     <div className="mx-auto flex w-full max-w-[calc(1280px+4px*4*2)] flex-wrap gap-[30px] px-4">

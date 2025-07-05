@@ -1,4 +1,8 @@
+import type { ReactNode } from 'react';
+
 import type { ColumnDef } from '@tanstack/react-table';
+
+import type { AnyType } from '~/types/common';
 
 export type ColumnTable<T> = Array<ColumnDef<T>>;
 

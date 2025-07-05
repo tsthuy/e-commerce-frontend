@@ -7,6 +7,7 @@ export * from './divider';
 export * from './helmet';
 export * from './html-render';
 export * from './image-lightbox';
+export * from './language-switcher';
 export * from './loading';
 export * from './not-found';
 export * from './skeleton';

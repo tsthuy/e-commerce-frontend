@@ -1,5 +1,7 @@
 import { ShoppingCart } from 'lucide-react';
 
+import { useTranslation } from '~/hooks';
+
 import { Button } from '~/components/common';
 import { Badge } from '~/components/ui';
 
@@ -9,6 +11,7 @@ import { useCartList } from '~/hooks/use-cart.hook';
 
 export const CartIcon = (): JSX.Element => {
   const { data: cart } = useCartList();
+  const { t } = useTranslation();
 
   return (
     <CartSheet>
@@ -19,7 +22,7 @@ export const CartIcon = (): JSX.Element => {
             {cart.result.totalItems}
           </Badge>
         )}
-        <span className="sr-only">Giỏ hàng</span>
+        <span className="sr-only">{t('Cart.cart')}</span>
       </Button>
     </CartSheet>
   );

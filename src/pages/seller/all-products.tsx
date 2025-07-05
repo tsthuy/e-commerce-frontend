@@ -4,12 +4,15 @@ import { useHistory } from 'react-router-dom';
 
 import type { ProductResponse } from '~/types';
 
+import { useTranslation } from '~/hooks';
+
 import { Container, Helmet } from '~/components/common';
 import { ProductsTable } from '~/components/pages/seller/product';
 
 import { SELLER_ROUTES } from '~/routes';
 
 export const AllProducts = memo(() => {
+  const { t } = useTranslation();
   const history = useHistory();
 
   const handleCreate = (): void => {
@@ -25,11 +28,11 @@ export const AllProducts = memo(() => {
   };
 
   return (
-    <Helmet title="All Products">
+    <Helmet title={t('Seller.allProducts')}>
       <Container className="px-6 py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold">All Products</h1>
-          <p className="text-muted-foreground">Manage your product inventory</p>
+          <h1 className="text-2xl font-bold">{t('Seller.allProducts')}</h1>
+          <p className="text-muted-foreground">{t('Seller.manageInventory')}</p>
         </div>
 
         {/* Products Table with all features */}

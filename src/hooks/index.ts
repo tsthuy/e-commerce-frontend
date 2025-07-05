@@ -9,5 +9,6 @@ export * from './use-product-mutation.hook';
 export * from './use-product.hook';
 export * from './use-profile.hook';
 export * from './use-throttled-function.hook';
+export * from './use-translation.hook';
 export * from './use-upload.hook';
 export * from './use-window-resize';

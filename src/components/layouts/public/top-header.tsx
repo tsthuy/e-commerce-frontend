@@ -16,7 +16,7 @@ import { useProfile } from '~/hooks';
 import { getErrorMessage } from '~/utils';
 
 import { CartIcon } from '~/components/cart';
-import { Button } from '~/components/common';
+import { Button, LanguageSwitcher } from '~/components/common';
 import { SearchBar } from '~/components/layouts/public/header';
 import {
   Avatar,
@@ -41,36 +41,41 @@ import { AUTH_ROUTES, PROTECTED_ROUTES, PUBLIC_ROUTES } from '~/routes';
 export const TopHeaderPublicLayout = memo(() => {
   return (
     <header className="sticky top-0 z-10 h-header-public w-full border-b bg-white py-2 shadow">
-      <div className="mx-auto flex size-full max-w-[calc(1280px+4px*4*2)] items-center justify-between gap-x-10 px-4">
-        <Link className="flex flex-shrink-0 transition-opacity hover:opacity-85" to={PUBLIC_ROUTES.index.path()}>
-          <img alt={SEO_AUTHOR} className="h-[45px] w-auto" src={LOGO} />
-        </Link>
+      <div className="relative flex w-full">
+        <div className="mx-auto flex size-full max-w-[calc(1280px+4px*4*2)] flex-1 items-center justify-between gap-x-10 px-4">
+          <Link className="flex flex-shrink-0 transition-opacity hover:opacity-85" to={PUBLIC_ROUTES.index.path()}>
+            <img alt={SEO_AUTHOR} className="h-[45px] w-auto" src={LOGO} />
+          </Link>
 
-        <NavItems className="hidden lg:flex" />
+          <NavItems className="hidden lg:flex" />
 
-        <div className="flex flex-shrink-0 gap-x-4">
-          <div className="hidden gap-x-2 md:flex">
-            <UserActions />
-          </div>
-          <div className="block lg:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button size="icon" variant="default">
-                  <Menu className="size-6" color="white" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="w-[380px] sm:w-[400px]" side="right">
-                <div className="flex flex-col gap-6 p-4">
-                  <SearchBar />
-                  <NavItems isMobile className="flex-col gap-y-4" />
-                  <div className="flex w-full justify-around pt-4">
-                    <UserActions />
+          <div className="flex flex-shrink-0 gap-x-4">
+            <div className="hidden gap-x-2 md:flex">
+              <UserActions />
+            </div>
+            <div className="block lg:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button size="icon" variant="default">
+                    <Menu className="size-6" color="white" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="w-[380px] sm:w-[400px]" side="right">
+                  <div className="flex flex-col gap-6 p-4">
+                    <SearchBar />
+                    <NavItems isMobile className="flex-col gap-y-4" />
+                    <div className="flex w-full justify-around pt-4">
+                      <UserActions />
+                    </div>
                   </div>
-                </div>
-              </SheetContent>
-              <SheetClose></SheetClose>
-            </Sheet>
+                </SheetContent>
+                <SheetClose></SheetClose>
+              </Sheet>
+            </div>
           </div>
+        </div>
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 pr-4">
+          <LanguageSwitcher />
         </div>
       </div>
     </header>

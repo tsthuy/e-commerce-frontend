@@ -2,22 +2,8 @@ import { PREFIX_SELLER_ROUTE } from '~/constants';
 
 import type { RouteType, SellerRouteKeys } from '~/types';
 
-import {
-  AllEvents,
-  AllOrders,
-  AllProducts,
-  Categories,
-  CreateEvent,
-  CreateProduct,
-  Dashboard,
-  DiscountCodes,
-  EditProduct,
-  ProductView,
-  Refunds,
-  SellerSettings,
-  ShopInbox,
-  WithdrawMoney
-} from '~/pages/seller';
+import { AllEvents, AllProducts, Categories, CreateEvent, CreateProduct, Dashboard, DiscountCodes, EditProduct, ProductView, Refunds, SellerSettings, ShopInbox, WithdrawMoney } from '~/pages/seller';
+import { AllNewOrders } from '~/pages/seller/all-orders-new';
 
 export const SELLER_ROUTES: {
   [key in SellerRouteKeys]: RouteType;
@@ -30,7 +16,7 @@ export const SELLER_ROUTES: {
   allOrders: {
     path: (): string => `${PREFIX_SELLER_ROUTE}/all-orders`,
     permission: null,
-    Element: AllOrders
+    Element: AllNewOrders
   },
   allProducts: {
     path: (): string => `${PREFIX_SELLER_ROUTE}/all-products`,

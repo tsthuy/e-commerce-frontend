@@ -1,3 +1,5 @@
+import type { AnyType, PaginationResponse } from './common';
+
 // Order Status enum
 export enum OrderStatus {
   PENDING = 'PENDING',
@@ -39,6 +41,14 @@ export interface CreateOrderRequest {
 export interface UpdateOrderStatusRequest {
   status: OrderStatus;
   notes?: string;
+}
+
+// Status transition option for dropdown
+export interface OrderStatusTransition {
+  status: OrderStatus;
+  label: string;
+  description: string;
+  disabled?: boolean;
 }
 
 // Order Item Response
@@ -103,16 +113,8 @@ export interface OrderResponse {
   items: OrderItemResponse[];
 }
 
-// Order List Response
-export interface OrderListResponse {
-  content: OrderResponse[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  first: boolean;
-  last: boolean;
-}
+// Use common pagination response
+export type OrderListResponse = PaginationResponse<OrderResponse>;
 
 // Order Pagination Params
 export interface OrderPaginationParams {
@@ -135,8 +137,11 @@ export interface OrderSummary {
 
 // Checkout Process Data
 export interface CheckoutData {
-  cartItems: any[]; // Will be defined based on cart structure
-  selectedAddress: any; // Will be defined based on address structure
+  cartItems: AnyType[];
+  selectedAddress: AnyType;
   paymentMethod: PaymentMethod;
   notes?: string;
 }
+
+// Use common pagination response
+// export type OrderListResponse = PaginationResponse<OrderResponse>;

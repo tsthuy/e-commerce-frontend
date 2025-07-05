@@ -3,6 +3,7 @@ export interface Category {
   name: string;
   slug?: string;
   description?: string;
+  imageUrl?: string;
   isDeleted?: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -14,6 +15,7 @@ export interface CategoryRequest {
   name: string;
   slug?: string;
   description?: string;
+  imageUrl?: string;
 }
 
 export interface CategoryResponse {
@@ -21,6 +23,7 @@ export interface CategoryResponse {
   name: string;
   slug?: string;
   description?: string;
+  imageUrl?: string;
   isDeleted?: boolean;
   createdAt: string;
   updatedAt: string;

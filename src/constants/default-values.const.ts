@@ -6,7 +6,7 @@ export const SEO_AUTHOR = 'ShopO';
 export const SEO_KEYWORD = 'ShopO';
 export const SEO_TYPE = 'website';
 export const SEO_FAVICON = '/favicon.ico';
-export const SEO_QUOTE = ' Your Destination for Modern Tech and Information Solutions';
+export const SEO_QUOTE = '"Wear the Past, Own the Style"';
 export const SEO_GUARANTEES = [
   {
     icon: ShoppingCart,
@@ -143,28 +143,51 @@ export const FAQ_DATA = [
 export const SPONSORS = [
   {
     id: 1,
-    name: 'Apple',
-    logoUrl: '/images/sponsor/apple.png'
+    name: 'Nike',
+    logoUrl: '/images/sponsor/nike.jpg',
+    translationKey: 'nike'
   },
   {
     id: 2,
-    name: 'Dell',
-    logoUrl: '/images/sponsor/dell.png'
+    name: 'Adidas',
+    logoUrl: '/images/sponsor/adidas.webp',
+    translationKey: 'adidas'
   },
   {
     id: 3,
-    name: 'LQ',
-    logoUrl: '/images/sponsor/LG.png'
+    name: 'Gucci',
+    logoUrl: '/images/sponsor/gucci.avif',
+    translationKey: 'gucci'
   },
   {
     id: 4,
-    name: 'Microsoft',
-    logoUrl: '/images/sponsor/microsoft.png'
+    name: 'Louis Vuitton',
+    logoUrl: '/images/sponsor/louis-vuitton.jpg',
+    translationKey: 'louisVuitton'
   },
   {
     id: 5,
-    name: 'Amazon',
-    logoUrl: '/images/sponsor/amazon.jpg'
+    name: 'Chanel',
+    logoUrl: '/images/sponsor/chanel.png',
+    translationKey: 'chanel'
+  },
+  {
+    id: 6,
+    name: 'Prada',
+    logoUrl: '/images/sponsor/prada.png',
+    translationKey: 'prada'
+  },
+  {
+    id: 7,
+    name: 'Jordan',
+    logoUrl: '/images/sponsor/jordan.png',
+    translationKey: 'jordan'
+  },
+  {
+    id: 8,
+    name: 'Supreme',
+    logoUrl: '/images/sponsor/supreme.png',
+    translationKey: 'supremeNy'
   }
 ] as const;
 

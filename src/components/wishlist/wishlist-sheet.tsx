@@ -5,6 +5,8 @@ import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
 
 import { DEFAULT_IMG_AVATAR } from '~/constants';
 
+import { useTranslation } from '~/hooks';
+
 import { formatPrice } from '~/utils';
 
 import { Button } from '~/components/common';
@@ -23,6 +25,7 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
   const removeWishlistItem = useRemoveWishlistItemMutation();
   const addToCart = useAddToCart();
   const [isAddingAll, setIsAddingAll] = useState(false);
+  const { t } = useTranslation();
 
   const wishlist = wishlistResponse?.result;
 
@@ -102,7 +105,7 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <Heart className="h-5 w-5" />
-            Danh sách yêu thích ({wishlist?.totalItems || 0})
+            {t('Wishlist.wishlistTitle')} ({wishlist?.totalItems || 0})
           </SheetTitle>
         </SheetHeader>
 
@@ -111,15 +114,15 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
             <div className="flex flex-1 items-center justify-center">
               <div className="text-center">
                 <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                <p className="text-muted-foreground">Đang tải...</p>
+                <p className="text-muted-foreground">{t('Common.loading')}</p>
               </div>
             </div>
           ) : !wishlist || wishlist.items.length === 0 ? (
             <div className="flex flex-1 items-center justify-center">
               <div className="text-center">
                 <Heart className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-                <p className="text-lg font-medium">Danh sách yêu thích trống</p>
-                <p className="text-muted-foreground">Thêm sản phẩm bạn yêu thích để xem lại sau</p>
+                <p className="text-lg font-medium">{t('Wishlist.emptyWishlist')}</p>
+                <p className="text-muted-foreground">{t('Wishlist.emptyWishlistDesc')}</p>
               </div>
             </div>
           ) : (
@@ -139,7 +142,9 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
                             {/* Tên sản phẩm */}
                             <div className="space-y-1">
                               <h4 className="line-clamp-2 font-medium leading-tight">{item.product.name}</h4>
-                              <p className="text-sm text-muted-foreground">Người bán: {item.product.sellerName}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {t('Common.seller')}: {item.product.sellerName}
+                              </p>
                             </div>
 
                             {/* Giá */}
@@ -152,15 +157,19 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
 
                             {/* Stock info */}
                             <div className="flex items-center justify-between text-xs text-muted-foreground">
-                              <span>Còn lại: {item.product.stock}</span>
-                              <span>Đã thêm: {new Date(item.createdAt).toLocaleDateString('vi-VN')}</span>
+                              <span>
+                                {t('Product.stockRemaining')}: {item.product.stock}
+                              </span>
+                              <span>
+                                {t('Wishlist.addedDate')}: {new Date(item.createdAt).toLocaleDateString('vi-VN')}
+                              </span>
                             </div>
 
                             {/* Actions */}
                             <div className="flex items-center justify-between">
                               <Button className="h-8 text-xs" disabled={addToCart.isPending || item.product.stock <= 0} size="sm" variant="outline" onClick={() => handleAddToCart(item.product.id)}>
                                 <ShoppingCart className="mr-1 h-3 w-3" />
-                                {item.product.stock <= 0 ? 'Hết hàng' : 'Thêm vào giỏ'}
+                                {item.product.stock <= 0 ? t('Product.outOfStock') : t('Cart.addToCart')}
                               </Button>
 
                               <Button
@@ -184,8 +193,10 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
               <div className="space-y-4 border-t pt-4">
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>Tổng số sản phẩm:</span>
-                    <span>{wishlist.totalItems} sản phẩm</span>
+                    <span>{t('Wishlist.totalProducts')}:</span>
+                    <span>
+                      {wishlist.totalItems} {t('Product.products')}
+                    </span>
                   </div>
                   <Separator />
                 </div>
@@ -197,7 +208,7 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
                   variant="outline"
                   onClick={handleAddAllToCart}
                 >
-                  {isAddingAll ? 'Đang thêm tất cả...' : 'Thêm tất cả vào giỏ hàng'}
+                  {isAddingAll ? t('Wishlist.addingAll') : t('Wishlist.addAllToCart')}
                 </Button>
               </div>
             </>

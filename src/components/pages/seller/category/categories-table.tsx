@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import { Edit, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import type { CategoryResponse } from '~/types';
 
@@ -16,6 +17,7 @@ interface CategoriesTableProps {
 }
 
 export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate }) => {
+  const { t } = useTranslation();
   const deleteMutation = useCategoryDelete();
 
   // Define table columns
@@ -31,8 +33,28 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
         enableHiding: false
       },
       {
+        accessorKey: 'imageUrl',
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Seller.Category.Image')} />,
+        cell: ({ row }): JSX.Element => {
+          const imageUrl = row.getValue('imageUrl') as string;
+          return (
+            <div className="flex h-12 w-12 items-center justify-center">
+              {imageUrl ? (
+                <img alt={row.original.name} className="h-10 w-10 rounded-md border object-cover" src={imageUrl} />
+              ) : (
+                <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-gray-100">
+                  <span className="text-xs text-gray-400">{t('Seller.Category.NoImage')}</span>
+                </div>
+              )}
+            </div>
+          );
+        },
+        enableSorting: false,
+        enableHiding: true
+      },
+      {
         accessorKey: 'name',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Seller.Category.Name')} />,
         cell: ({ row }) => (
           <div>
             <div className="font-medium">{row.getValue('name')}</div>
@@ -44,14 +66,14 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
       },
       {
         accessorKey: 'description',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Description" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Seller.Category.Description')} />,
         cell: ({ row }) => <div className="max-w-xs truncate">{row.getValue('description') || '-'}</div>,
         enableSorting: false,
         enableHiding: true
       },
       {
         accessorKey: 'createdAt',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Seller.Category.Created')} />,
         cell: ({ row }): JSX.Element => {
           const date = new Date(row.getValue('createdAt'));
           return <div className="text-sm">{date.toLocaleDateString()}</div>;
@@ -61,7 +83,7 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
       },
       {
         id: 'actions',
-        header: 'Actions',
+        header: t('Seller.Category.Actions'),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" onClick={() => onEdit?.(row.original)}>
@@ -76,19 +98,19 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
         enableHiding: false
       }
     ],
-    [onEdit, deleteMutation]
+    [onEdit, deleteMutation, t]
   );
 
   // Filter fields for search and filtering
   const filterFields = useMemo(
     () => [
       {
-        label: 'Search categories',
+        label: t('Seller.Category.SearchCategories'),
         value: 'name' as keyof CategoryResponse,
-        placeholder: 'Search by name...'
+        placeholder: t('Seller.Category.SearchByName')
       }
     ],
-    []
+    [t]
   );
 
   // Initialize table with empty data first to get state
@@ -160,11 +182,11 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
         <TasksTableToolbarActions
           table={table}
           createAction={{
-            label: 'Add Category',
+            label: t('Seller.Category.AddCategory'),
             action: () => onCreate?.()
           }}
           deleteAction={{
-            label: 'Delete',
+            label: t('Seller.Category.Delete'),
             action: handleBulkDelete
           }}
         />

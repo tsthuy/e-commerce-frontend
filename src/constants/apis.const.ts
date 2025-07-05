@@ -68,7 +68,9 @@ export const API_URLS = {
 
     // Seller endpoints
     sellerList: '/api/orders/seller',
-    updateStatus: (orderId: string): string => `/api/orders/${orderId}/status`
+    sellerDetail: (orderId: string): string => `/api/orders/seller/${orderId}`,
+    updateStatus: (orderId: string): string => `/api/orders/seller/${orderId}/status`,
+    statusTransitions: (orderId: string): string => `/api/orders/seller/${orderId}/status-transitions`
   }
 };
 

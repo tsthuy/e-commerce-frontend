@@ -1,5 +1,5 @@
 import type { Locale } from 'date-fns/locale';
-import { enAU, id } from 'date-fns/locale';
+import { enUS, vi } from 'date-fns/locale';
 import type { Country } from 'react-phone-number-input';
 
 export const LANGUAGES: Array<{
@@ -15,27 +15,27 @@ export const LANGUAGES: Array<{
   label: string;
 }> = [
   {
-    country: 'AU',
-    locale: enAU,
+    country: 'US',
+    locale: enUS,
     currency: {
-      locale: 'en-AU',
-      unit: 'AUD'
+      locale: 'en-US',
+      unit: 'USD'
     },
-    i18n: 'enAU',
+    i18n: 'en',
     isDefault: true,
     logo: '/images/common/languages/au.svg',
-    label: 'Australia'
+    label: 'English'
   },
   {
-    country: 'ID',
-    locale: id,
+    country: 'VN',
+    locale: vi,
     currency: {
-      locale: 'id-ID',
-      unit: 'IDR'
+      locale: 'vi-VN',
+      unit: 'VND'
     },
-    i18n: 'id',
+    i18n: 'vi',
     isDefault: false,
-    logo: '/images/common/languages/id.svg',
-    label: 'Indonesia'
+    logo: '/images/common/languages/vn.svg',
+    label: 'Tiếng Việt'
   }
 ];

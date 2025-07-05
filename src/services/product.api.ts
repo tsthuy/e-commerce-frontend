@@ -2,14 +2,38 @@ import type { AxiosPromise } from 'axios';
 
 import { API_URLS } from '~/constants';
 
-import type { ProductListResponse, ProductPayload } from '~/types';
+import type { ProductDetailParams, ProductDetailResponseType, ProductListResponse, ProductPaginationParams, ProductPayload } from '~/types';
 
 import type { ApiParams, ApiResponse } from './../types';
-import type { ProductDetailResponse } from './../types/product.d';
 
 import { httpBase } from '~/services/config.service';
 
 export const productApi = {
+  list({ data, config }: ApiParams<ProductPaginationParams>): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>(API_URLS.product.getAllPaged, {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
+  },
+
+  sellerList({ data, config }: ApiParams<ProductPaginationParams>): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>(API_URLS.product.getSellerPaged, {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
+  },
+
+  detail({ data: { productId }, config }: ApiParams<ProductDetailParams>): AxiosPromise<ApiResponse<ProductDetailResponseType>> {
+    return httpBase.get<ApiResponse<ProductDetailResponseType>>(API_URLS.product.detail(productId), config);
+  },
+
+  // Keep old methods for backward compatibility
   getAllPaged({
     page = 0,
     size = 10,
@@ -64,7 +88,8 @@ export const productApi = {
     return httpBase.post<ProductPayload, ApiResponse<void>>(API_URLS.product.create, data, config);
   },
 
-  detail({ productId, config }: ApiParams & { productId: string }): AxiosPromise<ApiResponse<ProductDetailResponse>> {
+  // Legacy detail method for backward compatibility
+  detailLegacy({ productId, config }: ApiParams & { productId: string }): AxiosPromise<ApiResponse<ProductDetailResponseType>> {
     return httpBase.get(API_URLS.product.detail(productId), config);
   },
 

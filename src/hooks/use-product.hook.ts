@@ -1,65 +1,34 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 
-import { QUERY_KEYS } from '~/constants';
+import type { UseQueryParams } from '~/types';
 
-import { productApi } from '~/services/product.api';
+import { productQueries } from '~/queries/product.query';
+import type { ProductDetailParams, ProductDetailResponseType, ProductListResponse, ProductPaginationParams } from '~/types/product';
 
-interface UseProductListParams {
-  data: {
-    page?: number;
-    size?: number;
-    sortBy?: string;
-    sortDirection?: 'asc' | 'desc';
-    search?: string;
-  };
+export function useProductList({ data, enabled = true, retry = false }: UseQueryParams<ProductPaginationParams>): UseQueryResult<ProductListResponse> {
+  const queryResponse = useQuery({
+    ...productQueries.list({ data }),
+    retry,
+    enabled
+  });
+  return queryResponse;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const useProductList = ({ data }: UseProductListParams) => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.product.list, data],
-    queryFn: () => productApi.getAllPaged(data),
-    select: (response) => response.data,
-    staleTime: 30000, // 30 seconds
-    gcTime: 300000 // 5 minutes
+export function useSellerProductList({ data, enabled = true, retry = false }: UseQueryParams<ProductPaginationParams>): UseQueryResult<ProductListResponse> {
+  const queryResponse = useQuery({
+    ...productQueries.sellerList({ data }),
+    retry,
+    enabled
   });
-};
-
-interface UseSellerProductListParams {
-  data: {
-    page?: number;
-    size?: number;
-    sortBy?: string;
-    sortDirection?: 'asc' | 'desc';
-    search?: string;
-  };
+  return queryResponse;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const useSellerProductList = ({ data }: UseSellerProductListParams) => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.product.sellerList, data],
-    queryFn: () => productApi.getSellerPaged(data),
-    select: (response) => response.data,
-    staleTime: 30000, // 30 seconds
-    gcTime: 300000 // 5 minutes
+export function useProductDetail({ data, enabled = true, retry = false }: UseQueryParams<ProductDetailParams>): UseQueryResult<ProductDetailResponseType> {
+  const queryResponse = useQuery({
+    ...productQueries.detail({ data }),
+    retry,
+    enabled
   });
-};
-
-interface UseProductDetailParams {
-  productId: string;
-  enabled?: boolean;
+  return queryResponse;
 }
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export const useProductDetail = ({ productId, enabled = true }: UseProductDetailParams) => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.product.detail, productId],
-    queryFn: () => productApi.detail({ productId }),
-    select: (response) => response.data.result,
-    enabled: enabled && !!productId,
-    staleTime: 30000, // 30 seconds
-    gcTime: 300000 // 5 minutes
-  });
-};
