@@ -17,7 +17,8 @@ export const API_URLS = {
     login: {
       email: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login/customer`,
       seller: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login/seller`,
-      social: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login-social`
+      social: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login-social`,
+      google: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/google/authenticate`
     },
     logout: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/logout`,
     refreshToken: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/refresh-token`,

@@ -26,10 +26,29 @@ export type LoginWithSocialBody = {
 };
 export type LoginWithSocialResponse = LoginWithEmailResponse;
 
+export type GoogleOAuthRequest = {
+  idToken: string;
+  authenticationType: 'CUSTOMER' | 'SELLER';
+  fullName?: string;
+  shopName?: string;
+  phone?: string;
+};
+
+export type GoogleOAuthResponse = {
+  code: number;
+  result: {
+    accessToken: string;
+    refreshToken: string;
+    isNewUser: boolean;
+    needsProfileSetup: boolean;
+    message: string;
+  };
+};
+
 export type RefreshTokenBody = {
   refreshToken: string;
 };
-export type RefreshTokenResponse = LoginResponse;
+export type RefreshTokenResponse = LoginWithEmailResponse;
 
 export type LogoutBody = {
   directUri?: string;

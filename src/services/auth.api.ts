@@ -9,6 +9,8 @@ import type {
   ApiParams,
   ChangePasswordBody,
   CustomerSignUpBody,
+  GoogleOAuthRequest,
+  GoogleOAuthResponse,
   LoginWithEmailBody,
   LoginWithEmailResponse,
   LoginWithSocialBody,
@@ -40,6 +42,9 @@ export const authApi = {
   },
   loginWithSocial({ data, config }: ApiParams<LoginWithSocialBody>): AxiosPromise<LoginWithSocialResponse> {
     return httpBase.post<LoginWithSocialBody, LoginWithSocialResponse>(API_URLS.auth.login.social, data, config);
+  },
+  loginWithGoogle({ data, config }: ApiParams<GoogleOAuthRequest>): AxiosPromise<GoogleOAuthResponse> {
+    return httpBase.post<GoogleOAuthRequest, GoogleOAuthResponse>(API_URLS.auth.login.google, data, config);
   },
   async logout({ data, config }: ApiParams<LogoutBody>): Promise<void> {
     try {

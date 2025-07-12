@@ -6,6 +6,7 @@ export * from './use-cloudinary-upload.hook';
 export * from './use-custom-form.hook';
 export * from './use-data-table';
 export * from './use-debounce.hook';
+export * from './use-google-auth.hook';
 export * from './use-product-mutation.hook';
 export * from './use-product.hook';
 export * from './use-profile.hook';

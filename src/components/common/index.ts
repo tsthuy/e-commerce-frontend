@@ -4,6 +4,7 @@ export * from './card';
 export * from './container';
 export * from './details';
 export * from './divider';
+export * from './google-login-button';
 export * from './helmet';
 export * from './html-render';
 export * from './image-lightbox';
