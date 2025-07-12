@@ -193,8 +193,10 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
     data: queryParamsFromTable
   });
 
-  const products = productsResponse?.result?.content || [];
-  const pageCount = productsResponse?.result?.totalPages || 0;
+  console.log('hh', productsResponse);
+
+  const products = productsResponse?.content || [];
+  const pageCount = productsResponse?.totalPages || 0;
 
   table.options.data = products;
   table.options.pageCount = pageCount;

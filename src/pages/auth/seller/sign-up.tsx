@@ -2,7 +2,7 @@ import { memo, useMemo, useState } from 'react';
 
 import Cookie from 'js-cookie';
 import { FolderPen, LockKeyhole, Mail, MapPin } from 'lucide-react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -22,7 +22,7 @@ import { Button, Helmet } from '~/components/common';
 import { UploadProgress } from '~/components/common/cloudinary';
 import { CustomForm, CustomInput, CustomInputImage, CustomInputPassword, CustomInputTel } from '~/components/form';
 
-import { SELLER_ROUTES } from '~/routes';
+import { AUTH_ROUTES, SELLER_ROUTES } from '~/routes';
 
 export const SellerSignUpPage = memo(() => {
   const { push } = useHistory();
@@ -124,6 +124,15 @@ export const SellerSignUpPage = memo(() => {
             <Button className="w-full" disabled={isLoading || isUploading} isLoading={isLoading || isUploading} type="submit">
               Sign Up
             </Button>
+
+            <div className="text-center text-sm">
+              Already have a seller account?{' '}
+              <Link className="inline-flex" to={AUTH_ROUTES.sellerLogin.path()}>
+                <Button animation={{ type: 'line', placement: 'hide' }} className="h-fit p-0 after:!bottom-[-0.5px] after:!w-full" type="button" variant="link">
+                  Sign In
+                </Button>
+              </Link>
+            </div>
           </div>
         </CustomForm>
       </AuthLayoutContent>

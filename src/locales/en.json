@@ -162,7 +162,11 @@
     "loginError": "Email address or password is incorrect! Please try again.",
     "orContinueWith": "Or continue with",
     "newUser": "New to {{author}}?",
-    "createAccount": "Create an account"
+    "createAccount": "Create an account",
+    "sellerSignIn": "Seller Sign In",
+    "sellerSignInTitle": "Seller Sign in to {{author}}",
+    "newSellerUser": "New seller to {{author}}?",
+    "becomeASeller": "Become a Seller"
   },
   "Navigation": {
     "dashboard": "Dashboard",
@@ -474,6 +478,16 @@
     "quickStats": "Quick Stats",
     "totalImages": "Total Images",
     "metadata": "Metadata",
+    "shopName": "Shop Name",
+    "shopNamePlaceholder": "Enter your shop name",
+    "shopDescription": "Shop Description",
+    "shopDescriptionPlaceholder": "Tell customers about your shop...",
+    "editProfile": "Edit Profile",
+    "updateProfile": "Update Profile",
+    "passwordRequiredForUpdate": "Password (required for any update)",
+    "profileUpdatedSuccessfully": "Profile updated successfully",
+    "failedToUpdateProfile": "Failed to update profile",
+    "noChangesDetected": "No changes detected",
     "Category": {
       "Image": "Image",
       "Name": "Name",

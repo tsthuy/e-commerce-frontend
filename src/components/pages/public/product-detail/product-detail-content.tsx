@@ -2,6 +2,7 @@ import { memo, useMemo, useState } from 'react';
 
 import type { ProductDetailResponse } from '~/types';
 
+import { ReviewList, StarRating } from '~/components/common';
 import { ProductImageGallery } from '~/components/pages/public/product-detail/product-image-gallery';
 import { ProductInfo } from '~/components/pages/public/product-detail/product-info';
 import { ProductVariantSelector } from '~/components/pages/public/product-detail/product-variant-selector';
@@ -141,26 +142,44 @@ export const ProductDetailContent = memo<ProductDetailContentProps>(({ product }
   };
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      {/* Left side - Image Gallery */}
-      <div className="space-y-4">
-        <ProductImageGallery allImages={allImages} currentMainImage={selectedImageUrl} productName={product.name} onImageSelect={handleImageSelect} />
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        {/* Left side - Image Gallery */}
+        <div className="space-y-4">
+          <ProductImageGallery allImages={allImages} currentMainImage={selectedImageUrl} productName={product.name} onImageSelect={handleImageSelect} />
+        </div>
+
+        {/* Right side - Product Info */}
+        <div className="space-y-6">
+          <ProductInfo product={product} quantity={quantity} selectedVariant={selectedVariant} onQuantityChange={handleQuantityChange} />
+
+          {product.hasVariants && (
+            <ProductVariantSelector
+              product={product}
+              quantity={quantity}
+              selectedAttributes={selectedAttributes}
+              selectedVariant={selectedVariant}
+              onAttributeChange={handleAttributeChange}
+              onQuantityChange={handleQuantityChange}
+            />
+          )}
+        </div>
       </div>
 
-      {/* Right side - Product Info */}
-      <div className="space-y-6">
-        <ProductInfo product={product} quantity={quantity} selectedVariant={selectedVariant} onQuantityChange={handleQuantityChange} />
+      {/* Reviews Section */}
+      <div className="border-t pt-8">
+        <div className="mb-6">
+          <h3 className="mb-4 text-2xl font-semibold">Customer Reviews</h3>
+          <div className="mb-4 flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <StarRating rating={product.averageRating || 0} size="lg" />
+              <span className="text-lg font-medium">{(product.averageRating || 0).toFixed(1)}</span>
+            </div>
+            <span className="text-gray-600">({product.reviewCount || 0} reviews)</span>
+          </div>
+        </div>
 
-        {product.hasVariants && (
-          <ProductVariantSelector
-            product={product}
-            quantity={quantity}
-            selectedAttributes={selectedAttributes}
-            selectedVariant={selectedVariant}
-            onAttributeChange={handleAttributeChange}
-            onQuantityChange={handleQuantityChange}
-          />
-        )}
+        <ReviewList className="max-h-96 overflow-y-auto" productId={product.id} />
       </div>
     </div>
   );

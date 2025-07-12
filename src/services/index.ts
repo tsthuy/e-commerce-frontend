@@ -6,4 +6,6 @@ export * from './category.api';
 export * from './general.api';
 export * from './order.api';
 export * from './profile.api';
+export * from './review.api';
+export * from './seller.api';
 export * from './wishlist.api';

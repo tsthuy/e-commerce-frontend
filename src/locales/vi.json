@@ -162,7 +162,11 @@
     "loginError": "Địa chỉ email hoặc mật khẩu không chính xác! Vui lòng thử lại.",
     "orContinueWith": "Hoặc tiếp tục với",
     "newUser": "Mới đến {{author}}?",
-    "createAccount": "Tạo tài khoản"
+    "createAccount": "Tạo tài khoản",
+    "sellerSignIn": "Đăng nhập người bán",
+    "sellerSignInTitle": "Người bán đăng nhập vào {{author}}",
+    "newSellerUser": "Người bán mới đến {{author}}?",
+    "becomeASeller": "Trở thành người bán"
   },
   "Navigation": {
     "dashboard": "Bảng điều khiển",
@@ -474,6 +478,16 @@
     "quickStats": "Thống kê nhanh",
     "totalImages": "Tổng số hình ảnh",
     "metadata": "Thông tin meta",
+    "shopName": "Tên cửa hàng",
+    "shopNamePlaceholder": "Nhập tên cửa hàng của bạn",
+    "shopDescription": "Mô tả cửa hàng",
+    "shopDescriptionPlaceholder": "Hãy kể cho khách hàng về cửa hàng của bạn...",
+    "editProfile": "Chỉnh sửa hồ sơ",
+    "updateProfile": "Cập nhật hồ sơ",
+    "passwordRequiredForUpdate": "Mật khẩu (bắt buộc cho mọi cập nhật)",
+    "profileUpdatedSuccessfully": "Cập nhật hồ sơ thành công",
+    "failedToUpdateProfile": "Không thể cập nhật hồ sơ",
+    "noChangesDetected": "Không phát hiện thay đổi nào",
     "Category": {
       "Image": "Hình ảnh",
       "Name": "Tên",

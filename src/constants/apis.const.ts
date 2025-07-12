@@ -16,6 +16,7 @@ export const API_URLS = {
     signupAsSeller: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/signup`,
     login: {
       email: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login/customer`,
+      seller: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login/seller`,
       social: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login-social`
     },
     logout: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/logout`,
@@ -27,6 +28,10 @@ export const API_URLS = {
     updateProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/update`,
     createAddress: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/address`,
     deleteAddress: (addressId: string): string => `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/address/${addressId}`
+  },
+  seller: {
+    getProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/profile`,
+    updateProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/profile`
   },
   category: {
     getAll: '/api/categories',
@@ -71,6 +76,11 @@ export const API_URLS = {
     sellerDetail: (orderId: string): string => `/api/orders/seller/${orderId}`,
     updateStatus: (orderId: string): string => `/api/orders/seller/${orderId}/status`,
     statusTransitions: (orderId: string): string => `/api/orders/seller/${orderId}/status-transitions`
+  },
+  review: {
+    create: '/api/v1/protected/reviews',
+    getProductReviews: (productId: string): string => `/api/v1/general/products/${productId}/reviews`,
+    checkExists: '/api/v1/protected/reviews/check'
   }
 };
 
@@ -83,5 +93,6 @@ export const API_ENDPOINTS = {
   CART: API_URLS.cart,
   WISHLIST: API_URLS.wishlist,
   ORDER: API_URLS.order,
+  REVIEW: API_URLS.review,
   GENERAL: API_URLS.general
 };

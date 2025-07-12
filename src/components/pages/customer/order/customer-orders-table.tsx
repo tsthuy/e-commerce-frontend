@@ -10,11 +10,12 @@ import { useDataTable, useTranslation } from '~/hooks';
 import { formatDate, formatPrice } from '~/utils';
 
 import { DataTable, DataTableColumnHeader, DataTableToolbar, TasksTableToolbarActions } from '~/components/common';
-import { OrderDetailDialog } from '~/components/pages/seller/order/order-detail-dialog';
 import { Badge, Button } from '~/components/ui';
 
 import type { OrderResponse } from '../../../../types';
 import { OrderStatus } from '../../../../types';
+
+import { CustomerOrderDetailDialog } from './customer-order-detail-dialog';
 
 import { useCustomerOrders } from '~/hooks/use-order.hook';
 import type { PaginationParams } from '~/types/common';
@@ -242,7 +243,7 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
         </DataTableToolbar>
       </DataTable>
 
-      <OrderDetailDialog
+      <CustomerOrderDetailDialog
         isOpen={isDialogOpen}
         order={selectedOrder}
         onClose={() => {
