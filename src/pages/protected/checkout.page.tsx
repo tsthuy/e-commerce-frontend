@@ -14,6 +14,7 @@ import { useCartList } from '~/hooks/use-cart.hook';
 import { useProfile } from '~/hooks/use-profile.hook';
 import { useCreateOrderMutation } from '~/queries/order.mutation';
 import { PROTECTED_ROUTES } from '~/routes/protected.route';
+import { httpBase } from '~/services';
 import type { CreateOrderRequest, PaymentMethod } from '~/types/order';
 
 export const CheckoutPage = memo(() => {
@@ -55,17 +56,31 @@ export const CheckoutPage = memo(() => {
       return;
     }
 
-    const orderData: CreateOrderRequest = {
-      shippingAddressId: selectedAddressId,
-      paymentMethod,
-      notes: notes.trim() || undefined
-    };
+    if (paymentMethod === 'CREDIT_CARD') {
+      // Create Stripe checkout session
+      httpBase.post('/api/stripe/create-checkout-session')
+        .then(response => {
+          // Redirect to Stripe checkout
+          window.location.href = response.data.url;
+        })
+        .catch(error => {
+          toast.error('Có lỗi xảy ra khi tạo phiên thanh toán');
+          console.error('Error creating checkout session:', error);
+        });
+    } else {
+      // Handle COD payment
+      const orderData: CreateOrderRequest = {
+        shippingAddressId: selectedAddressId,
+        paymentMethod,
+        notes: notes.trim() || undefined
+      };
 
-    createOrder.mutate(orderData, {
-      onSuccess: () => {
-        push(PROTECTED_ROUTES.orders.path());
-      }
-    });
+      createOrder.mutate(orderData, {
+        onSuccess: () => {
+          push(PROTECTED_ROUTES.orders.path());
+        }
+      });
+    }
   }, [selectedAddressId, paymentMethod, notes, createOrder, push]);
 
   if (profileLoading || cartLoading) {
