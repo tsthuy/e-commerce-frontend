@@ -2,17 +2,25 @@ import { PREFIX_PROTECTED_ROUTE } from '~/constants';
 
 import type { ProtectedRoueKeys, RouteType } from '~/types';
 
-import { AddressPage, ChangePasswordPage, CheckoutPage, MessagePage, OrdersPage, ProfilePage, RefundsPage, TracksPage } from '~/pages/protected';
+import { AddressPage } from '~/pages/protected/address.page';
+import { ChangePasswordPage } from '~/pages/protected/change-password.page';
 import { CheckoutCancelPage } from '~/pages/protected/checkout-cancel.page';
 import { CheckoutSuccessPage } from '~/pages/protected/checkout-success.page';
+import { CheckoutPage } from '~/pages/protected/checkout.page';
+import { ConversationPage } from '~/pages/protected/conversation.page';
+import { MessagePage } from '~/pages/protected/message.page';
+import { OrdersPage } from '~/pages/protected/orders.page';
+import { ProfilePage } from '~/pages/protected/profile.page';
+import { RefundsPage } from '~/pages/protected/refunds.page';
+import { TracksPage } from '~/pages/protected/tracks.page';
 
 export const PROTECTED_ROUTES: {
   [key in ProtectedRoueKeys]: RouteType;
 } = {
-  message: {
-    path: (): string => `${PREFIX_PROTECTED_ROUTE}/message`,
+  conversation: {
+    path: (conversationId?: string): string => `${PREFIX_PROTECTED_ROUTE}/messages/conversation/${conversationId || ':conversationId'}`,
     permission: null,
-    Element: MessagePage
+    Element: ConversationPage
   },
   profile: {
     path: (): string => `${PREFIX_PROTECTED_ROUTE}/profile`,
@@ -58,5 +66,10 @@ export const PROTECTED_ROUTES: {
     path: (): string => `${PREFIX_PROTECTED_ROUTE}/address`,
     permission: null,
     Element: AddressPage
+  },
+  message: {
+    path: (): string => `${PREFIX_PROTECTED_ROUTE}/messages`,
+    permission: null,
+    Element: MessagePage
   }
 };

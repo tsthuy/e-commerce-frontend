@@ -28,7 +28,7 @@ const sidebarItems = [
   },
   {
     name: 'Messages',
-    route: '/user/message',
+    route: '/user/messages',
     icon: MessageCircle
   },
   {

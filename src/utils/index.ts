@@ -7,6 +7,7 @@ export * from './copy-to-clipboard.util';
 export * from './extract-params-from-url.util';
 export * from './format-currency.util';
 export * from './format-date.util';
+export * from './format-relative-time.util';
 export * from './generate-device-id.util';
 export * from './get-error-message.util';
 export * from './get-link-storage.util';

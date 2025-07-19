@@ -123,6 +123,7 @@ export type ProductDetailResponse = {
 
   // Related entities
   seller?: {
+    id: string;
     shopName: string;
   };
   category?: {
@@ -192,6 +193,7 @@ export type ProductResponse = {
   averageRating?: number;
   reviewCount?: number;
   soldCount?: number;
+  sellerId: string;
   sellerName?: string;
   categoryName?: string;
   createdAt: string;

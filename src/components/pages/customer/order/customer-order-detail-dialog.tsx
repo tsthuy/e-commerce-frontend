@@ -1,12 +1,16 @@
 import { memo } from 'react';
 
+import { MessageCircle } from 'lucide-react';
+
 import type { OrderResponse, OrderStatus } from '~/types';
 
 import { formatDate, formatPrice } from '~/utils';
 
-import { Badge, Card, CardContent, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '~/components/ui';
+import { Badge, Button, Card, CardContent, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '~/components/ui';
 
 import { ProductReviewSection } from './product-review-section';
+
+import { useProfile } from '~/hooks/use-profile.hook';
 
 interface CustomerOrderDetailDialogProps {
   order: OrderResponse | null;
@@ -15,7 +19,20 @@ interface CustomerOrderDetailDialogProps {
 }
 
 export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({ order, isOpen, onClose }) => {
+  const { data: profileResponse } = useProfile({ enabled: true });
+
   if (!order) return null;
+
+  const handleMessageSeller = (): void => {
+    if (!order.sellerId || !profileResponse?.id) return;
+
+    const customerId = profileResponse.id;
+    const sellerId = order.sellerId;
+    const conversationId = `${customerId}_${sellerId}`;
+
+    // Navigate to conversation page
+    window.location.href = `/user/messages/conversation/${conversationId}`;
+  };
 
   const getStatusBadge = (status: OrderStatus): JSX.Element => {
     const statusConfig = {
@@ -89,8 +106,15 @@ export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({
             <Card>
               <CardContent className="p-4">
                 <h4 className="mb-2 font-semibold">Seller</h4>
-                <p className="text-sm">{order.sellerShopName}</p>
-                <p className="text-sm text-gray-600">{order.sellerName}</p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm">{order.sellerShopName}</p>
+                    <p className="text-sm text-gray-600">{order.sellerName}</p>
+                  </div>
+                  <Button className="h-8 w-8 p-0 text-gray-500 hover:text-primary" size="sm" variant="ghost" onClick={handleMessageSeller}>
+                    <MessageCircle className="h-4 w-4" />
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>

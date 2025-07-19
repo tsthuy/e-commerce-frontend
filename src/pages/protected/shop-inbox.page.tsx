@@ -13,7 +13,7 @@ import { Avatar, Button, Input } from '~/components/ui';
 import { useProfile } from '~/hooks/use-profile.hook';
 import { ConversationService } from '~/services/conversation.service';
 
-export const ShopInbox = memo(() => {
+export const ShopInboxPage = memo(() => {
   const history = useHistory();
   const { data: profileResponse } = useProfile({ enabled: true });
 
@@ -133,10 +133,8 @@ export const ShopInbox = memo(() => {
                 className={`cursor-pointer rounded-lg border p-4 transition-colors hover:bg-gray-50 ${!conversation.isSeen ? 'border-blue-200 bg-blue-50' : 'bg-white'}`}
                 onClick={() => handleConversationClick(conversation.conversationId)}
               >
-                <div className="flex items-center gap-3">
-                  <Avatar className="flex h-12 w-12 items-center justify-center">
-                    {conversation.receiverAvatar ? <img alt={conversation.receiverName} src={conversation.receiverAvatar} /> : <User className="flex h-6 w-6 items-center justify-center" />}
-                  </Avatar>
+                <div className="flex items-start gap-3">
+                  <Avatar className="h-12 w-12">{conversation.receiverAvatar ? <img alt={conversation.receiverName} src={conversation.receiverAvatar} /> : <User className="h-6 w-6" />}</Avatar>
 
                   <div className="min-w-0 flex-1">
                     <div className="mb-1 flex items-center justify-between">
@@ -167,7 +165,7 @@ export const ShopInbox = memo(() => {
                   // Mark all as seen
                   conversations.forEach(async (conv) => {
                     if (!conv.isSeen && profileResponse?.id) {
-                      await ConversationService.markConversationAsSeen(profileResponse.id, conv.conversationId, 'seller');
+                      await ConversationService.markConversationAsSeen(profileResponse.id, conv.conversationId);
                     }
                   });
                 }}
@@ -181,3 +179,5 @@ export const ShopInbox = memo(() => {
     </Container>
   );
 });
+
+ShopInboxPage.displayName = 'ShopInboxPage';

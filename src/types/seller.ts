@@ -1,4 +1,5 @@
 export type SellerProfileResponse = {
+  id: string;
   email: string;
   shopName: string;
   description: string;
