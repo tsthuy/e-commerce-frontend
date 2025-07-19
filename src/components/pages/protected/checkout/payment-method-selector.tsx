@@ -1,9 +1,10 @@
 import { memo } from 'react';
 
-import { BanknoteIcon, CreditCard, Landmark, Wallet } from 'lucide-react';
+import { BanknoteIcon, CreditCard } from 'lucide-react';
 
 import { RadioGroup, RadioGroupItem } from '~/components/ui';
 
+import { useTranslation } from '~/hooks/use-translation.hook';
 import type { PaymentMethod } from '~/types/order';
 
 interface PaymentMethodSelectorProps {
@@ -11,34 +12,24 @@ interface PaymentMethodSelectorProps {
   onSelectMethod: (method: PaymentMethod) => void;
 }
 
-const PAYMENT_METHODS = [
-  {
-    id: 'CASH_ON_DELIVERY',
-    name: 'Thanh toán khi nhận hàng',
-    description: 'Trả tiền mặt khi nhận được hàng',
-    icon: BanknoteIcon
-  },
-  {
-    id: 'CREDIT_CARD',
-    name: 'Thẻ tín dụng / Ghi nợ',
-    description: 'Thanh toán an toàn với thẻ của bạn',
-    icon: CreditCard
-  },
-  {
-    id: 'BANK_TRANSFER',
-    name: 'Chuyển khoản ngân hàng',
-    description: 'Chuyển tiền trực tiếp đến tài khoản của chúng tôi',
-    icon: Landmark
-  },
-  {
-    id: 'E_WALLET',
-    name: 'Ví điện tử',
-    description: 'Sử dụng ví điện tử như Momo, ZaloPay, VNPay...',
-    icon: Wallet
-  }
-];
-
 export const PaymentMethodSelector = memo(({ selectedMethod, onSelectMethod }: PaymentMethodSelectorProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  const PAYMENT_METHODS = [
+    {
+      id: 'CASH_ON_DELIVERY' as PaymentMethod,
+      name: t('Checkout.paymentMethods.CASH_ON_DELIVERY'),
+      description: t('Checkout.paymentMethodsDescriptions.CASH_ON_DELIVERY'),
+      icon: BanknoteIcon
+    },
+    {
+      id: 'ADVANCE_PAYMENT' as PaymentMethod,
+      name: t('Checkout.paymentMethods.ADVANCE_PAYMENT'),
+      description: t('Checkout.paymentMethodsDescriptions.ADVANCE_PAYMENT'),
+      icon: CreditCard
+    }
+  ];
+
   return (
     <RadioGroup value={selectedMethod} onValueChange={onSelectMethod as (value: string) => void}>
       <div className="space-y-3">

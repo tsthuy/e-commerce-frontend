@@ -8,8 +8,8 @@ import viJSON from '~/locales/vi.json';
 
 i18n.use(initReactI18next).init({
   resources: {
-    en: { translation: { ...enJSON } },
-    vi: { translation: { ...viJSON } }
+    en: { translation: enJSON },
+    vi: { translation: viJSON }
   },
   lng: LANGUAGES.find((item) => item.isDefault)?.i18n,
   fallbackLng: 'en',

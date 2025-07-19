@@ -35,7 +35,7 @@ export const PROTECTED_ROUTES: {
     Element: CheckoutSuccessPage
   },
   checkoutCancel: {
-    path: () => '/user/checkout/cancel',
+    path: (orderId?: string): string => `${PREFIX_PROTECTED_ROUTE}/checkout/cancel/${orderId || ':orderId'}`,
     permission: null,
     Element: CheckoutCancelPage
   },

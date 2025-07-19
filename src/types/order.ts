@@ -15,15 +15,14 @@ export enum OrderStatus {
 // Payment Method enum
 export enum PaymentMethod {
   CASH_ON_DELIVERY = 'CASH_ON_DELIVERY',
-  CREDIT_CARD = 'CREDIT_CARD',
-  BANK_TRANSFER = 'BANK_TRANSFER',
-  E_WALLET = 'E_WALLET'
+  ADVANCE_PAYMENT = 'ADVANCE_PAYMENT' // Stripe payment
 }
 
 // Payment Status enum
 export enum PaymentStatus {
   PENDING = 'PENDING',
-  PAID = 'PAID',
+  PROCESSING = 'PROCESSING',
+  COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',
   REFUNDED = 'REFUNDED'
 }
@@ -35,6 +34,12 @@ export interface CreateOrderRequest {
   paymentMethod: PaymentMethod;
   notes?: string;
   cartItemIds?: string[]; // Optional: specific cart items to order
+}
+
+// Create Stripe Checkout Request
+export interface CreateStripeCheckoutRequest {
+  addressId?: string;
+  notes?: string;
 }
 
 // Update Order Status Request

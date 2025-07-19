@@ -7,6 +7,7 @@ import type { UserAddress } from '~/types';
 import { Button } from '~/components/common';
 import { RadioGroup, RadioGroupItem } from '~/components/ui';
 
+import { useTranslation } from '~/hooks/use-translation.hook';
 import { PROTECTED_ROUTES } from '~/routes/protected.route';
 
 interface AddressSelectorProps {
@@ -16,6 +17,8 @@ interface AddressSelectorProps {
 }
 
 export const AddressSelector = memo(({ addresses, selectedAddressId, onSelectAddress }: AddressSelectorProps): JSX.Element => {
+  const { t } = useTranslation();
+
   const handleAddNewAddress = (): void => {
     window.location.href = PROTECTED_ROUTES.address.path();
   };
@@ -24,10 +27,10 @@ export const AddressSelector = memo(({ addresses, selectedAddressId, onSelectAdd
     return (
       <div className="rounded-lg border border-dashed p-6 text-center">
         <MapPin className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
-        <h3 className="mb-2 text-lg font-medium">Không có địa chỉ nào</h3>
-        <p className="mb-4 text-muted-foreground">Vui lòng thêm địa chỉ giao hàng mới</p>
+        <h3 className="mb-2 text-lg font-medium">{t('Common.noAddresses')}</h3>
+        <p className="mb-4 text-muted-foreground">{t('Common.addNewAddressPrompt')}</p>
         <Button variant="outline" onClick={handleAddNewAddress}>
-          <Plus className="mr-2 h-4 w-4" /> Thêm địa chỉ mới
+          <Plus className="mr-2 h-4 w-4" /> {t('Common.addNewAddress')}
         </Button>
       </div>
     );
@@ -43,13 +46,15 @@ export const AddressSelector = memo(({ addresses, selectedAddressId, onSelectAdd
               <div className="flex items-center gap-2">
                 <label className="flex cursor-pointer items-center font-medium" htmlFor={address.id}>
                   <span>{address.addressType}</span>
-                  {address.isDefault && <span className="ml-2 rounded bg-primary/10 px-2 py-0.5 text-xs text-primary">Mặc định</span>}
+                  {address.isDefault && <span className="ml-2 rounded bg-primary/10 px-2 py-0.5 text-xs text-primary">{t('Common.default')}</span>}
                 </label>
               </div>
               <div className="mt-1 space-y-1 text-sm text-muted-foreground">
                 <p>{`${address.address}, ${address.city}, ${address.country}`}</p>
-                <p>Số điện thoại: {address.recipientPhone}</p>
-                {address.zipCode && <p>Mã bưu điện: {address.zipCode}</p>}
+                <p>
+                  {t('Common.phone')}: {address.recipientPhone}
+                </p>
+                {address.zipCode && <p>ZIP: {address.zipCode}</p>}
               </div>
             </div>
           </div>
@@ -58,7 +63,7 @@ export const AddressSelector = memo(({ addresses, selectedAddressId, onSelectAdd
 
       <div className="mt-4 flex justify-end">
         <Button size="sm" variant="outline" onClick={handleAddNewAddress}>
-          <Plus className="mr-1 h-4 w-4" /> Thêm địa chỉ mới
+          <Plus className="mr-1 h-4 w-4" /> {t('Common.addNewAddress')}
         </Button>
       </div>
     </div>

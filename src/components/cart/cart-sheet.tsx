@@ -23,6 +23,7 @@ interface CartSheetProps {
 
 export const CartSheet = ({ children }: CartSheetProps): JSX.Element => {
   const { data: cartResponse, isLoading } = useCartList();
+  console.log('CartSheet cartResponse', cartResponse);
   const updateCartItem = useUpdateCartItem();
   const removeCartItem = useRemoveCartItem();
   const { t } = useTranslation();
