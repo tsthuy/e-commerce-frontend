@@ -1,5 +1,7 @@
 import type { StringOrNull } from './common';
 
+import type { UserRole } from '~/types/auth';
+
 export type UserAvatar = {
   publicId: string;
   url: string;

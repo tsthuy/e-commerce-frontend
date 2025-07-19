@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { Heart, Minus, Plus, Share2, Star } from 'lucide-react';
+import { Heart, MessageCircle, Minus, Plus, Share2, Star } from 'lucide-react';
 
 import type { ProductDetailResponse } from '~/types';
 
@@ -9,6 +9,7 @@ import { Badge } from '~/components/ui';
 import { Input } from '~/components/ui/input';
 
 import { useAddToCart } from '~/hooks/use-cart-mutation.hook';
+import { useProfile } from '~/hooks/use-profile.hook';
 import { useToggleWishlistMutation } from '~/hooks/use-wishlist-mutation.hook';
 import { useWishlistList } from '~/hooks/use-wishlist.hook';
 import { calculateDiscountPercentage, formatPrice } from '~/utils/product.util';
@@ -42,6 +43,7 @@ export const ProductInfo = memo<ProductInfoProps>(({ product, selectedVariant, q
   const addToCart = useAddToCart();
   const toggleWishlist = useToggleWishlistMutation();
   const { data: wishlistResponse } = useWishlistList();
+  const { data: profileResponse } = useProfile({ enabled: true });
 
   // Check if product is in wishlist
   const isInWishlist = wishlistResponse?.result?.items?.some((item) => item.product.id === product.id) ?? false;
@@ -65,6 +67,19 @@ export const ProductInfo = memo<ProductInfoProps>(({ product, selectedVariant, q
 
   const handleToggleWishlist = (): void => {
     toggleWishlist.mutate({ productId: product.id });
+  };
+
+  const handleMessageSeller = (): void => {
+    if (!product.seller?.shopName || !profileResponse?.id) return;
+
+    const customerId = profileResponse.id;
+    // TODO: Need to get sellerId from product API - currently only shopName is available
+    // For now, we'll need to modify the ProductDetailResponse type to include seller.id
+    const sellerId = product.seller?.id; // This needs to be fixed
+    const conversationId = `${customerId}_${sellerId}`;
+
+    // Navigate to conversation page
+    window.location.href = `/user/messages/conversation/${conversationId}`;
   };
 
   const handleQuantityChange = (newQuantity: number): void => {
@@ -144,7 +159,12 @@ export const ProductInfo = memo<ProductInfoProps>(({ product, selectedVariant, q
         {product.seller && (
           <div className="flex items-center gap-3">
             <span className="text-sm font-medium text-gray-700">Sold by:</span>
-            <span className="text-sm font-medium text-gray-900">{product.seller.shopName}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-900">{product.seller.shopName}</span>
+              <Button className="h-8 w-8 p-0 text-gray-500 hover:text-primary" size="sm" variant="ghost" onClick={handleMessageSeller}>
+                <MessageCircle className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         )}
       </div>

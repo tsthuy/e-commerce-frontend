@@ -4,6 +4,7 @@ export * from './cart';
 export * from './category';
 export * from './cloudinary';
 export * from './common';
+export * from './conversation.type';
 export * from './firebase';
 export * from './form';
 export * from './general';

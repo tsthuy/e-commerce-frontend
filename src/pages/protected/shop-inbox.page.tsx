@@ -13,7 +13,7 @@ import { Avatar, Button, Input } from '~/components/ui';
 import { useProfile } from '~/hooks/use-profile.hook';
 import { ConversationService } from '~/services/conversation.service';
 
-export const ShopInbox = memo(() => {
+export const ShopInboxPage = memo(() => {
   const history = useHistory();
   const { data: profileResponse } = useProfile({ enabled: true });
 
@@ -179,3 +179,5 @@ export const ShopInbox = memo(() => {
     </Container>
   );
 });
+
+ShopInboxPage.displayName = 'ShopInboxPage';
