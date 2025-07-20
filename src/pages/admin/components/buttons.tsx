@@ -8,7 +8,7 @@ import { cn } from '~/libs';
 import { copyToClipboard } from '~/utils';
 
 import { Button, DetailsSection, Helmet, Tooltip } from '~/components/common';
-import { ContentAdminLayout } from '~/components/layouts/admin';
+import { ContentAdminLayout } from '~/components/layouts/admin/content';
 
 export const ButtonsPage = memo(() => {
   const [open, setOpen] = useState<{

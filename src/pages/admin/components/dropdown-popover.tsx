@@ -4,7 +4,7 @@ import { BoltIcon, ChevronDownIcon, CopyPlusIcon, EllipsisIcon, FilesIcon, Layer
 
 import { Button, DetailsSection, Helmet } from '~/components/common';
 import { CustomCheckbox, CustomForm } from '~/components/form';
-import { ContentAdminLayout } from '~/components/layouts/admin';
+import { ContentAdminLayout } from '~/components/layouts/admin/content';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,

@@ -41,6 +41,12 @@ export const API_URLS = {
     stats: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/dashboard/stats`,
     chart: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/dashboard/chart`
   },
+  admin: {
+    login: '/admin/login',
+    profile: '/admin/profile',
+    dashboardStats: '/admin/dashboard/stats',
+    dashboardChart: '/admin/dashboard/chart'
+  },
   category: {
     getAll: '/api/categories',
     getAllPaged: '/api/categories/paged',
@@ -104,5 +110,6 @@ export const API_ENDPOINTS = {
   ORDER: API_URLS.order,
   REVIEW: API_URLS.review,
   GENERAL: API_URLS.general,
-  DASHBOARD: API_URLS.dashboard
+  DASHBOARD: API_URLS.dashboard,
+  ADMIN: API_URLS.admin
 };

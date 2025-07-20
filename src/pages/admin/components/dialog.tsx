@@ -3,7 +3,7 @@ import { memo, useCallback, useRef, useState } from 'react';
 import { CircleAlertIcon } from 'lucide-react';
 
 import { Button, DetailsSection, Helmet } from '~/components/common';
-import { ContentAdminLayout } from '~/components/layouts/admin';
+import { ContentAdminLayout } from '~/components/layouts/admin/content';
 import {
   AlertDialog,
   AlertDialogAction,

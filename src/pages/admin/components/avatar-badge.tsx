@@ -5,7 +5,7 @@ import { CheckIcon, UserRound, ZapIcon } from 'lucide-react';
 import { DEFAULT_IMG_AVATAR } from '~/constants';
 
 import { Avatar, DetailsSection, Helmet } from '~/components/common';
-import { ContentAdminLayout } from '~/components/layouts/admin';
+import { ContentAdminLayout } from '~/components/layouts/admin/content';
 import { Badge } from '~/components/ui';
 
 export const AvatarBadgePage = memo(() => {

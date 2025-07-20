@@ -20,6 +20,8 @@ export type LoginWithEmailResponse = {
   refreshToken: string;
 };
 
+export type AuthenticationResponse = LoginWithEmailResponse;
+
 export type LoginWithSocialBody = {
   access_token: string;
   provider: 'Google';

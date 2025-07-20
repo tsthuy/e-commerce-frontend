@@ -1,5 +1,6 @@
 export * from './config.service';
 
+export * from './admin.api';
 export * from './auth.api';
 export * from './cart.api';
 export * from './category.api';

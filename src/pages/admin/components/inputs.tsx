@@ -28,7 +28,7 @@ import {
   CustomInputTime,
   PaymentForm
 } from '~/components/form';
-import { ContentAdminLayout } from '~/components/layouts/admin';
+import { ContentAdminLayout } from '~/components/layouts/admin/content';
 
 export const InputsPage = memo(() => {
   const schema = useMemo(

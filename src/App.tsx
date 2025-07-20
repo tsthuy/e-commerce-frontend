@@ -4,9 +4,19 @@ import { PREFIX_ADMIN_ROUTE, PREFIX_AUTH_ROUTE, PREFIX_PROTECTED_ROUTE, PREFIX_P
 
 import { AdminLayout, AuthLayout, ProtectedLayout, PublicLayout, SellerLayout } from '~/layouts';
 
+import { AdminLoginPage } from '~/pages/admin/admin-login.page';
+
+import { AdminAuthLayout } from '~/layouts/admin-auth.layout';
+
 function App(): React.JSX.Element {
   return (
     <Switch>
+      <Route exact path="/admin/login">
+        <AdminLoginPage />
+      </Route>
+      <Route path="/admin">
+        <AdminAuthLayout />
+      </Route>
       <Route path={PREFIX_AUTH_ROUTE}>
         <AuthLayout />
       </Route>

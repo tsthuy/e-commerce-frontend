@@ -3,8 +3,9 @@ import { memo } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
-import { FooterAdminLayout, HeaderAdminLayout, SidebarAdminLayout } from '~/components/layouts/admin';
-import { MainAdminLayout } from '~/components/layouts/admin/main';
+import { FooterAdminLayout } from '~/components/layouts/admin/footer';
+import { HeaderAdminLayout } from '~/components/layouts/admin/header/index';
+import { SidebarAdminLayout } from '~/components/layouts/admin/sidebar/index';
 
 import { ADMIN_ROUTES, OTHER_ROUTES } from '~/routes';
 
@@ -14,23 +15,21 @@ export const AdminLayout = memo(() => {
   return (
     <>
       <SidebarAdminLayout />
-      <MainAdminLayout>
-        <HeaderAdminLayout />
-        <AnimatePresence mode="wait">
-          <Switch key={location.pathname} location={location}>
-            {Object.values(ADMIN_ROUTES).map(
-              ({ path, Element }) =>
-                !!Element && (
-                  <Route key={path()} exact path={path()}>
-                    <Element />
-                  </Route>
-                )
-            )}
+      <HeaderAdminLayout />
+      <AnimatePresence mode="wait">
+        <Switch key={location.pathname} location={location}>
+          {Object.values(ADMIN_ROUTES).map(
+            ({ path, Element }) =>
+              !!Element && (
+                <Route key={path()} exact path={path()}>
+                  <Element />
+                </Route>
+              )
+          )}
 
-            <Redirect to={OTHER_ROUTES[404].path()} />
-          </Switch>
-        </AnimatePresence>
-      </MainAdminLayout>
+          <Redirect to={OTHER_ROUTES[404].path()} />
+        </Switch>
+      </AnimatePresence>
       <FooterAdminLayout />
     </>
   );

@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { DetailsSection, Helmet } from '~/components/common';
-import { ContentAdminLayout } from '~/components/layouts/admin';
+import { ContentAdminLayout } from '~/components/layouts/admin/content';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui';
 
 const TABS = [

@@ -2,7 +2,7 @@ import { PREFIX_ADMIN_ROUTE } from '~/constants';
 
 import type { AdminRouteKeys, RouteType } from '~/types';
 
-import { AvatarBadgePage, ButtonsPage, CheckboxRadioSwitchPage, DialogPage, DropdownPopoverPage, InputsPage, SelectsPage, TabPage, TooltipPage } from '~/pages/admin';
+import { AvatarBadgePage, ButtonsPage, CheckboxRadioSwitchPage, DialogPage, DropdownPopoverPage, InputsPage, SelectsPage, TabPage, TooltipPage } from '~/pages/admin/components/';
 
 export const ADMIN_ROUTES: {
   [key in AdminRouteKeys]: RouteType;

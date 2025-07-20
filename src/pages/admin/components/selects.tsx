@@ -10,7 +10,7 @@ import { validates } from '~/utils';
 
 import { Button, DetailsSection, Helmet } from '~/components/common';
 import { CustomForm, CustomMultiSelect, CustomSelect, CustomSelectSearch } from '~/components/form';
-import { ContentAdminLayout } from '~/components/layouts/admin';
+import { ContentAdminLayout } from '~/components/layouts/admin/content';
 
 const OPTIONS = [
   {
