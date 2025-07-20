@@ -10,8 +10,64 @@ import { formatRelativeTime } from '~/utils';
 import { Container, Helmet } from '~/components/common';
 import { Avatar, Input } from '~/components/ui';
 
+import { useInfoUserForChat } from '~/hooks/use-info-user-for-chat.hook';
 import { useProfile } from '~/hooks/use-profile.hook';
 import { ConversationService } from '~/services/conversation.service';
+
+// Component con để sử dụng hook cho từng conversation
+const ConversationItem = memo(({ conversation, handleClick }: { conversation: ConversationMetadata; handleClick: (id: string) => void }) => {
+  const userType = window.location.pathname.includes('/seller/') ? 'seller' : 'customer';
+  const receiverType = userType === 'seller' ? 'customer' : 'seller';
+
+  const { data: receiverInfo } = useInfoUserForChat({
+    id: conversation.receiverId,
+    type: receiverType,
+    enabled: !!conversation.receiverId
+  });
+
+  const formatLastMessage = (message: string): string => {
+    if (!message) return 'No messages yet';
+    if (message.length > 50) return `${message.substring(0, 50)}...`;
+    return message;
+  };
+
+  return (
+    <div
+      className={`flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-gray-50 ${!conversation.isSeen ? 'border-primary bg-primary/5' : 'border-gray-200'}`}
+      onClick={() => handleClick(conversation.conversationId)}
+    >
+      {/* Avatar */}
+      <div className="relative flex items-center justify-center">
+        <Avatar className="flex h-12 w-12 items-center justify-center">
+          {receiverInfo?.avatarUrl || conversation.receiverAvatar ? (
+            <img alt={receiverInfo?.name || conversation.receiverName} src={receiverInfo?.avatarUrl || conversation.receiverAvatar} />
+          ) : (
+            <User className="flex h-6 w-6 items-center justify-center" />
+          )}
+        </Avatar>
+        {conversation.unseenCount > 0 && (
+          <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+            {conversation.unseenCount > 9 ? '9+' : conversation.unseenCount}
+          </div>
+        )}
+      </div>
+
+      {/* Conversation Info */}
+      <div className="flex-1">
+        <div className="flex items-center justify-between">
+          <h3 className="font-medium text-gray-900">{receiverInfo?.name || conversation.receiverName || 'Unknown User'}</h3>
+        </div>
+        <p className={`text-sm ${!conversation.isSeen ? 'font-medium text-gray-900' : 'text-gray-600'}`}>{formatLastMessage(conversation.lastMessage)}</p>
+      </div>
+      <span className="text-sm text-gray-500">{formatRelativeTime(conversation.updatedAt.toDate())}</span>
+
+      {/* Unread indicator */}
+      {!conversation.isSeen && <div className="h-2 w-2 rounded-full bg-primary" />}
+    </div>
+  );
+});
+
+ConversationItem.displayName = 'ConversationItem';
 
 export const MessagePage = memo(() => {
   const history = useHistory();
@@ -45,12 +101,6 @@ export const MessagePage = memo(() => {
 
   const handleConversationClick = (conversationId: string): void => {
     history.push(`/user/messages/conversation/${conversationId}`);
-  };
-
-  const formatLastMessage = (message: string): string => {
-    if (!message) return 'No messages yet';
-    if (message.length > 50) return `${message.substring(0, 50)}...`;
-    return message;
   };
 
   if (loading) {
@@ -91,39 +141,7 @@ export const MessagePage = memo(() => {
                 <p className="mt-2 text-gray-600">Start a conversation by messaging a seller from a product page</p>
               </div>
             ) : (
-              filteredConversations.map((conversation) => (
-                <div
-                  key={conversation.conversationId}
-                  className={`flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-gray-50 ${
-                    !conversation.isSeen ? 'border-primary bg-primary/5' : 'border-gray-200'
-                  }`}
-                  onClick={() => handleConversationClick(conversation.conversationId)}
-                >
-                  {/* Avatar */}
-                  <div className="relative flex items-center justify-center">
-                    <Avatar className="flex h-12 w-12 items-center justify-center">
-                      {conversation.receiverAvatar ? <img alt={conversation.receiverName} src={conversation.receiverAvatar} /> : <User className="flex h-6 w-6 items-center justify-center" />}
-                    </Avatar>
-                    {conversation.unseenCount > 0 && (
-                      <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                        {conversation.unseenCount > 9 ? '9+' : conversation.unseenCount}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Conversation Info */}
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-medium text-gray-900">{conversation.receiverName || 'Unknown Seller'}</h3>
-                    </div>
-                    <p className={`text-sm ${!conversation.isSeen ? 'font-medium text-gray-900' : 'text-gray-600'}`}>{formatLastMessage(conversation.lastMessage)}</p>
-                  </div>
-                  <span className="text-sm text-gray-500">{formatRelativeTime(conversation.updatedAt.toDate())}</span>
-
-                  {/* Unread indicator */}
-                  {!conversation.isSeen && <div className="h-2 w-2 rounded-full bg-primary" />}
-                </div>
-              ))
+              filteredConversations.map((conversation) => <ConversationItem key={conversation.conversationId} conversation={conversation} handleClick={handleConversationClick} />)
             )}
           </div>
         </div>

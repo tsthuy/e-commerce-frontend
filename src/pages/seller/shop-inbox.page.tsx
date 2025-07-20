@@ -10,21 +10,20 @@ import { formatRelativeTime } from '~/utils';
 import { Container, Helmet } from '~/components/common';
 import { Avatar, Button, Input } from '~/components/ui';
 
+import { useInfoUserForChat } from '~/hooks/use-info-user-for-chat.hook';
 import { useProfile } from '~/hooks/use-profile.hook';
 import { ConversationService } from '~/services/conversation.service';
 
-export const ShopInboxPage = memo(() => {
-  const history = useHistory();
-  const { data: profileResponse } = useProfile({ enabled: true });
+// Component con để sử dụng hook cho từng conversation
+const ConversationItem = memo(({ conversation, handleClick }: { conversation: ConversationMetadata; handleClick: (id: string) => void }) => {
+  // Seller is talking to customer
+  const { data: customerInfo } = useInfoUserForChat({
+    id: conversation.receiverId,
+    type: 'customer',
+    enabled: !!conversation.receiverId
+  });
 
-  const [conversations, setConversations] = useState<ConversationMetadata[]>([]);
-  const [filteredConversations, setFilteredConversations] = useState<ConversationMetadata[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const handleConversationClick = (conversationId: string): void => {
-    history.push(`/seller/inbox/conversation/${conversationId}`);
-  };
+  console.log('ConversationItem', customerInfo);
 
   const formatConversationTime = (timestamp: unknown): string => {
     if (!timestamp) return '';
@@ -46,6 +45,51 @@ export const ShopInboxPage = memo(() => {
     } catch {
       return '';
     }
+  };
+
+  return (
+    <div
+      className={`cursor-pointer rounded-lg border p-4 transition-colors hover:bg-gray-50 ${!conversation.isSeen ? 'border-blue-200 bg-blue-50' : 'bg-white'}`}
+      onClick={() => handleClick(conversation.conversationId)}
+    >
+      <div className="flex items-start gap-3">
+        <Avatar className="h-12 w-12">
+          {customerInfo?.avatarUrl || conversation.receiverAvatar ? (
+            <img alt={customerInfo?.name || conversation.receiverName} src={customerInfo?.avatarUrl || conversation.receiverAvatar} />
+          ) : (
+            <User className="h-6 w-6" />
+          )}
+        </Avatar>
+
+        <div className="min-w-0 flex-1">
+          <div className="mb-1 flex items-center justify-between">
+            <h3 className="font-medium text-gray-900">{customerInfo?.name || conversation.receiverName || 'Customer'}</h3>
+            <div className="flex items-center gap-2">
+              {conversation.unseenCount > 0 && <span className="rounded-full bg-blue-600 px-2 py-1 text-xs font-medium text-white">{conversation.unseenCount}</span>}
+              <span className="text-xs text-gray-500">{formatConversationTime(conversation.updatedAt)}</span>
+            </div>
+          </div>
+
+          <p className={`truncate text-sm ${!conversation.isSeen ? 'font-medium text-gray-900' : 'text-gray-600'}`}>{conversation.lastMessage || 'No messages yet'}</p>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+ConversationItem.displayName = 'ConversationItem';
+
+export const ShopInboxPage = memo(() => {
+  const history = useHistory();
+  const { data: profileResponse } = useProfile({ enabled: true });
+
+  const [conversations, setConversations] = useState<ConversationMetadata[]>([]);
+  const [filteredConversations, setFilteredConversations] = useState<ConversationMetadata[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleConversationClick = (conversationId: string): void => {
+    history.push(`/seller/inbox/conversation/${conversationId}`);
   };
 
   useEffect(() => {
@@ -127,29 +171,7 @@ export const ShopInboxPage = memo(() => {
               <p className="text-gray-600">{searchTerm ? 'Try adjusting your search terms' : 'Customer messages will appear here when they contact you'}</p>
             </div>
           ) : (
-            filteredConversations.map((conversation) => (
-              <div
-                key={conversation.conversationId}
-                className={`cursor-pointer rounded-lg border p-4 transition-colors hover:bg-gray-50 ${!conversation.isSeen ? 'border-blue-200 bg-blue-50' : 'bg-white'}`}
-                onClick={() => handleConversationClick(conversation.conversationId)}
-              >
-                <div className="flex items-start gap-3">
-                  <Avatar className="h-12 w-12">{conversation.receiverAvatar ? <img alt={conversation.receiverName} src={conversation.receiverAvatar} /> : <User className="h-6 w-6" />}</Avatar>
-
-                  <div className="min-w-0 flex-1">
-                    <div className="mb-1 flex items-center justify-between">
-                      <h3 className="font-medium text-gray-900">{conversation.receiverName || 'Customer'}</h3>
-                      <div className="flex items-center gap-2">
-                        {conversation.unseenCount > 0 && <span className="rounded-full bg-blue-600 px-2 py-1 text-xs font-medium text-white">{conversation.unseenCount}</span>}
-                        <span className="text-xs text-gray-500">{formatConversationTime(conversation.updatedAt)}</span>
-                      </div>
-                    </div>
-
-                    <p className={`truncate text-sm ${!conversation.isSeen ? 'font-medium text-gray-900' : 'text-gray-600'}`}>{conversation.lastMessage || 'No messages yet'}</p>
-                  </div>
-                </div>
-              </div>
-            ))
+            filteredConversations.map((conversation) => <ConversationItem key={conversation.conversationId} conversation={conversation} handleClick={handleConversationClick} />)
           )}
         </div>
 
@@ -165,7 +187,7 @@ export const ShopInboxPage = memo(() => {
                   // Mark all as seen
                   conversations.forEach(async (conv) => {
                     if (!conv.isSeen && profileResponse?.id) {
-                      await ConversationService.markConversationAsSeen(profileResponse.id, conv.conversationId);
+                      await ConversationService.markConversationAsSeen(profileResponse.id, conv.conversationId, 'seller');
                     }
                   });
                 }}

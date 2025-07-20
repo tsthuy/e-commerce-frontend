@@ -12,6 +12,7 @@ import { Container, Helmet } from '~/components/common';
 import { Avatar, Button, Textarea } from '~/components/ui';
 
 import { useCloudinaryUpload } from '~/hooks/use-cloudinary-upload.hook';
+import { useInfoUserForChat } from '~/hooks/use-info-user-for-chat.hook';
 import { useProfile } from '~/hooks/use-profile.hook';
 import { ConversationService } from '~/services/conversation.service';
 
@@ -38,6 +39,16 @@ export const ConversationPage = memo(() => {
 
   // Determine user type from URL
   const userType = window.location.pathname.includes('/seller/') ? 'seller' : 'customer';
+
+  // Get receiver type (opposite of current user)
+  const receiverType = userType === 'seller' ? 'customer' : 'seller';
+
+  // Get receiver info for better display
+  const { data: receiverInfo } = useInfoUserForChat({
+    id: conversationMeta?.receiverId || '',
+    type: receiverType,
+    enabled: !!conversationMeta?.receiverId
+  });
 
   const isMyMessage = (message: Message): boolean => {
     return message.senderId === profileResponse?.id;
@@ -239,10 +250,14 @@ export const ConversationPage = memo(() => {
 
           <div className="flex items-center gap-3">
             <Avatar className="flex h-10 w-10 items-center justify-center">
-              {conversationMeta?.receiverAvatar ? <img alt={conversationMeta.receiverName} src={conversationMeta.receiverAvatar} /> : <User className="h-5 w-5" />}
+              {receiverInfo?.avatarUrl || conversationMeta?.receiverAvatar ? (
+                <img alt={receiverInfo?.name || conversationMeta?.receiverName} className="h-full w-full object-cover" src={receiverInfo?.avatarUrl || conversationMeta?.receiverAvatar} />
+              ) : (
+                <User className="h-5 w-5" />
+              )}
             </Avatar>
             <div>
-              <h2 className="font-semibold text-gray-900">{conversationMeta?.receiverName || 'User'}</h2>
+              <h2 className="font-semibold text-gray-900">{receiverInfo?.name || conversationMeta?.receiverName || 'User'}</h2>
             </div>
           </div>
         </div>

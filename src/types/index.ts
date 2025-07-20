@@ -14,4 +14,5 @@ export * from './profile';
 export * from './review';
 export * from './route';
 export * from './seller';
+export * from './user-info';
 export * from './wishlist';

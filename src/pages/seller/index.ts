@@ -9,5 +9,4 @@ export * from './edit-product';
 export * from './product-view';
 export * from './refunds';
 export * from './settings';
-export * from './shop-inbox';
 export * from './withdraw-money';

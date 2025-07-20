@@ -15,7 +15,7 @@ import { useCloudinaryUpload, useSellerProfile, useTranslation } from '~/hooks';
 import { getErrorMessage, validates } from '~/utils';
 
 import { Button } from '~/components/common';
-import { CustomForm, CustomInput, CustomInputPassword, CustomInputTextarea } from '~/components/form';
+import { CustomForm, CustomInput, CustomInputTextarea } from '~/components/form';
 import { Avatar, AvatarFallback, AvatarImage, Card, CardContent } from '~/components/ui';
 
 import { AUTH_ROUTES } from '~/routes';
@@ -46,9 +46,6 @@ export const SellerSettingsContent = memo(() => {
         description: z.string().optional(),
         phone: z.string().min(1, {
           message: validates.required.message(t('Common.phone'))
-        }),
-        password: z.string().min(1, {
-          message: validates.required.message(t('Seller.passwordRequiredForUpdate'))
         })
       }),
     [t]
@@ -59,8 +56,7 @@ export const SellerSettingsContent = memo(() => {
       shopName: seller?.shopName || '',
       description: seller?.description || '',
       phone: seller?.phone || '',
-      email: seller?.email || '',
-      password: ''
+      email: seller?.email || ''
     }),
     [seller]
   );
@@ -93,11 +89,9 @@ export const SellerSettingsContent = memo(() => {
     try {
       setIsLoading(true);
 
-      const { shopName, description, password, phone } = values;
+      const { shopName, description, phone } = values;
 
-      const updatedFields: UpdateSellerProfileRequest = {
-        password
-      };
+      const updatedFields: UpdateSellerProfileRequest = {};
 
       if (shopName !== seller?.shopName) {
         updatedFields.shopName = shopName;
@@ -125,7 +119,7 @@ export const SellerSettingsContent = memo(() => {
         }
       }
 
-      const hasChanges = Object.keys(updatedFields).length > 1 || updatedFields.shopAvatarId;
+      const hasChanges = Object.keys(updatedFields).length > 0 || updatedFields.shopAvatarId;
 
       if (!hasChanges) {
         toast.info(t('Seller.noChangesDetected'));
@@ -201,12 +195,6 @@ export const SellerSettingsContent = memo(() => {
               <div className="md:col-span-2">
                 <CustomInputTextarea disabled={!isEditing || isLoading || isUploading} label={t('Seller.shopDescription')} name="description" placeholder={t('Seller.shopDescriptionPlaceholder')} />
               </div>
-
-              {isEditing && (
-                <div className="md:col-span-2">
-                  <CustomInputPassword disabled={isLoading || isUploading} label={t('Seller.passwordRequiredForUpdate')} name="password" placeholder={t('Common.enterPassword')} />
-                </div>
-              )}
             </div>
 
             {isEditing && (

@@ -2,6 +2,7 @@ export type SellerProfileResponse = {
   id: string;
   email: string;
   shopName: string;
+  createdViaOAuth: boolean;
   description: string;
   phone: string;
   shopAvatar?: {
@@ -11,7 +12,6 @@ export type SellerProfileResponse = {
 };
 
 export type UpdateSellerProfileRequest = {
-  password: string;
   shopName?: string;
   description?: string;
   phone?: string;

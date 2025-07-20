@@ -22,6 +22,7 @@ export type ProfileResponse = {
   id: string;
   email: string;
   fullName: string;
+  createdViaOAuth: boolean;
   phone: StringOrNull;
   roles: UserRole[];
   avatar: UserAvatar;
@@ -35,7 +36,6 @@ export type UpdateProfileRequest = {
   phone?: StringOrNull;
   avatarUrl?: StringOrNull;
   avatarPublicId?: StringOrNull;
-  password: string;
 };
 
 export type CreateAddressRequest = {

@@ -15,7 +15,7 @@ import { useCloudinaryUpload, useProfile } from '~/hooks';
 import { getErrorMessage, validates } from '~/utils';
 
 import { Button } from '~/components/common';
-import { CustomForm, CustomInput, CustomInputPassword } from '~/components/form';
+import { CustomForm, CustomInput } from '~/components/form';
 import { Avatar, AvatarFallback, AvatarImage, Card, CardContent } from '~/components/ui';
 
 export const ProfileContent = memo(() => {
@@ -48,9 +48,6 @@ export const ProfileContent = memo(() => {
           .refine((value) => validates.email.pattern.test(value), validates.email.message),
         phone: z.string().min(1, {
           message: validates.required.message('Phone Number')
-        }),
-        password: z.string().min(1, {
-          message: validates.required.message('Password is required for any update')
         })
       }),
     []
@@ -60,12 +57,10 @@ export const ProfileContent = memo(() => {
     () => ({
       fullName: profile?.fullName || '',
       email: profile?.email || '',
-      phone: profile?.phone || '',
-      password: ''
+      phone: profile?.phone || ''
     }),
     [profile]
   );
-  console.log(profile);
 
   const handleAvatarChange = useCallback((files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -86,11 +81,9 @@ export const ProfileContent = memo(() => {
     try {
       setIsLoading(true);
 
-      const { fullName, password, phone } = values;
+      const { fullName, phone } = values;
 
-      const updatedFields: UpdateProfileRequest = {
-        password
-      };
+      const updatedFields: UpdateProfileRequest = {};
 
       if (fullName !== profile?.fullName) {
         updatedFields.fullName = fullName;
@@ -114,7 +107,7 @@ export const ProfileContent = memo(() => {
         }
       }
 
-      const hasChanges = Object.keys(updatedFields).length > 1 || updatedFields.avatarPublicId;
+      const hasChanges = Object.keys(updatedFields).length > 0 || updatedFields.avatarPublicId;
 
       if (!hasChanges) {
         toast.info('No changes detected');
@@ -186,8 +179,6 @@ export const ProfileContent = memo(() => {
               <CustomInput disabled label="Email Address" name="email" placeholder="Your email" />
 
               <CustomInput disabled={!isEditing || isLoading || isUploading} label="Phone Number" name="phone" placeholder="Your phone number" />
-
-              {isEditing && <CustomInputPassword disabled={isLoading || isUploading} label="Password (required to update)" name="password" placeholder="Enter your password" />}
             </div>
 
             {isEditing && (

@@ -3,8 +3,10 @@ import { PREFIX_SELLER_ROUTE } from '~/constants';
 import type { RouteType, SellerRouteKeys } from '~/types';
 
 import { ConversationPage } from '~/pages/protected/conversation.page';
-import { AllEvents, AllProducts, Categories, CreateEvent, CreateProduct, Dashboard, DiscountCodes, EditProduct, ProductView, Refunds, SellerSettings, ShopInbox, WithdrawMoney } from '~/pages/seller';
+import { AllEvents, AllProducts, Categories, CreateEvent, CreateProduct, DiscountCodes, EditProduct, ProductView, Refunds, SellerSettings, WithdrawMoney } from '~/pages/seller';
+import SellerDashboard from '~/pages/seller-dashboard';
 import { AllNewOrders } from '~/pages/seller/all-orders-new';
+import { ShopInboxPage } from '~/pages/seller/shop-inbox.page';
 
 export const SELLER_ROUTES: {
   [key in SellerRouteKeys]: RouteType;
@@ -12,7 +14,7 @@ export const SELLER_ROUTES: {
   dashboard: {
     path: (): string => `${PREFIX_SELLER_ROUTE}/dashboard`,
     permission: null,
-    Element: Dashboard
+    Element: SellerDashboard
   },
   allOrders: {
     path: (): string => `${PREFIX_SELLER_ROUTE}/all-orders`,
@@ -57,7 +59,7 @@ export const SELLER_ROUTES: {
   shopInbox: {
     path: (): string => `${PREFIX_SELLER_ROUTE}/shop-inbox`,
     permission: null,
-    Element: ShopInbox
+    Element: ShopInboxPage
   },
   conversation: {
     path: (conversationId?: string): string => `${PREFIX_SELLER_ROUTE}/inbox/conversation/${conversationId || ':conversationId'}`,

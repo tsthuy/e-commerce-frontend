@@ -30,9 +30,16 @@ export const API_URLS = {
     createAddress: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/address`,
     deleteAddress: (addressId: string): string => `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/address/${addressId}`
   },
+  userInfo: {
+    getUserInfo: `${API_PREFIX_GENERAL}/user-info`
+  },
   seller: {
     getProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/profile`,
     updateProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/profile`
+  },
+  dashboard: {
+    stats: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/dashboard/stats`,
+    chart: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/dashboard/chart`
   },
   category: {
     getAll: '/api/categories',
@@ -89,11 +96,13 @@ export const API_ENDPOINTS = {
   // Sao chép từ API_URLS cho tương thích
   AUTH: API_URLS.auth,
   PROFILE: API_URLS.profile,
+  USER_INFO: API_URLS.userInfo,
   CATEGORY: API_URLS.category,
   PRODUCT: API_URLS.product,
   CART: API_URLS.cart,
   WISHLIST: API_URLS.wishlist,
   ORDER: API_URLS.order,
   REVIEW: API_URLS.review,
-  GENERAL: API_URLS.general
+  GENERAL: API_URLS.general,
+  DASHBOARD: API_URLS.dashboard
 };
