@@ -4,8 +4,8 @@ import type { RouteType, SellerRouteKeys } from '~/types';
 
 import { ConversationPage } from '~/pages/protected/conversation.page';
 import { AllEvents, AllProducts, Categories, CreateEvent, CreateProduct, DiscountCodes, EditProduct, ProductView, Refunds, SellerSettings, WithdrawMoney } from '~/pages/seller';
-import SellerDashboard from '~/pages/seller-dashboard';
 import { AllNewOrders } from '~/pages/seller/all-orders-new';
+import { SellerDashboard } from '~/pages/seller/seller-dashboard';
 import { ShopInboxPage } from '~/pages/seller/shop-inbox.page';
 
 export const SELLER_ROUTES: {

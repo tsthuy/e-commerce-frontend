@@ -1,5 +1,10 @@
+import { PREFIX_ADMIN_ROUTE } from '~/constants';
+
+import { AdminAllOrdersPage } from '~/pages/admin/admin-all-orders.page';
+import { AdminAllProductsPage } from '~/pages/admin/admin-all-products.page';
 import { AdminDashboard } from '~/pages/admin/admin-dashboard.page';
 import { AdminLoginPage } from '~/pages/admin/admin-login.page';
+import { Categories, ProductView } from '~/pages/seller';
 
 export const ADMIN_AUTH_ROUTES = {
   login: {
@@ -10,14 +15,25 @@ export const ADMIN_AUTH_ROUTES = {
     path: () => '/admin/dashboard',
     Element: AdminDashboard
   },
+  categories: {
+    path: () => '/admin/categories',
+    Element: Categories
+  },
   allProducts: {
     path: () => '/admin/all-products',
-    Element: null // Will implement later
+    Element: AdminAllProductsPage
   },
+  productView: {
+    path: (id?: string): string => `${PREFIX_ADMIN_ROUTE}/product-view/${id || ':id'}`,
+    permission: null,
+    Element: ProductView
+  },
+
   allOrders: {
     path: () => '/admin/all-orders',
-    Element: null // Will implement later
+    Element: AdminAllOrdersPage
   },
+
   allUsers: {
     path: () => '/admin/all-users',
     Element: null // Will implement later

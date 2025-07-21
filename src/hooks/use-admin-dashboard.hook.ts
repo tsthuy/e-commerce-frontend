@@ -1,7 +1,7 @@
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 
-import type { AdminDashboardStatsResponse, UseQueryParams } from '~/types';
+import type { AdminDashboardChart, AdminDashboardStatsResponse, UseQueryParams } from '~/types';
 
 import { queries } from '~/queries';
 
@@ -28,7 +28,7 @@ export function useAdminDashboardStats({ data, enabled = true, retry = false }: 
   return queryResponse;
 }
 
-export function useAdminDashboardChart({ data, enabled = true, retry = false }: UseAdminDashboardChartParams): UseQueryResult<unknown> {
+export function useAdminDashboardChart({ data, enabled = true, retry = false }: UseAdminDashboardChartParams): UseQueryResult<AdminDashboardChart> {
   const queryResponse = useQuery({
     ...queries.admin.getDashboardChart(data.period, data.type),
     retry,

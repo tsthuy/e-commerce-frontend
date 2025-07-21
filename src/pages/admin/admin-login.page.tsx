@@ -16,8 +16,6 @@ import { useTranslation } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
 
-import { AuthLayoutContent } from '~/layouts';
-
 import { Button, Helmet } from '~/components/common';
 import { CustomForm, CustomInput, CustomInputPassword } from '~/components/form';
 
@@ -79,7 +77,7 @@ export const AdminLoginPage = memo(() => {
 
   return (
     <Helmet title={`Admin Login - ${SEO_AUTHOR}`}>
-      <AuthLayoutContent>
+      <div className="mx-auto flex h-screen max-w-screen-xl items-center justify-center px-4">
         <CustomForm options={{ defaultValues }} schema={schema} onSubmit={handleLogin}>
           <div className="flex flex-col gap-4">
             <img alt={SEO_AUTHOR} className="mx-auto h-[90px] w-auto" src={LOGO} />
@@ -96,7 +94,7 @@ export const AdminLoginPage = memo(() => {
             </Button>
           </div>
         </CustomForm>
-      </AuthLayoutContent>
+      </div>
     </Helmet>
   );
 });

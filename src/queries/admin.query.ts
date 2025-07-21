@@ -1,6 +1,16 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 
-import type { AdminDashboardStatsResponse, AdminProfileResponse } from '~/types';
+import type {
+  AdminDashboardChart,
+  AdminDashboardStatsResponse,
+  AdminOrderListParams,
+  AdminOrderListResponse,
+  AdminOrderResponse,
+  AdminProductListParams,
+  AdminProductListResponse,
+  AdminProductResponse,
+  AdminProfileResponse
+} from '~/types';
 
 import { adminApi } from '~/services';
 
@@ -21,8 +31,42 @@ export const adminQueries = createQueryKeys('admin', {
   }),
   getDashboardChart: (period: string, type: string) => ({
     queryKey: ['chart', period, type],
-    queryFn: async (): Promise<unknown> => {
+    queryFn: async (): Promise<AdminDashboardChart> => {
       const { data } = await adminApi.getDashboardChart({ data: { period, type } });
+      return data.result;
+    }
+  }),
+
+  // Admin Products Queries
+  getAllProducts: (params: AdminProductListParams) => ({
+    queryKey: ['products', params],
+    queryFn: async (): Promise<AdminProductListResponse> => {
+      const { data } = await adminApi.getAllProducts({ data: params });
+      return data.result;
+    }
+  }),
+
+  getProductDetail: (productId: string) => ({
+    queryKey: ['product', productId],
+    queryFn: async (): Promise<AdminProductResponse> => {
+      const { data } = await adminApi.getProductDetail({ productId });
+      return data.result;
+    }
+  }),
+
+  // Admin Orders Queries
+  getAllOrders: (params: AdminOrderListParams) => ({
+    queryKey: ['orders', params],
+    queryFn: async (): Promise<AdminOrderListResponse> => {
+      const { data } = await adminApi.getAllOrders({ data: params });
+      return data.result;
+    }
+  }),
+
+  getOrderDetail: (orderId: string) => ({
+    queryKey: ['order', orderId],
+    queryFn: async (): Promise<AdminOrderResponse> => {
+      const { data } = await adminApi.getOrderDetail({ orderId });
       return data.result;
     }
   })

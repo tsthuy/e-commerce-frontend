@@ -1,36 +1,23 @@
 import { memo, useMemo } from 'react';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import { Edit, Eye, Trash2 } from 'lucide-react';
+import { Eye } from 'lucide-react';
 
 import type { ProductResponse } from '~/types';
 
-import { useDataTable, useProductDelete, useSellerProductList } from '~/hooks';
+import { useAdminProductList, useDataTable } from '~/hooks';
 
-import { DataTable, DataTableColumnHeader, DataTableToolbar, TasksTableToolbarActions } from '~/components/common/table';
+import { DataTable, DataTableColumnHeader, DataTableToolbar } from '~/components/common/table';
 import { Button } from '~/components/ui';
 
-interface ProductsTableProps {
-  onEdit?: (product: ProductResponse) => void;
+interface AdminProductsTableProps {
   onView?: (product: ProductResponse) => void;
-  onCreate?: () => void;
 }
 
-export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreate }) => {
-  const deleteMutation = useProductDelete();
-
-  // Define table columns
+export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => {
+  // Define table columns - removed edit and delete actions for admin
   const columns: ColumnDef<ProductResponse>[] = useMemo(
     () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <input checked={table.getIsAllPageRowsSelected()} className="rounded border border-gray-300" type="checkbox" onChange={(e) => table.toggleAllPageRowsSelected(e.target.checked)} />
-        ),
-        cell: ({ row }) => <input checked={row.getIsSelected()} className="rounded border border-gray-300" type="checkbox" onChange={(e) => row.toggleSelected(e.target.checked)} />,
-        enableSorting: false,
-        enableHiding: false
-      },
       {
         accessorKey: 'name',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Product Name" />,
@@ -47,6 +34,17 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
         accessorKey: 'categoryName',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
         cell: ({ row }) => <div className="text-sm">{row.getValue('categoryName') || '-'}</div>,
+        enableSorting: false,
+        enableHiding: true
+      },
+      {
+        accessorKey: 'seller',
+        header: ({ column }) => <DataTableColumnHeader column={column} title="Seller" />,
+        cell: ({ row }) => (
+          <div className="text-sm">
+            <div className="font-medium">{row.original.sellerName || 'N/A'}</div>
+          </div>
+        ),
         enableSorting: false,
         enableHiding: true
       },
@@ -122,19 +120,13 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
             <Button size="sm" variant="outline" onClick={() => onView?.(row.original)}>
               <Eye className="h-4 w-4" />
             </Button>
-            <Button size="sm" variant="outline" onClick={() => onEdit?.(row.original)}>
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button className="text-red-600 hover:text-red-700" disabled={deleteMutation.isPending} size="sm" variant="outline" onClick={() => deleteMutation.mutate(row.original.id)}>
-              <Trash2 className="h-4 w-4" />
-            </Button>
           </div>
         ),
         enableSorting: false,
         enableHiding: false
       }
     ],
-    [onEdit, onView, deleteMutation]
+    [onView]
   );
 
   // Filter fields for search and filtering
@@ -188,8 +180,8 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
     return params;
   }, [pagination, sorting, columnFilters]);
 
-  // Fetch data with dynamic parameters
-  const { data: productsResponse, isLoading } = useSellerProductList({
+  // Fetch data with dynamic parameters using admin hook
+  const { data: productsResponse, isLoading } = useAdminProductList({
     data: queryParamsFromTable
   });
 
@@ -199,35 +191,11 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
   table.options.data = products;
   table.options.pageCount = pageCount;
 
-  const handleBulkDelete = (): void => {
-    const selectedRows = table.getFilteredSelectedRowModel().rows;
-    const selectedIds = selectedRows.map((row) => row.original.id);
-
-    selectedIds.forEach((id) => {
-      deleteMutation.mutate(id);
-    });
-
-    // Clear selection after delete
-    table.resetRowSelection();
-  };
-
   return (
     <DataTable classNameHeader="bg-primary text-primary-foreground hover:bg-primary/80 dark:bg-primary dark:text-primary-foreground" isLoading={isLoading} table={table}>
-      <DataTableToolbar filterFields={filterFields} table={table}>
-        <TasksTableToolbarActions
-          table={table}
-          createAction={{
-            label: 'Add Product',
-            action: () => onCreate?.()
-          }}
-          deleteAction={{
-            label: 'Delete',
-            action: handleBulkDelete
-          }}
-        />
-      </DataTableToolbar>
+      <DataTableToolbar filterFields={filterFields} table={table} />
     </DataTable>
   );
 });
 
-ProductsTable.displayName = 'ProductsTable';
+AdminProductsTable.displayName = 'AdminProductsTable';

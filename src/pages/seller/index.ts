@@ -1,6 +1,6 @@
+export * from '../admin/categories';
 export * from './all-events';
 export * from './all-products';
-export * from './categories';
 export * from './create-event';
 export * from './create-product';
 export * from './dashboard';

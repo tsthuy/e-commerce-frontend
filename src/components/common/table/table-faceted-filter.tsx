@@ -1,13 +1,13 @@
 import type { Column } from '@tanstack/react-table';
 import { Check, PlusCircle } from 'lucide-react';
 
-import type { OptionTableFilter } from '~/types';
-
 import { cn } from '~/libs';
 
 import { Badge, Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, Popover, PopoverContent, PopoverTrigger, Separator } from '~/components/ui';
 
 import { Button } from '../button';
+
+import type { OptionTableFilter } from '~/types/table';
 
 interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;

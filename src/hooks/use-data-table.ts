@@ -5,11 +5,11 @@ import { getCoreRowModel, getFacetedRowModel, getFacetedUniqueValues, getFiltere
 import { useHistory, useLocation } from 'react-router-dom';
 import { z } from 'zod';
 
-import type { DataTableFilterField } from '~/types';
-
 import { TABLE_LIMIT_DEFAULT, TABLE_PAGE_DEFAULT } from '~/constants';
 
 import { useDebounce } from './';
+
+import type { DataTableFilterField } from '~/types/table';
 
 interface UseDataTableProps<TData>
   extends Omit<TableOptions<TData>, 'pageCount' | 'getCoreRowModel' | 'manualFiltering' | 'manualPagination' | 'manualSorting'>,

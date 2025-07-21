@@ -15,7 +15,7 @@ const formatCurrency = (value: number): string => {
   }).format(value);
 };
 
-export default memo(() => {
+export const SellerDashboard = memo(() => {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('7days');
 
   // Determine chart type based on selected period

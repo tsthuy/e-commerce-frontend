@@ -20,6 +20,13 @@ export const productQueries = createQueryKeys('product', {
       return data.result;
     }
   }),
+  adminList: (params: QueryParams<ProductPaginationParams>) => ({
+    queryKey: [params],
+    queryFn: async (): Promise<ProductListResponse> => {
+      const { data } = await productApi.adminList(params);
+      return data.result;
+    }
+  }),
   detail: (params: QueryParams<ProductDetailParams>) => ({
     queryKey: [params],
     queryFn: async (): Promise<ProductDetailResponseType> => {

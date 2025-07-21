@@ -45,7 +45,12 @@ export const API_URLS = {
     login: '/admin/login',
     profile: '/admin/profile',
     dashboardStats: '/admin/dashboard/stats',
-    dashboardChart: '/admin/dashboard/chart'
+    dashboardChart: '/admin/dashboard/chart',
+    allProducts: '/admin/products',
+    allOrders: '/admin/orders',
+    productDetail: (id: string): string => `/admin/products/${id}`,
+    orderDetail: (id: string): string => `/admin/orders/${id}`,
+    updateOrderStatus: (id: string): string => `/admin/orders/${id}/status`
   },
   category: {
     getAll: '/api/categories',

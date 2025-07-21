@@ -29,6 +29,16 @@ export const productApi = {
     });
   },
 
+  adminList({ data, config }: ApiParams<ProductPaginationParams>): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>(API_URLS.admin.allProducts, {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
+  },
+
   detail({ data: { productId }, config }: ApiParams<ProductDetailParams>): AxiosPromise<ApiResponse<ProductDetailResponseType>> {
     return httpBase.get<ApiResponse<ProductDetailResponseType>>(API_URLS.product.detail(productId), config);
   },

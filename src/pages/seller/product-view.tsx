@@ -21,7 +21,7 @@ export const ProductView = memo(() => {
   const [isVariantModalOpen, setIsVariantModalOpen] = useState(false);
 
   const { data: product, isLoading } = useProductDetail({
-    productId: id || '',
+    data: { productId: id },
     enabled: !!id
   });
 
@@ -30,7 +30,7 @@ export const ProductView = memo(() => {
   };
 
   const handleBack = (): void => {
-    history.push('/seller/all-products');
+    history.goBack();
   };
 
   const handleViewVariant = (variant: ProductDetailResponse['variants'][0]): void => {
@@ -101,7 +101,6 @@ export const ProductView = memo(() => {
             {t('Seller.editProduct')}
           </Button>
         </div>
-
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Main Content */}
           <div className="space-y-6 lg:col-span-2">
@@ -321,7 +320,6 @@ export const ProductView = memo(() => {
             </Card>
           </div>
         </div>
-
         {/* Variant Detail Modal */}
         <Dialog open={isVariantModalOpen} onOpenChange={setIsVariantModalOpen}>
           <DialogContent className="max-w-4xl">

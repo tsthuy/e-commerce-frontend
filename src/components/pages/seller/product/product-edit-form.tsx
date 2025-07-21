@@ -30,7 +30,7 @@ export const ProductEditForm = memo(() => {
   const [existingImages, setExistingImages] = useState<ProductImage[]>([]);
 
   const { data: productDetail, isLoading: isLoadingDetail } = useProductDetail({
-    productId: id,
+    data: { productId: id },
     enabled: !!id
   });
 

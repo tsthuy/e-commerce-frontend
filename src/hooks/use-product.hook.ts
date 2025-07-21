@@ -24,6 +24,15 @@ export function useSellerProductList({ data, enabled = true, retry = false }: Us
   return queryResponse;
 }
 
+export function useAdminProductList({ data, enabled = true, retry = false }: UseQueryParams<ProductPaginationParams>): UseQueryResult<ProductListResponse> {
+  const queryResponse = useQuery({
+    ...productQueries.adminList({ data }),
+    retry,
+    enabled
+  });
+  return queryResponse;
+}
+
 export function useProductDetail({ data, enabled = true, retry = false }: UseQueryParams<ProductDetailParams>): UseQueryResult<ProductDetailResponseType> {
   const queryResponse = useQuery({
     ...productQueries.detail({ data }),

@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { BadgeDollarSign, Calendar, FolderOpen, LayoutGrid, MessageCircle, Package, PlusCircle, RefreshCcw, Settings, ShoppingBag, Tag } from 'lucide-react';
+import { BadgeDollarSign, Calendar, LayoutGrid, MessageCircle, Package, PlusCircle, RefreshCcw, Settings, ShoppingBag, Tag } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { cn } from '~/libs';
@@ -58,11 +58,7 @@ const sidebarItems = [
     route: SELLER_ROUTES.refunds.path(),
     icon: RefreshCcw
   },
-  {
-    name: 'Categories',
-    route: SELLER_ROUTES.categories.path(),
-    icon: FolderOpen
-  },
+
   {
     name: 'Settings',
     route: SELLER_ROUTES.settings.path(),
