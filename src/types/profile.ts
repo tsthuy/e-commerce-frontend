@@ -7,6 +7,8 @@ export type UserAvatar = {
   url: string;
 };
 
+export type AvatarResponse = UserAvatar;
+
 export type UserAddress = {
   id: string;
   address: string;

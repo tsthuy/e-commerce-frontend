@@ -4,6 +4,7 @@ import { AdminAllOrdersPage } from '~/pages/admin/admin-all-orders.page';
 import { AdminAllProductsPage } from '~/pages/admin/admin-all-products.page';
 import { AdminDashboard } from '~/pages/admin/admin-dashboard.page';
 import { AdminLoginPage } from '~/pages/admin/admin-login.page';
+import { AdminCustomersPage } from '~/pages/admin/components/admin-customers-page';
 import { Categories, ProductView } from '~/pages/seller';
 
 export const ADMIN_AUTH_ROUTES = {
@@ -34,9 +35,9 @@ export const ADMIN_AUTH_ROUTES = {
     Element: AdminAllOrdersPage
   },
 
-  allUsers: {
-    path: () => '/admin/all-users',
-    Element: null // Will implement later
+  allCustomers: {
+    path: () => '/admin/all-customers',
+    Element: AdminCustomersPage
   },
   allSellers: {
     path: () => '/admin/all-sellers',

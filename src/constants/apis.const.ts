@@ -48,8 +48,10 @@ export const API_URLS = {
     dashboardChart: '/admin/dashboard/chart',
     allProducts: '/admin/products',
     allOrders: '/admin/orders',
+    allCustomers: '/admin/customers',
     productDetail: (id: string): string => `/admin/products/${id}`,
     orderDetail: (id: string): string => `/admin/orders/${id}`,
+    customerDetail: (id: string): string => `/admin/customers/${id}`,
     updateOrderStatus: (id: string): string => `/admin/orders/${id}/status`
   },
   category: {

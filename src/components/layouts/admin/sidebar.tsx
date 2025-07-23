@@ -29,8 +29,8 @@ const sidebarItems = [
     icon: Package
   },
   {
-    name: 'All Users',
-    route: ADMIN_AUTH_ROUTES.allUsers.path(),
+    name: 'All Customers',
+    route: ADMIN_AUTH_ROUTES.allCustomers.path(),
     icon: User
   },
   {
