@@ -6,35 +6,35 @@ import { Eye } from 'lucide-react';
 
 import { useDataTable } from '~/hooks';
 
-import { AdminCustomerDetailDialog } from '~/components/admin/admin-customer-detail-dialog';
+import { AdminSellerDetailDialog } from '~/components/admin/admin-seller-detail-dialog';
 import { DataTable, DataTableColumnHeader, DataTableToolbar } from '~/components/common/table';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 
-import { useAdminCustomerList } from '~/hooks/use-admin-customer.hook';
-import type { AdminCustomerResponse } from '~/types/admin-customer';
+import { useAdminSellerList } from '~/hooks/use-admin-seller.hook';
+import type { AdminSellerResponse } from '~/types/admin-seller';
 
-export const AdminCustomersTable = memo(() => {
-  const [selectedCustomer, setSelectedCustomer] = useState<AdminCustomerResponse | null>(null);
+export const AdminSellersTable = memo(() => {
+  const [selectedSeller, setSelectedSeller] = useState<AdminSellerResponse | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-  const handleViewDetail = (customer: AdminCustomerResponse) => {
-    setSelectedCustomer(customer);
+  const handleViewDetail = (seller: AdminSellerResponse) => {
+    setSelectedSeller(seller);
     setIsDetailOpen(true);
   };
 
-  const columns: ColumnDef<AdminCustomerResponse>[] = [
+  const columns: ColumnDef<AdminSellerResponse>[] = [
     {
       accessorKey: 'avatar',
       header: 'Avatar',
       cell: ({ row }) => {
-        const customer = row.original;
+        const seller = row.original;
         return (
           <Avatar className="h-10 w-10">
-            <AvatarImage alt={customer.fullName} src={customer.avatar?.url} />
+            <AvatarImage alt={seller.shopName} src={seller.avatar?.url} />
             <AvatarFallback>
-              {customer.fullName
+              {seller.shopName
                 .split(' ')
                 .map((n) => n[0])
                 .join('')
@@ -46,14 +46,14 @@ export const AdminCustomersTable = memo(() => {
       enableSorting: false
     },
     {
-      accessorKey: 'fullName',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Full Name" />,
+      accessorKey: 'shopName',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Shop Name" />,
       cell: ({ row }) => {
-        const customer = row.original;
+        const seller = row.original;
         return (
           <div>
-            <div className="font-medium">{customer.fullName}</div>
-            <div className="text-sm text-muted-foreground">{customer.email}</div>
+            <div className="font-medium">{seller.shopName}</div>
+            <div className="text-sm text-muted-foreground">{seller.email}</div>
           </div>
         );
       }
@@ -75,6 +75,14 @@ export const AdminCustomersTable = memo(() => {
       }
     },
     {
+      accessorKey: 'totalProducts',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Total Products" />,
+      cell: ({ row }) => {
+        const totalProducts = row.getValue('totalProducts') as number | null;
+        return <span className="font-medium">{totalProducts || 0}</span>;
+      }
+    },
+    {
       accessorKey: 'totalOrders',
       header: ({ column }) => <DataTableColumnHeader column={column} title="Total Orders" />,
       cell: ({ row }) => {
@@ -83,11 +91,11 @@ export const AdminCustomersTable = memo(() => {
       }
     },
     {
-      accessorKey: 'totalSpent',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Total Spent" />,
+      accessorKey: 'availableAmount',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Available Amount" />,
       cell: ({ row }) => {
-        const totalSpent = row.getValue('totalSpent') as number | null;
-        return <span className="font-medium">${(totalSpent || 0).toFixed(2)}</span>;
+        const availableAmount = row.getValue('availableAmount') as number | null;
+        return <span className="font-medium">${(availableAmount || 0).toFixed(2)}</span>;
       }
     },
     {
@@ -102,9 +110,9 @@ export const AdminCustomersTable = memo(() => {
       id: 'actions',
       header: 'Actions',
       cell: ({ row }) => {
-        const customer = row.original;
+        const seller = row.original;
         return (
-          <Button size="sm" variant="ghost" onClick={() => handleViewDetail(customer)}>
+          <Button size="sm" variant="ghost" onClick={() => handleViewDetail(seller)}>
             <Eye className="h-4 w-4" />
           </Button>
         );
@@ -116,9 +124,9 @@ export const AdminCustomersTable = memo(() => {
   const filterFields = useMemo(
     () => [
       {
-        label: 'Search Customers',
-        value: 'fullName' as keyof AdminCustomerResponse,
-        placeholder: 'Search by name, email, phone...'
+        label: 'Search Sellers',
+        value: 'shopName' as keyof AdminSellerResponse,
+        placeholder: 'Search by shop name, email, phone...'
       }
     ],
     []
@@ -142,7 +150,7 @@ export const AdminCustomersTable = memo(() => {
 
   // Build query parameters from table state
   const queryParams = useMemo(() => {
-    const searchFilter = columnFilters.find((filter) => filter.id === 'fullName');
+    const searchFilter = columnFilters.find((filter) => filter.id === 'shopName');
     const sortConfig = sorting[0];
 
     const params: Record<string, string | number> = {
@@ -155,7 +163,7 @@ export const AdminCustomersTable = memo(() => {
       params.sortDirection = sortConfig.desc ? 'desc' : 'asc';
     }
 
-    // Only search by text (fullName, email, phone)
+    // Only search by text (shopName, email, phone)
     if (searchFilter?.value) {
       params.search = String(searchFilter.value);
     }
@@ -163,15 +171,15 @@ export const AdminCustomersTable = memo(() => {
     return params;
   }, [pagination, sorting, columnFilters]);
 
-  const { data: customersData, isLoading } = useAdminCustomerList({
+  const { data: sellersData, isLoading } = useAdminSellerList({
     data: queryParams
   });
 
-  const customers = customersData?.result?.content || [];
-  const pageCount = customersData?.result?.totalPages || 0;
+  const sellers = sellersData?.result?.content || [];
+  const pageCount = sellersData?.result?.totalPages || 0;
 
   // Update table options with fetched data
-  table.options.data = customers;
+  table.options.data = sellers;
   table.options.pageCount = pageCount;
 
   return (
@@ -180,9 +188,9 @@ export const AdminCustomersTable = memo(() => {
         <DataTableToolbar filterFields={filterFields} table={table} />
       </DataTable>
 
-      <AdminCustomerDetailDialog customer={selectedCustomer} open={isDetailOpen} onOpenChange={setIsDetailOpen} />
+      <AdminSellerDetailDialog open={isDetailOpen} seller={selectedSeller} onOpenChange={setIsDetailOpen} />
     </div>
   );
 });
 
-AdminCustomersTable.displayName = 'AdminCustomersTable';
+AdminSellersTable.displayName = 'AdminSellersTable';

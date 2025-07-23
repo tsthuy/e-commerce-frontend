@@ -49,9 +49,11 @@ export const API_URLS = {
     allProducts: '/admin/products',
     allOrders: '/admin/orders',
     allCustomers: '/admin/customers',
+    allSellers: '/api/admin/sellers',
     productDetail: (id: string): string => `/admin/products/${id}`,
     orderDetail: (id: string): string => `/admin/orders/${id}`,
     customerDetail: (id: string): string => `/admin/customers/${id}`,
+    sellerDetail: (id: string): string => `/admin/sellers/${id}`,
     updateOrderStatus: (id: string): string => `/admin/orders/${id}/status`
   },
   category: {
