@@ -1,5 +1,6 @@
 import { memo, useEffect, useMemo, useState } from 'react';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, CheckCircle2, Copy, DollarSign, Eye, EyeOff, FileText, Image, Layers, PackageCheck, Plus, Save, Tag, Trash2 } from 'lucide-react';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -9,6 +10,8 @@ import { CLOUDINARY_FOLDERS } from '~/constants';
 
 import type { AttributeValue, DataForm, ProductAttribute, ProductImage, ProductPayload, ProductVariant, VariantAttributeValue } from '~/types';
 
+import { queries } from '~/queries';
+
 import { useCategoryList, useCloudinaryUpload, useProductDetail, useProductUpdate } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
@@ -17,6 +20,8 @@ import { Button, Helmet } from '~/components/common';
 import { UploadProgress } from '~/components/common/cloudinary';
 import { CustomForm, CustomInput, CustomInputImage, CustomInputTextarea, CustomSelect, CustomSwitch } from '~/components/form';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Card } from '~/components/ui';
+
+import { SELLER_ROUTES } from '~/routes';
 
 export const ProductEditForm = memo(() => {
   const { id } = useParams<{ id: string }>();
@@ -46,9 +51,10 @@ export const ProductEditForm = memo(() => {
 
   const categories = categoriesResponse?.result?.content || [];
 
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     if (productDetail) {
-      // Load existing images
       if (productDetail.images) {
         setExistingImages(
           productDetail.images.map((img) => ({
@@ -543,10 +549,8 @@ export const ProductEditForm = memo(() => {
 
     setIsLoading(true);
     try {
-      // Upload main product images first
       const uploadedImages: ProductImage[] = [];
 
-      // Keep existing images
       if (existingImages && existingImages.length > 0) {
         uploadedImages.push(
           ...existingImages.map((img) => ({
@@ -557,7 +561,6 @@ export const ProductEditForm = memo(() => {
         );
       }
 
-      // Upload new images
       if (values.images && values.images.length > 0) {
         for (const file of values.images) {
           // eslint-disable-next-line no-await-in-loop
@@ -667,12 +670,12 @@ export const ProductEditForm = memo(() => {
       await updateMutation.mutateAsync({ productId: id, data: payload });
       toast.success('Product updated successfully');
 
-      // Navigate back to products list after delay
-      setTimeout(() => history.push('/seller/products'), 1000);
+      history.push(SELLER_ROUTES.allProducts.path());
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {
       setIsLoading(false);
+      queryClient.invalidateQueries({ queryKey: queries.product.sellerList._def });
     }
   };
 
@@ -699,7 +702,7 @@ export const ProductEditForm = memo(() => {
           <h1 className="mb-6 text-2xl font-bold">Edit Product</h1>
           <div className="py-12 text-center">
             <p className="text-muted-foreground">Product not found</p>
-            <Button className="mt-4" onClick={() => history.push('/seller/products')}>
+            <Button className="mt-4" onClick={() => history.push(SELLER_ROUTES.allProducts.path())}>
               Back to Products
             </Button>
           </div>
@@ -1226,7 +1229,7 @@ export const ProductEditForm = memo(() => {
                     Update Product
                   </Button>
 
-                  <Button className="w-full" type="button" variant="outline" onClick={() => history.push('/seller/products')}>
+                  <Button className="w-full" type="button" variant="outline" onClick={() => history.push(SELLER_ROUTES.allProducts.path())}>
                     Cancel
                   </Button>
                 </div>

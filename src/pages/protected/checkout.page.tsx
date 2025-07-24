@@ -1,12 +1,15 @@
 import React, { memo, useCallback, useState } from 'react';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { Building, CreditCard, MapPin, PackageOpen, Truck } from 'lucide-react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'sonner';
 
+import { queries } from '~/queries';
+
 import { httpBase } from '~/services';
 
-import { formatPrice } from '~/utils';
+import { formatPrice, getErrorMessage } from '~/utils';
 
 import { Button, Helmet, SpinnerLineSpinner } from '~/components/common';
 import { AddressSelector, OrderSummary, PaymentMethodSelector } from '~/components/pages/protected/checkout';
@@ -27,6 +30,8 @@ export const CheckoutPage = memo(() => {
   const { data: cartResponse, isLoading: cartLoading } = useCartList();
   const createOrder = useCreateOrderMutation();
   const [isOrderCreating, setIsOrderCreating] = useState<boolean>(false);
+
+  const queryClient = useQueryClient();
 
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.CASH_ON_DELIVERY);
@@ -58,36 +63,41 @@ export const CheckoutPage = memo(() => {
       toast.error(t('Checkout.selectAddress'));
       return;
     }
+    try {
+      if (paymentMethod === PaymentMethod.ADVANCE_PAYMENT) {
+        const stripeCheckoutData = {
+          shippingAddressId: selectedAddressId,
+          notes: notes.trim() || undefined
+        };
+        setIsOrderCreating(true);
 
-    if (paymentMethod === PaymentMethod.ADVANCE_PAYMENT) {
-      const stripeCheckoutData = {
-        shippingAddressId: selectedAddressId,
-        notes: notes.trim() || undefined
-      };
-      setIsOrderCreating(true);
+        httpBase
+          .post('/api/stripe/create-checkout-session', stripeCheckoutData)
+          .then((response) => {
+            window.location.href = (response.data as { url: string }).url;
+          })
+          .catch((error) => {
+            toast.error(t('Checkout.paymentError'));
+            console.error('Error creating checkout session:', error);
+          });
+        setIsOrderCreating(false);
+      } else {
+        const orderData: CreateOrderRequest = {
+          shippingAddressId: selectedAddressId,
+          paymentMethod,
+          notes: notes.trim() || undefined
+        };
 
-      httpBase
-        .post('/api/stripe/create-checkout-session', stripeCheckoutData)
-        .then((response) => {
-          window.location.href = (response.data as { url: string }).url;
-        })
-        .catch((error) => {
-          toast.error(t('Checkout.paymentError'));
-          console.error('Error creating checkout session:', error);
+        createOrder.mutate(orderData, {
+          onSuccess: () => {
+            push(PROTECTED_ROUTES.orders.path());
+          }
         });
-      setIsOrderCreating(false);
-    } else {
-      const orderData: CreateOrderRequest = {
-        shippingAddressId: selectedAddressId,
-        paymentMethod,
-        notes: notes.trim() || undefined
-      };
-
-      createOrder.mutate(orderData, {
-        onSuccess: () => {
-          push(PROTECTED_ROUTES.orders.path());
-        }
-      });
+      }
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      queryClient.invalidateQueries({ queryKey: queries.cart.list._def });
     }
   }, [selectedAddressId, paymentMethod, notes, createOrder, push, t]);
 

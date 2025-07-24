@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { BadgeDollarSign, Calendar, LayoutGrid, MessageCircle, Package, PlusCircle, RefreshCcw, Settings, ShoppingBag, Tag } from 'lucide-react';
+import { LayoutGrid, MessageCircle, Package, PlusCircle, Settings, ShoppingBag } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { cn } from '~/libs';
@@ -28,36 +28,17 @@ const sidebarItems = [
     route: SELLER_ROUTES.createProduct.path(),
     icon: PlusCircle
   },
-  {
-    name: 'All Events',
-    route: SELLER_ROUTES.allEvents.path(),
-    icon: Calendar
-  },
-  {
-    name: 'Create Event',
-    route: SELLER_ROUTES.createEvent.path(),
-    icon: PlusCircle
-  },
-  {
-    name: 'Withdraw Money',
-    route: SELLER_ROUTES.withdrawMoney.path(),
-    icon: BadgeDollarSign
-  },
+
   {
     name: 'Shop Inbox',
     route: SELLER_ROUTES.shopInbox.path(),
     icon: MessageCircle
   },
-  {
-    name: 'Discount Codes',
-    route: SELLER_ROUTES.discountCodes.path(),
-    icon: Tag
-  },
-  {
-    name: 'Refunds',
-    route: SELLER_ROUTES.refunds.path(),
-    icon: RefreshCcw
-  },
+  // {
+  //   name: 'Discount Codes',
+  //   route: SELLER_ROUTES.discountCodes.path(),
+  //   icon: Tag
+  // },
 
   {
     name: 'Settings',

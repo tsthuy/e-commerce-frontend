@@ -9,6 +9,7 @@ import { cartQueries } from '~/queries/cart.query';
 import { categoryQueries } from '~/queries/category.query';
 import { dashboardQueries } from '~/queries/dashboard.query';
 import { orderQueries } from '~/queries/order.query';
+import { productQueries } from '~/queries/product.query';
 import { reviewQueries } from '~/queries/review.query';
 import { sellerQueries } from '~/queries/seller.query';
 import { userInfoQueries } from '~/queries/user-info.query';
@@ -26,5 +27,6 @@ export const queries = mergeQueryKeys(
   userInfoQueries,
   adminQueries,
   adminCustomerQueries,
-  adminSellerQueries
+  adminSellerQueries,
+  productQueries
 );

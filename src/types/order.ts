@@ -71,6 +71,7 @@ export interface OrderItemResponse {
   subtotal: number;
   variantId?: string;
   variantName?: string;
+  variantImageUrl?: string;
   variantOptions?: string;
   notes?: string;
   createdAt: string;

@@ -75,7 +75,7 @@ export const ProductImageGallery = memo<ProductImageGalleryProps>(({ allImages, 
       {/* Main Image */}
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
         <button className="h-full w-full cursor-zoom-in focus:outline-none" type="button" onClick={handleMainImageClick}>
-          <img alt={currentImage.alt} className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" src={currentImage.url} />
+          <img alt={currentImage.alt} className="h-full w-full object-contain p-4 transition-transform duration-300 hover:scale-105" src={currentImage.url} />
         </button>
 
         {/* Navigation arrows for main image */}

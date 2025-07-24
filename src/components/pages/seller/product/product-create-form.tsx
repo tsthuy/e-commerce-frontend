@@ -1,5 +1,6 @@
 import { memo, useState } from 'react';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { DollarSign, FileText, Image, PackageCheck, Save } from 'lucide-react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -9,6 +10,8 @@ import { CLOUDINARY_FOLDERS } from '~/constants';
 
 import type { DataForm, ProductPayload } from '~/types';
 
+import { queries } from '~/queries';
+
 import { useCategoryList, useCloudinaryUpload, useProductCreate } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
@@ -17,6 +20,8 @@ import { Button, Helmet } from '~/components/common';
 import { UploadProgress } from '~/components/common/cloudinary';
 import { CustomForm, CustomInput, CustomInputImage, CustomInputTextarea, CustomSelect, CustomSwitch } from '~/components/form';
 import { Card } from '~/components/ui';
+
+import { SELLER_ROUTES } from '~/routes';
 
 export const ProductCreateForm = memo(() => {
   const history = useHistory();
@@ -28,6 +33,8 @@ export const ProductCreateForm = memo(() => {
   });
 
   const createMutation = useProductCreate();
+
+  const queryClient = useQueryClient();
 
   const { uploadFile, isUploading, progress } = useCloudinaryUpload({
     folder: CLOUDINARY_FOLDERS.PRODUCTS
@@ -103,12 +110,12 @@ export const ProductCreateForm = memo(() => {
       await createMutation.mutateAsync(payload);
       toast.success('Product created successfully');
 
-      // Navigate back to products list after delay
-      setTimeout(() => history.push('/seller/products'), 1000);
+      history.push(SELLER_ROUTES.allProducts.path());
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {
       setIsLoading(false);
+      queryClient.invalidateQueries({ queryKey: queries.product.sellerList._def });
     }
   };
 
@@ -208,7 +215,7 @@ export const ProductCreateForm = memo(() => {
                     Create Product
                   </Button>
 
-                  <Button className="w-full" type="button" variant="outline" onClick={() => history.push('/seller/products')}>
+                  <Button className="w-full" type="button" variant="outline" onClick={() => history.push(SELLER_ROUTES.allProducts.path())}>
                     Cancel
                   </Button>
                 </div>

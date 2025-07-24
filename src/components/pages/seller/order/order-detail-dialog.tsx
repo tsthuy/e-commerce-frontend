@@ -1,5 +1,7 @@
 import { memo } from 'react';
 
+import { DEFAULT_IMG_SAMPLE } from '~/constants';
+
 import type { OrderResponse } from '~/types';
 
 import { useTranslation } from '~/hooks';
@@ -155,7 +157,7 @@ export const OrderDetailDialog = memo<OrderDetailDialogProps>(({ order, isOpen, 
                       <div className="grid grid-cols-12 items-center gap-4">
                         <div className="col-span-6">
                           <div className="flex items-center gap-3">
-                            {item.productImageUrl && <img alt={item.productName} className="h-12 w-12 rounded object-cover" src={item.productImageUrl} />}
+                            {item.variantImageUrl && <img alt={item.productName} className="h-12 w-12 rounded object-cover" src={item.variantImageUrl || item.productImageUrl || DEFAULT_IMG_SAMPLE} />}
                             <div>
                               <p className="font-medium">{item.productName}</p>
                               <p className="text-sm text-muted-foreground">SKU: {item.productSku}</p>

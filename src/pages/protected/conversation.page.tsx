@@ -51,7 +51,7 @@ export const ConversationPage = memo(() => {
   });
 
   const isMyMessage = (message: Message): boolean => {
-    return message.senderId === profileResponse?.id;
+    return message.senderId === profileResponse?.id && message.senderType === userType;
   };
 
   const loadOlderMessages = useCallback(async () => {
@@ -92,6 +92,8 @@ export const ConversationPage = memo(() => {
     if (!newMessage.trim() || !profileResponse?.id || sending) return;
 
     setSending(true);
+    setNewMessage('');
+
     try {
       await ConversationService.sendMessage({
         conversationId,
@@ -100,8 +102,6 @@ export const ConversationPage = memo(() => {
         text: newMessage.trim(),
         type: 'text'
       });
-
-      setNewMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -314,7 +314,7 @@ export const ConversationPage = memo(() => {
               onKeyDown={handleKeyPress}
             />
             <Button disabled={!newMessage.trim() || sending} size="sm" onClick={handleSendMessage}>
-              {sending ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" /> : <Send className="h-4 w-4" />}
+              <Send className="h-4 w-4" />
             </Button>
           </div>
         </div>

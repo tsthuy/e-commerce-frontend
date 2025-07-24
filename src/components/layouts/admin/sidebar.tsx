@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { Boxes, LayoutGrid, Package, Settings, ShoppingBag, User, Users } from 'lucide-react';
+import { Boxes, LayoutGrid, Package, ShoppingBag, User, Users } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { cn } from '~/libs';
@@ -37,11 +37,6 @@ const sidebarItems = [
     name: 'All Sellers',
     route: ADMIN_AUTH_ROUTES.allSellers.path(),
     icon: Users
-  },
-  {
-    name: 'Settings',
-    route: ADMIN_AUTH_ROUTES.settings.path(),
-    icon: Settings
   }
 ];
 

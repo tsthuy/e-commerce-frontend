@@ -2,6 +2,8 @@ import { memo } from 'react';
 
 import { MessageCircle } from 'lucide-react';
 
+import { DEFAULT_IMG_SAMPLE } from '~/constants';
+
 import type { OrderResponse, OrderStatus } from '~/types';
 
 import { formatDate, formatPrice } from '~/utils';
@@ -64,6 +66,7 @@ export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({
           productId: item.productId,
           productName: item.productName,
           productImageUrl: item.productImageUrl,
+          variantImageUrl: item.variantImageUrl,
           items: [item],
           totalQuantity: item.quantity
         });
@@ -74,6 +77,7 @@ export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({
       productId: string;
       productName: string;
       productImageUrl?: string;
+      variantImageUrl?: string;
       items: typeof order.items;
       totalQuantity: number;
     }>
@@ -137,7 +141,7 @@ export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({
                 <Card key={group.productId}>
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
-                      {group.productImageUrl && <img alt={group.productName} className="h-16 w-16 rounded object-cover" src={group.productImageUrl} />}
+                      {group.variantImageUrl && <img alt={group.productName} className="h-16 w-16 rounded object-cover" src={group.variantImageUrl || group.productImageUrl || DEFAULT_IMG_SAMPLE} />}
                       <div className="flex-1">
                         <h4 className="font-semibold">{group.productName}</h4>
 

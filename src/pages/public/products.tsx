@@ -30,6 +30,7 @@ export const ProductsPage = memo(() => {
     size: pageSize,
     sortBy: 'createdAt',
     sortDirection: 'desc',
+    search: searchParams.get('search') || undefined,
     ...(categoryId && { categoryId })
   };
 

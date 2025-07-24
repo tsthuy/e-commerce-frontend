@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 
 import { ChevronDown, ChevronRight, Menu, Package } from 'lucide-react';
 import { Link, useHistory } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { DEFAULT_IMG_PLACEHOLDER } from '~/constants';
 
 import type { CategoryResponse } from '~/types';
 
-import { useCategoryList, useTranslation } from '~/hooks';
+import { useCategoryList, useDebounce, useTranslation } from '~/hooks';
 
 import { hasRole, isAuthenticated } from '~/utils';
 
@@ -90,17 +90,30 @@ export const HeaderPublicLayout = memo(() => {
 export const SearchBar = memo(() => {
   const { t } = useTranslation();
   const schema = useMemo(() => z.object({ searchTerm: z.string().optional() }), []);
+  const history = useHistory();
 
   const defaultValues = useMemo(() => ({ searchTerm: '' }), []);
 
-  const handleSearch = async (values: string): Promise<void> => {
-    // TODO: Implement search functionality
-    void values;
-  };
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  // ⏳ Trigger search khi user ngưng gõ 500ms
+  useEffect(() => {
+    const handleSearch = async (value: string): Promise<void> => {
+      const params = new URLSearchParams();
+      params.set('search', value);
+      params.set('page', '0');
+      history.push(`${PUBLIC_ROUTES.products.path()}?${params.toString()}`);
+    };
+
+    if (debouncedSearchTerm !== '') {
+      handleSearch(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm, history]);
 
   return (
     <CustomForm className="w-full" options={{ defaultValues }} schema={schema}>
-      <CustomInputSearch className="w-full" handleOnChange={(e) => handleSearch(e.target.value)} name="searchTerm" placeholder={t('Navigation.searchProducts')} />
+      <CustomInputSearch className="w-full" handleOnChange={(e) => setSearchTerm(e.target.value)} name="searchTerm" placeholder={t('Navigation.searchProducts')} />
     </CustomForm>
   );
 });
