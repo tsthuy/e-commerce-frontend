@@ -50,14 +50,14 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
     () => [
       {
         accessorKey: 'orderNumber',
-        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title="Mã đơn hàng" />,
+        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Order.orderNumber')} />,
         cell: ({ row }): JSX.Element => <div className="font-mono text-sm">{row.getValue('orderNumber')}</div>,
         enableSorting: true,
         enableHiding: false
       },
       {
         accessorKey: 'sellerShopName',
-        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title="Người bán" />,
+        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Order.seller')} />,
         cell: ({ row }): JSX.Element => {
           const order = row.original;
           return (
@@ -72,7 +72,7 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
       },
       {
         accessorKey: 'total',
-        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title="Tổng tiền" />,
+        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Order.totalAmount')} />,
         cell: ({ row }): JSX.Element => {
           const order = row.original;
           return <div className="text-right font-medium">{formatPrice(order.total)}</div>;
@@ -82,7 +82,7 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
       },
       {
         accessorKey: 'status',
-        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title="Trạng thái" />,
+        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Order.status')} />,
         cell: ({ row }): JSX.Element => {
           const order = row.original;
           return getStatusBadge(order.status);
@@ -92,7 +92,7 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
       },
       {
         accessorKey: 'items',
-        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title="Số lượng" />,
+        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Order.quantity')} />,
         cell: ({ row }): JSX.Element => {
           const order = row.original;
           const totalQty = order.items?.reduce((sum: number, item) => sum + item.quantity, 0) || 0;
@@ -109,7 +109,7 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
       },
       {
         accessorKey: 'paymentMethod',
-        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title="Thanh toán" />,
+        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Order.paymentMethod')} />,
         cell: ({ row }): JSX.Element => {
           const paymentMethod = row.getValue('paymentMethod') as string;
           const paymentConfig = {
@@ -132,7 +132,7 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
       },
       {
         accessorKey: 'createdAt',
-        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title="Ngày đặt" />,
+        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Order.orderDate')} />,
         cell: ({ row }): JSX.Element => {
           const order = row.original;
           return <div className="text-sm">{formatDate(order.createdAt)}</div>;
@@ -142,7 +142,7 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
       },
       {
         id: 'actions',
-        header: 'Thao tác',
+        header: t('Order.actions'),
         cell: ({ row }): JSX.Element => (
           <div className="flex items-center gap-2">
             <Button
@@ -169,9 +169,9 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
   const filterFields = useMemo(
     () => [
       {
-        label: 'Tìm kiếm đơn hàng',
+        label: t('Order.searchOrders'),
         value: 'orderNumber' as keyof OrderResponse,
-        placeholder: 'Tìm theo mã đơn hàng...'
+        placeholder: t('Order.searchByOrderNumber')
       }
     ],
     []

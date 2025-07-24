@@ -3,7 +3,6 @@ export * from './all-events';
 export * from './all-products';
 export * from './create-event';
 export * from './create-product';
-export * from './dashboard';
 export * from './discount-codes';
 export * from './edit-product';
 export * from './product-view';

@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 
 import { profileApi } from '~/services';
 
-import { useProfile } from '~/hooks';
+import { useProfile, useTranslation } from '~/hooks';
 
 import { getErrorMessage } from '~/utils';
 
@@ -14,20 +14,24 @@ import { CreateAddressForm } from '~/components/pages/protected/profile/address'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '~/components/ui';
 
 export const ProfileAddress = memo(() => {
+  const { t } = useTranslation();
   const { data: profile, refetch } = useProfile({});
   const [isDeleting, setIsDeleting] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-  const handleConfirmDelete = useCallback((addressId: string) => {
-    if (!addressId) {
-      toast.error('Address ID is missing');
-      return;
-    }
+  const handleConfirmDelete = useCallback(
+    (addressId: string) => {
+      if (!addressId) {
+        toast.error(t('Common.addressIdMissing'));
+        return;
+      }
 
-    setAddressToDelete(addressId);
-    setOpenDeleteDialog(true);
-  }, []);
+      setAddressToDelete(addressId);
+      setOpenDeleteDialog(true);
+    },
+    [t]
+  );
   const handleDeleteAddress = useCallback(async () => {
     if (!addressToDelete) return;
 
@@ -36,7 +40,7 @@ export const ProfileAddress = memo(() => {
 
       const response = await profileApi.deleteAddress({ addressId: addressToDelete });
       if (response.status == 204) {
-        toast.success('Address deleted successfully');
+        toast.success(t('Common.addressDeletedSuccessfully'));
         await refetch();
       }
     } catch (error) {
@@ -46,12 +50,12 @@ export const ProfileAddress = memo(() => {
       setOpenDeleteDialog(false);
       setAddressToDelete(null);
     }
-  }, [addressToDelete, refetch]);
+  }, [addressToDelete, refetch, t]);
 
   return (
     <div className="w-full p-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">My Address</h2>
+        <h2 className="text-xl font-bold">{t('Common.myAddress')}</h2>
         <CreateAddressForm />
       </div>
       <div className="flex flex-col gap-4 pt-4">
@@ -71,13 +75,13 @@ export const ProfileAddress = memo(() => {
       <AlertDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>This action cannot be undone. This will permanently delete this address from your profile.</AlertDialogDescription>
+            <AlertDialogTitle>{t('Common.areYouSure')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('Common.deleteAddressConfirmation')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>{t('Common.cancel')}</AlertDialogCancel>
             <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled={isDeleting} onClick={handleDeleteAddress}>
-              {isDeleting ? 'Deleting...' : 'Delete'}
+              {isDeleting ? t('Common.deleting') : t('Common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

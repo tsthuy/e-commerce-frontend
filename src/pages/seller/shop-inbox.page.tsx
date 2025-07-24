@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from 'react';
 
 import { MessageCircle, Search, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
 import type { ConversationMetadata } from '~/types';
@@ -19,11 +20,9 @@ const ConversationItem = memo(({ conversation, handleClick }: { conversation: Co
   // Seller is talking to customer
   const { data: customerInfo } = useInfoUserForChat({
     id: conversation.receiverId,
-    type: 'customer',
-    enabled: !!conversation.receiverId
+    type: 'customer'
   });
-
-  console.log('ConversationItem', customerInfo);
+  const { t } = useTranslation();
 
   const formatConversationTime = (timestamp: unknown): string => {
     if (!timestamp) return '';
@@ -63,14 +62,14 @@ const ConversationItem = memo(({ conversation, handleClick }: { conversation: Co
 
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex items-center justify-between">
-            <h3 className="font-medium text-gray-900">{customerInfo?.name || conversation.receiverName || 'Customer'}</h3>
+            <h3 className="font-medium text-gray-900">{customerInfo?.name || conversation.receiverName || t('Messages.customer')}</h3>
             <div className="flex items-center gap-2">
               {conversation.unseenCount > 0 && <span className="rounded-full bg-blue-600 px-2 py-1 text-xs font-medium text-white">{conversation.unseenCount}</span>}
               <span className="text-xs text-gray-500">{formatConversationTime(conversation.updatedAt)}</span>
             </div>
           </div>
 
-          <p className={`truncate text-sm ${!conversation.isSeen ? 'font-medium text-gray-900' : 'text-gray-600'}`}>{conversation.lastMessage || 'No messages yet'}</p>
+          <p className={`truncate text-sm ${!conversation.isSeen ? 'font-medium text-gray-900' : 'text-gray-600'}`}>{conversation.lastMessage || t('Messages.noMessagesYet')}</p>
         </div>
       </div>
     </div>
@@ -82,6 +81,7 @@ ConversationItem.displayName = 'ConversationItem';
 export const ShopInboxPage = memo(() => {
   const history = useHistory();
   const { data: profileResponse } = useProfile({ enabled: true });
+  const { t } = useTranslation();
 
   const [conversations, setConversations] = useState<ConversationMetadata[]>([]);
   const [filteredConversations, setFilteredConversations] = useState<ConversationMetadata[]>([]);
@@ -129,13 +129,13 @@ export const ShopInboxPage = memo(() => {
   if (loading) {
     return (
       <Container>
-        <Helmet title="Shop Inbox - Loading...">
-          <title>Shop Inbox - Loading...</title>
+        <Helmet title={t('Messages.shopInboxLoading')}>
+          <title>{t('Messages.shopInboxLoading')}</title>
         </Helmet>
         <div className="flex h-96 items-center justify-center">
           <div className="text-center">
             <div className="mb-2 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            <p className="text-gray-600">Loading your messages...</p>
+            <p className="text-gray-600">{t('Messages.loadingMessages')}</p>
           </div>
         </div>
       </Container>
@@ -144,21 +144,21 @@ export const ShopInboxPage = memo(() => {
 
   return (
     <Container>
-      <Helmet title="Shop Inbox">
-        <title>Shop Inbox</title>
+      <Helmet title={t('Messages.shopInbox')}>
+        <title>{t('Messages.shopInbox')}</title>
       </Helmet>
 
       <div className="mx-auto max-w-4xl">
         <div className="mb-6">
-          <h1 className="mb-2 text-2xl font-bold text-gray-900">Shop Inbox</h1>
-          <p className="text-gray-600">Manage conversations with your customers</p>
+          <h1 className="mb-2 text-2xl font-bold text-gray-900">{t('Messages.shopInbox')}</h1>
+          <p className="text-gray-600">{t('Messages.manageConversations')}</p>
         </div>
 
         {/* Search */}
         <div className="mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-            <Input className="pl-10" placeholder="Search conversations..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <Input className="pl-10" placeholder={t('Messages.searchConversations')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
         </div>
 
@@ -167,8 +167,8 @@ export const ShopInboxPage = memo(() => {
           {filteredConversations.length === 0 ? (
             <div className="rounded-lg border bg-gray-50 p-8 text-center">
               <MessageCircle className="mx-auto mb-3 h-12 w-12 text-gray-400" />
-              <h3 className="mb-2 text-lg font-medium text-gray-900">{searchTerm ? 'No matching conversations' : 'No messages yet'}</h3>
-              <p className="text-gray-600">{searchTerm ? 'Try adjusting your search terms' : 'Customer messages will appear here when they contact you'}</p>
+              <h3 className="mb-2 text-lg font-medium text-gray-900">{searchTerm ? t('Messages.noMatchingConversations') : t('Messages.noMessagesYet')}</h3>
+              <p className="text-gray-600">{searchTerm ? t('Messages.tryAdjustingSearch') : t('Messages.customerMessagesWillAppear')}</p>
             </div>
           ) : (
             filteredConversations.map((conversation) => <ConversationItem key={conversation.conversationId} conversation={conversation} handleClick={handleConversationClick} />)
@@ -178,7 +178,7 @@ export const ShopInboxPage = memo(() => {
         {/* Quick Actions */}
         {filteredConversations.length > 0 && (
           <div className="mt-6 rounded-lg border bg-gray-50 p-4">
-            <h3 className="mb-2 font-medium text-gray-900">Quick Actions</h3>
+            <h3 className="mb-2 font-medium text-gray-900">{t('Messages.quickActions')}</h3>
             <div className="flex gap-2">
               <Button
                 size="sm"
@@ -192,7 +192,7 @@ export const ShopInboxPage = memo(() => {
                   });
                 }}
               >
-                Mark All as Read
+                {t('Messages.markAllAsRead')}
               </Button>
             </div>
           </div>

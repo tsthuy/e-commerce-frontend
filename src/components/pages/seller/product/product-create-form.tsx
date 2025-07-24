@@ -12,7 +12,7 @@ import type { DataForm, ProductPayload } from '~/types';
 
 import { queries } from '~/queries';
 
-import { useCategoryList, useCloudinaryUpload, useProductCreate } from '~/hooks';
+import { useCategoryList, useCloudinaryUpload, useProductCreate, useTranslation } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
 
@@ -26,6 +26,7 @@ import { SELLER_ROUTES } from '~/routes';
 export const ProductCreateForm = memo(() => {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   // Hooks for API operations
   const { data: categoriesResponse } = useCategoryList({
@@ -43,14 +44,17 @@ export const ProductCreateForm = memo(() => {
   const categories = categoriesResponse?.result?.content || [];
 
   const schema = z.object({
-    name: z.string().min(1, validates.required.message('Product name')),
-    sku: z.string().min(1, validates.required.message('SKU')),
-    description: z.string().min(1, validates.required.message('Description')),
-    price: z.coerce.number().min(0.01, 'Price must be greater than 0'),
+    name: z.string().min(1, validates.required.message(t('Seller.productName'))),
+    sku: z.string().min(1, validates.required.message(t('Seller.sku'))),
+    description: z.string().min(1, validates.required.message(t('Common.description'))),
+    price: z.coerce.number().min(0.01, t('Product.priceMustBeGreaterThan0') || 'Price must be greater than 0'),
     salePrice: z.coerce.number().min(0).optional().or(z.literal('')),
     costPrice: z.coerce.number().min(0).optional().or(z.literal('')),
-    stock: z.coerce.number().min(0, 'Stock quantity is required and must be 0 or positive').int(),
-    categoryId: z.string().min(1, validates.required.message('Category')),
+    stock: z.coerce
+      .number()
+      .min(0, t('Product.stockMustBePositive') || 'Stock quantity is required and must be 0 or positive')
+      .int(),
+    categoryId: z.string().min(1, validates.required.message(t('Seller.category'))),
     status: z.enum(['ACTIVE', 'INACTIVE', 'DRAFT']),
     isPublished: z.boolean(),
     images: z.array(z.instanceof(File)).optional()
@@ -108,7 +112,7 @@ export const ProductCreateForm = memo(() => {
       };
 
       await createMutation.mutateAsync(payload);
-      toast.success('Product created successfully');
+      toast.success(t('Seller.productCreatedSuccessfully'));
 
       history.push(SELLER_ROUTES.allProducts.path());
     } catch (error) {
@@ -120,9 +124,9 @@ export const ProductCreateForm = memo(() => {
   };
 
   return (
-    <Helmet title="Create Product">
+    <Helmet title={t('Seller.createProduct')}>
       <div className="p-6">
-        <h1 className="mb-6 text-2xl font-bold">Create Product</h1>
+        <h1 className="mb-6 text-2xl font-bold">{t('Seller.createProduct')}</h1>
 
         <CustomForm options={{ defaultValues }} schema={schema} onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -131,22 +135,22 @@ export const ProductCreateForm = memo(() => {
               <Card className="mb-6 p-6">
                 <h2 className="mb-4 flex items-center text-xl font-semibold">
                   <FileText className="mr-2 h-5 w-5" />
-                  Basic Information
+                  {t('Seller.basicInformation')}
                 </h2>
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="md:col-span-2">
-                    <CustomInput isRequired disabled={isLoading} label="Product Name" name="name" placeholder="Enter product name" />
+                    <CustomInput isRequired disabled={isLoading} label={t('Seller.productName')} name="name" placeholder={t('Seller.enterProductName')} />
                   </div>
 
-                  <CustomInput isRequired disabled={isLoading} label="SKU" name="sku" placeholder="E.g., TS-MEN-001" />
+                  <CustomInput isRequired disabled={isLoading} label={t('Seller.sku')} name="sku" placeholder={t('Seller.skuPlaceholder')} />
 
                   <CustomSelect
                     isRequired
                     disabled={isLoading}
-                    label="Category"
+                    label={t('Seller.category')}
                     name="categoryId"
-                    placeholder="Select category"
+                    placeholder={t('Seller.selectCategory')}
                     options={categories.map((cat) => ({
                       label: cat.name,
                       value: cat.id
@@ -154,7 +158,7 @@ export const ProductCreateForm = memo(() => {
                   />
 
                   <div className="md:col-span-2">
-                    <CustomInputTextarea isRequired disabled={isLoading} label="Description" name="description" placeholder="Describe your product" rows={4} />
+                    <CustomInputTextarea isRequired disabled={isLoading} label={t('Common.description')} name="description" placeholder={t('Seller.describeProduct')} rows={4} />
                   </div>
                 </div>
               </Card>
@@ -162,32 +166,32 @@ export const ProductCreateForm = memo(() => {
               <Card className="mb-6 p-6">
                 <h2 className="mb-4 flex items-center text-xl font-semibold">
                   <DollarSign className="mr-2 h-5 w-5" />
-                  Pricing & Inventory
+                  {t('Seller.pricingInventory')}
                 </h2>
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <CustomInput isRequired disabled={isLoading} label="Price" name="price" placeholder="0.00" startIcon={DollarSign} type="number" />
+                  <CustomInput isRequired disabled={isLoading} label={t('Common.price')} name="price" placeholder="0.00" startIcon={DollarSign} type="number" />
 
-                  <CustomInput disabled={isLoading} label="Sale Price" name="salePrice" placeholder="0.00" startIcon={DollarSign} type="number" />
+                  <CustomInput disabled={isLoading} label={t('Seller.salePrice')} name="salePrice" placeholder="0.00" startIcon={DollarSign} type="number" />
 
-                  <CustomInput disabled={isLoading} label="Cost Price" name="costPrice" placeholder="0.00" startIcon={DollarSign} type="number" />
+                  <CustomInput disabled={isLoading} label={t('Seller.costPrice')} name="costPrice" placeholder="0.00" startIcon={DollarSign} type="number" />
 
-                  <CustomInput isRequired disabled={isLoading} label="Stock Quantity" name="stock" placeholder="0" startIcon={PackageCheck} type="number" />
+                  <CustomInput isRequired disabled={isLoading} label={t('Seller.stockQuantity')} name="stock" placeholder="0" startIcon={PackageCheck} type="number" />
 
                   <CustomSelect
                     isRequired
                     disabled={isLoading}
-                    label="Status"
+                    label={t('Seller.status')}
                     name="status"
                     options={[
-                      { label: 'Active', value: 'ACTIVE' },
-                      { label: 'Inactive', value: 'INACTIVE' },
-                      { label: 'Draft', value: 'DRAFT' }
+                      { label: t('Common.active'), value: 'ACTIVE' },
+                      { label: t('Common.inactive'), value: 'INACTIVE' },
+                      { label: t('Common.draft'), value: 'DRAFT' }
                     ]}
                   />
 
                   <div className="flex items-center pt-8">
-                    <CustomSwitch disabled={isLoading} label="Published" name="isPublished" />
+                    <CustomSwitch disabled={isLoading} label={t('Seller.published')} name="isPublished" />
                   </div>
                 </div>
               </Card>
@@ -195,10 +199,10 @@ export const ProductCreateForm = memo(() => {
               <Card className="mb-6 p-6">
                 <h2 className="mb-4 flex items-center text-xl font-semibold">
                   <Image className="mr-2 h-5 w-5" />
-                  Product Images
+                  {t('Seller.productImages')}
                 </h2>
 
-                <CustomInputImage multiple disabled={isLoading} label="Product Images" name="images" />
+                <CustomInputImage multiple disabled={isLoading} label={t('Seller.productImages')} name="images" />
 
                 <UploadProgress isUploading={isUploading} mode="multiple" progress={progress} />
               </Card>
@@ -207,16 +211,16 @@ export const ProductCreateForm = memo(() => {
             {/* Actions */}
             <div>
               <Card className="p-6">
-                <h2 className="mb-4 text-xl font-semibold">Actions</h2>
+                <h2 className="mb-4 text-xl font-semibold">{t('Seller.actions')}</h2>
 
                 <div className="flex flex-col gap-3">
                   <Button className="w-full" disabled={isLoading || isUploading} isLoading={isLoading || isUploading} type="submit">
                     <Save className="mr-2 h-4 w-4" />
-                    Create Product
+                    {t('Seller.createProduct')}
                   </Button>
 
                   <Button className="w-full" type="button" variant="outline" onClick={() => history.push(SELLER_ROUTES.allProducts.path())}>
-                    Cancel
+                    {t('Common.cancel')}
                   </Button>
                 </div>
               </Card>

@@ -2,6 +2,8 @@ import { memo, useState } from 'react';
 
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
+import { useTranslation } from '~/hooks';
+
 import { DashboardCard } from '~/components/dashboard/dashboard-card';
 import { PeriodSelector } from '~/components/dashboard/period-selector';
 
@@ -17,6 +19,7 @@ const formatCurrency = (value: number): string => {
 
 export const SellerDashboard = memo(() => {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('7days');
+  const { t } = useTranslation();
 
   // Determine chart type based on selected period
   const getChartType = (period: PeriodType): ChartType => {
@@ -69,22 +72,22 @@ export const SellerDashboard = memo(() => {
   return (
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <h1 className="text-3xl font-bold">{t('Seller.dashboard')}</h1>
         <PeriodSelector value={selectedPeriod} onChange={setSelectedPeriod} />
       </div>
 
       {stats && (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <DashboardCard subtitle="Ready for withdrawal" title="Available Amount" value={formatCurrency(stats.availableAmount)} />
-          <DashboardCard subtitle={`${stats.completedOrders} completed orders`} title="Total Revenue" value={formatCurrency(stats.totalRevenue)} />
-          <DashboardCard subtitle={`${stats.cancelledOrders} cancelled`} title="Total Orders" value={stats.totalOrders} />
-          <DashboardCard subtitle="Active listings" title="Products" value={stats.totalProducts} />
+          <DashboardCard subtitle={t('Seller.readyForWithdrawal')} title={t('Seller.availableAmount')} value={formatCurrency(stats.availableAmount)} />
+          <DashboardCard subtitle={`${stats.completedOrders} ${t('Seller.completedOrders')}`} title={t('Seller.totalRevenue')} value={formatCurrency(stats.totalRevenue)} />
+          <DashboardCard subtitle={`${stats.cancelledOrders} ${t('Seller.cancelled')}`} title={t('Seller.totalOrders')} value={stats.totalOrders} />
+          <DashboardCard subtitle={t('Seller.activeListings')} title={t('Seller.products')} value={stats.totalProducts} />
         </div>
       )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="rounded-xl border bg-card p-6">
-          <h3 className="mb-4 text-lg font-semibold">Revenue Trend</h3>
+          <h3 className="mb-4 text-lg font-semibold">{t('Seller.revenueTrend')}</h3>
           {chartLoading ? (
             <div className="h-64 animate-pulse rounded bg-gray-200" />
           ) : (
@@ -93,7 +96,7 @@ export const SellerDashboard = memo(() => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="label" />
                 <YAxis />
-                <Tooltip formatter={(value) => [formatCurrency(Number(value)), 'Revenue']} />
+                <Tooltip formatter={(value) => [formatCurrency(Number(value)), t('Seller.totalRevenue')]} />
                 <Line dataKey="revenue" stroke="#3B82F6" strokeWidth={2} type="monotone" />
               </LineChart>
             </ResponsiveContainer>
@@ -101,7 +104,7 @@ export const SellerDashboard = memo(() => {
         </div>
 
         <div className="rounded-xl border bg-card p-6">
-          <h3 className="mb-4 text-lg font-semibold">Orders Overview</h3>
+          <h3 className="mb-4 text-lg font-semibold">{t('Seller.ordersOverview')}</h3>
           {chartLoading ? (
             <div className="h-64 animate-pulse rounded bg-gray-200" />
           ) : (
@@ -111,8 +114,8 @@ export const SellerDashboard = memo(() => {
                 <XAxis dataKey="label" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="completedOrders" fill="#10B981" name="Completed" />
-                <Bar dataKey="cancelledOrders" fill="#EF4444" name="Cancelled" />
+                <Bar dataKey="completedOrders" fill="#10B981" name={t('Seller.completed')} />
+                <Bar dataKey="cancelledOrders" fill="#EF4444" name={t('Common.cancelled')} />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -121,13 +124,13 @@ export const SellerDashboard = memo(() => {
 
       {stats && (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <DashboardCard subtitle="Per completed order" title="Average Order Value" value={formatCurrency(stats.avgOrderValue)} />
+          <DashboardCard subtitle={t('Seller.perCompletedOrder')} title={t('Seller.averageOrderValue')} value={formatCurrency(stats.avgOrderValue)} />
           <DashboardCard
-            subtitle={`${stats.completedOrders} of ${stats.totalOrders} orders`}
-            title="Completion Rate"
+            subtitle={`${stats.completedOrders} ${t('Seller.ordersOf')} ${stats.totalOrders} ${t('Seller.orders')}`}
+            title={t('Seller.completionRate')}
             value={`${stats.totalOrders > 0 ? Math.round((stats.completedOrders / stats.totalOrders) * 100) : 0}%`}
           />
-          <DashboardCard subtitle="10% platform fee" title="Commission Fee" value={formatCurrency(stats.totalRevenue * 0.1)} />
+          <DashboardCard subtitle={t('Seller.platformFee')} title={t('Seller.commissionFee')} value={formatCurrency(stats.totalRevenue * 0.1)} />
         </div>
       )}
     </div>

@@ -11,7 +11,7 @@ import { cn } from '~/libs';
 
 import { authApi } from '~/services';
 
-import { useProfile } from '~/hooks';
+import { useProfile, useTranslation } from '~/hooks';
 
 import { getErrorMessage } from '~/utils';
 
@@ -83,15 +83,16 @@ export const TopHeaderPublicLayout = memo(() => {
 });
 
 export const UserActions = memo(() => {
+  const { t } = useTranslation();
   const loggedStatus = !!Cookie.get(COOKIE_KEYS.accessToken) && !!Cookie.get(COOKIE_KEYS.refreshToken);
   const { data: profile } = useProfile({ enabled: loggedStatus });
 
   const handleLogout = async (): Promise<void> => {
     try {
       await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
-      toast.success('Logged out successfully');
+      toast.success(t('Auth.loggedOutSuccess'));
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Something went wrong! Please try again.'));
+      toast.error(getErrorMessage(error, t('Common.somethingWentWrong')));
     }
   };
   return (
@@ -113,16 +114,16 @@ export const UserActions = memo(() => {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 gap-2">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('Common.myAccount')}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className="cursor-pointer">
               <Link to={PROTECTED_ROUTES.profile.path()}>
-                <User className="mr-2 size-6" /> Profile
+                <User className="mr-2 size-6" /> {t('Common.profile')}
               </Link>
             </DropdownMenuItem>
 
             <DropdownMenuItem className="cursor-pointer text-destructive focus:bg-destructive/10" onClick={handleLogout}>
-              <LogOut className="mr-2 size-6" /> Logout
+              <LogOut className="mr-2 size-6" /> {t('Common.logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -10,7 +10,7 @@ import type { DataForm, UpdateProfileRequest } from '~/types';
 
 import { profileApi } from '~/services';
 
-import { useCloudinaryUpload, useProfile } from '~/hooks';
+import { useCloudinaryUpload, useProfile, useTranslation } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
 
@@ -19,6 +19,7 @@ import { CustomForm, CustomInput } from '~/components/form';
 import { Avatar, AvatarFallback, AvatarImage, Card, CardContent } from '~/components/ui';
 
 export const ProfileContent = memo(() => {
+  const { t } = useTranslation();
   const { data: profile, refetch } = useProfile({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -39,18 +40,18 @@ export const ProfileContent = memo(() => {
   const schema = useMemo(
     () =>
       z.object({
-        fullName: z.string().min(1, { message: validates.required.message('Full Name') }),
+        fullName: z.string().min(1, { message: validates.required.message(t('Common.fullName')) }),
         email: z
           .string()
           .min(1, {
-            message: validates.required.message('Email')
+            message: validates.required.message(t('Common.email'))
           })
           .refine((value) => validates.email.pattern.test(value), validates.email.message),
         phone: z.string().min(1, {
-          message: validates.required.message('Phone Number')
+          message: validates.required.message(t('Common.phoneNumber'))
         })
       }),
-    []
+    [t]
   );
 
   const defaultValues = useMemo(
@@ -110,7 +111,7 @@ export const ProfileContent = memo(() => {
       const hasChanges = Object.keys(updatedFields).length > 0 || updatedFields.avatarPublicId;
 
       if (!hasChanges) {
-        toast.info('No changes detected');
+        toast.info(t('Common.noChangesDetected'));
         return;
       }
 
@@ -118,10 +119,10 @@ export const ProfileContent = memo(() => {
 
       if (response.status == 200) {
         await refetch();
-        toast.success('Profile updated successfully');
+        toast.success(t('Common.profileUpdatedSuccessfully'));
       }
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Failed to update profile'));
+      toast.error(getErrorMessage(error, t('Common.failedToUpdateProfile')));
       if (newAvatarId) deleteUploadedImage(newAvatarId);
     } finally {
       setAvatarPreview(null);
@@ -169,22 +170,22 @@ export const ProfileContent = memo(() => {
 
             <div className="mb-4 flex justify-end">
               <Button disabled={isLoading || isUploading} type="button" variant="outline" onClick={() => setIsEditing(!isEditing)}>
-                {isEditing ? 'Cancel' : 'Edit Profile'}
+                {isEditing ? t('Common.cancel') : t('Common.editProfile')}
               </Button>
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <CustomInput disabled={!isEditing || isLoading || isUploading} label="Full Name" name="fullName" placeholder="Your full name" />
+              <CustomInput disabled={!isEditing || isLoading || isUploading} label={t('Common.fullName')} name="fullName" placeholder={t('Common.yourFullName')} />
 
-              <CustomInput disabled label="Email Address" name="email" placeholder="Your email" />
+              <CustomInput disabled label={t('Common.emailAddress')} name="email" placeholder={t('Common.yourEmail')} />
 
-              <CustomInput disabled={!isEditing || isLoading || isUploading} label="Phone Number" name="phone" placeholder="Your phone number" />
+              <CustomInput disabled={!isEditing || isLoading || isUploading} label={t('Common.phoneNumber')} name="phone" placeholder={t('Common.yourPhoneNumber')} />
             </div>
 
             {isEditing && (
               <div className="mt-6 flex justify-center">
                 <Button disabled={isLoading || isUploading} isLoading={isLoading || isUploading} type="submit">
-                  Update Profile
+                  {t('Common.updateProfile')}
                 </Button>
               </div>
             )}
