@@ -4,6 +4,8 @@ import { MessageCircle, Search, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 
+import { DEFAULT_IMG_AVATAR } from '~/constants';
+
 import type { ConversationMetadata } from '~/types';
 
 import { formatRelativeTime } from '~/utils';
@@ -54,7 +56,7 @@ const ConversationItem = memo(({ conversation, handleClick }: { conversation: Co
       <div className="flex items-start gap-3">
         <Avatar className="h-12 w-12">
           {customerInfo?.avatarUrl || conversation.receiverAvatar ? (
-            <img alt={customerInfo?.name || conversation.receiverName} src={customerInfo?.avatarUrl || conversation.receiverAvatar} />
+            <img alt={customerInfo?.name || conversation.receiverName} src={customerInfo?.avatarUrl || conversation.receiverAvatar || DEFAULT_IMG_AVATAR} />
           ) : (
             <User className="h-6 w-6" />
           )}

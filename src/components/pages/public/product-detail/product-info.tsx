@@ -1,6 +1,7 @@
 import { memo } from 'react';
 
 import { Heart, MessageCircle, Minus, Plus, Share2, Star } from 'lucide-react';
+import { useHistory } from 'react-router-dom';
 
 import type { ProductDetailResponse } from '~/types';
 
@@ -45,6 +46,8 @@ export const ProductInfo = memo<ProductInfoProps>(({ product, selectedVariant, q
   const { data: wishlistResponse } = useWishlistList();
   const { data: profileResponse } = useProfile({ enabled: true });
 
+  const { push } = useHistory();
+
   // Check if product is in wishlist
   const isInWishlist = wishlistResponse?.result?.items?.some((item) => item.product.id === product.id) ?? false;
 
@@ -79,7 +82,7 @@ export const ProductInfo = memo<ProductInfoProps>(({ product, selectedVariant, q
     const conversationId = `${customerId}_${sellerId}`;
 
     // Navigate to conversation page
-    window.location.href = `/user/messages/conversation/${conversationId}`;
+    push(`/user/messages/conversation/${conversationId}`);
   };
 
   const handleQuantityChange = (newQuantity: number): void => {
@@ -102,6 +105,11 @@ export const ProductInfo = memo<ProductInfoProps>(({ product, selectedVariant, q
       }
     }
     return stars;
+  };
+
+  const handleViewSellerProfile = (): void => {
+    if (!product.seller?.id) return;
+    push(`/shop/preview/${product.seller.id}`);
   };
 
   return (
@@ -160,7 +168,9 @@ export const ProductInfo = memo<ProductInfoProps>(({ product, selectedVariant, q
           <div className="flex items-center gap-3">
             <span className="text-sm font-medium text-gray-700">Sold by:</span>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-900">{product.seller.shopName}</span>
+              <span className="text-sm font-medium text-gray-900 hover:cursor-pointer" onClick={handleViewSellerProfile}>
+                {product.seller.shopName}
+              </span>
               <Button className="h-8 w-8 p-0 text-gray-500 hover:text-primary" size="sm" variant="ghost" onClick={handleMessageSeller}>
                 <MessageCircle className="h-4 w-4" />
               </Button>

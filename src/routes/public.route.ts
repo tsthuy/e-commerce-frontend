@@ -5,6 +5,7 @@ import type { PublicRouteKeys, RouteType } from '~/types';
 import { BestSellingPage, ExplorePage, HomePage, ProductDetailPage, ProductsPage } from '~/pages/public';
 import { EventsPage } from '~/pages/public/events';
 import { FAQPage } from '~/pages/public/faq';
+import { SellerPreviewPage } from '~/pages/seller-preview-page';
 
 export const PUBLIC_ROUTES: {
   [key in PublicRouteKeys]: RouteType;
@@ -43,5 +44,10 @@ export const PUBLIC_ROUTES: {
     path: (): string => `${PREFIX_PUBLIC_ROUTE}faq`,
     permission: null,
     Element: FAQPage
+  },
+  sellerPreview: {
+    path: (sellerId?: string): string => `${PREFIX_PUBLIC_ROUTE}shop/preview/${sellerId || ':sellerId'}`,
+    permission: null,
+    Element: SellerPreviewPage
   }
 };

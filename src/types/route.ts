@@ -31,6 +31,6 @@ export type AuthRouteKeys = 'login' | 'signup' | 'forgetPassword' | 'sellerLogin
 
 export type ProtectedRoueKeys = 'message' | 'conversation' | 'profile' | 'orders' | 'checkout' | 'refunds' | 'tracks' | 'changePassword' | 'address' | 'checkoutSuccess' | 'checkoutCancel';
 
-export type PublicRouteKeys = 'index' | 'explore' | 'bestSelling' | 'products' | 'productDetail' | 'events' | 'faq';
+export type PublicRouteKeys = 'index' | 'explore' | 'bestSelling' | 'products' | 'productDetail' | 'events' | 'faq' | 'sellerPreview';
 
 export type OtherRouteKeys = 'blank' | '404';

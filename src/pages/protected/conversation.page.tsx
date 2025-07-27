@@ -4,6 +4,8 @@ import { ArrowLeft, Image, Send, User } from 'lucide-react';
 import { useHistory, useParams } from 'react-router-dom';
 import { Virtuoso } from 'react-virtuoso';
 
+import { DEFAULT_IMG_AVATAR } from '~/constants';
+
 import type { ConversationMetadata, Message } from '~/types';
 
 import { formatRelativeTime } from '~/utils';
@@ -251,7 +253,11 @@ export const ConversationPage = memo(() => {
           <div className="flex items-center gap-3">
             <Avatar className="flex h-10 w-10 items-center justify-center">
               {receiverInfo?.avatarUrl || conversationMeta?.receiverAvatar ? (
-                <img alt={receiverInfo?.name || conversationMeta?.receiverName} className="h-full w-full object-cover" src={receiverInfo?.avatarUrl || conversationMeta?.receiverAvatar} />
+                <img
+                  alt={receiverInfo?.name || conversationMeta?.receiverName || DEFAULT_IMG_AVATAR}
+                  className="h-full w-full object-cover"
+                  src={receiverInfo?.avatarUrl || conversationMeta?.receiverAvatar}
+                />
               ) : (
                 <User className="h-5 w-5" />
               )}

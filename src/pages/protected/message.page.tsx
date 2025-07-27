@@ -3,6 +3,8 @@ import { memo, useEffect, useState } from 'react';
 import { MessageCircle, Search, User } from 'lucide-react';
 import { useHistory } from 'react-router-dom';
 
+import { DEFAULT_IMG_AVATAR } from '~/constants';
+
 import type { ConversationMetadata } from '~/types';
 
 import { useTranslation } from '~/hooks';
@@ -43,7 +45,7 @@ const ConversationItem = memo(({ conversation, handleClick }: { conversation: Co
       <div className="relative flex items-center justify-center">
         <Avatar className="flex h-12 w-12 items-center justify-center">
           {receiverInfo?.avatarUrl || conversation.receiverAvatar ? (
-            <img alt={receiverInfo?.name || conversation.receiverName} src={receiverInfo?.avatarUrl || conversation.receiverAvatar} />
+            <img alt={receiverInfo?.name || conversation.receiverName} src={receiverInfo?.avatarUrl || conversation.receiverAvatar || DEFAULT_IMG_AVATAR} />
           ) : (
             <User className="flex h-6 w-6 items-center justify-center" />
           )}

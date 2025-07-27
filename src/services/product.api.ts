@@ -29,6 +29,16 @@ export const productApi = {
     });
   },
 
+  publicSellerList({ sellerId, data, config }: ApiParams<ProductPaginationParams> & { sellerId: string }): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>(API_URLS.product.getPublicSellerPaged(sellerId), {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
+  },
+
   adminList({ data, config }: ApiParams<ProductPaginationParams>): AxiosPromise<ApiResponse<ProductListResponse>> {
     return httpBase.get<ApiResponse<ProductListResponse>>(API_URLS.admin.allProducts, {
       ...config,

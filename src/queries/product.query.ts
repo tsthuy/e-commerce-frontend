@@ -1,6 +1,6 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 
-import type { QueryParams } from '~/types';
+import type { ApiResponse, QueryParams } from '~/types';
 
 import { productApi } from '~/services/product.api';
 import type { ProductDetailParams, ProductDetailResponseType, ProductListResponse, ProductPaginationParams } from '~/types/product';
@@ -18,6 +18,13 @@ export const productQueries = createQueryKeys('product', {
     queryFn: async (): Promise<ProductListResponse> => {
       const { data } = await productApi.sellerList(params);
       return data.result;
+    }
+  }),
+  publicSellerList: (params: QueryParams<ProductPaginationParams> & { sellerId: string }) => ({
+    queryKey: [params],
+    queryFn: async (): Promise<ApiResponse<ProductListResponse>> => {
+      const { data } = await productApi.publicSellerList(params);
+      return data;
     }
   }),
   adminList: (params: QueryParams<ProductPaginationParams>) => ({

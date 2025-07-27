@@ -86,7 +86,6 @@ export const BestSellingPage = memo(() => {
               </div>
             </div>
           </div>
-          <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-gray-400">{t('BestSelling.subtitle')}</p>
         </div>
 
         {/* Products Count */}

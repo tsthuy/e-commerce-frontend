@@ -163,7 +163,8 @@
     "areYouSure": "Are you sure?",
     "deleteAddressConfirmation": "This action cannot be undone. This will permanently delete this address from your profile.",
     "deleting": "Deleting...",
-    "logoutSuccess": "Logged out successfully"
+    "logoutSuccess": "Logged out successfully",
+    "username": "Username"
   },
   "Navigation": {
     "dashboard": "Dashboard",
@@ -245,7 +246,19 @@
     "outOfStock": "Out of stock",
     "products": "products",
     "priceMustBeGreaterThan0": "Price must be greater than 0",
-    "stockMustBePositive": "Stock quantity is required and must be 0 or positive"
+    "stockMustBePositive": "Stock quantity is required and must be 0 or positive",
+    "productNotFound": "Product Not Found",
+    "productNotFoundDesc": "The product you're looking for doesn't exist or has been removed",
+    "productInformation": "Product Information",
+    "productVariants": "Product Variants",
+    "variantCount": "variants",
+    "productAttributes": "Product Attributes",
+    "attributeNameRequired": "Attribute name is required",
+    "valueLabelRequired": "Value label is required",
+    "atLeastOneValueRequired": "At least one value is required",
+    "variantSkuRequired": "Variant SKU is required",
+    "variantPriceMustBeGreaterThan0": "Variant price must be greater than 0",
+    "salePriceMustBeLessThanRegularPrice": "Sale price must be less than regular price"
   },
   "Order": {
     "processing": "Processing",
@@ -277,7 +290,19 @@
     "addresses": "My Addresses"
   },
   "Auth": {
-    "loggedOutSuccess": "Logged out successfully"
+    "loggedOutSuccess": "Logged out successfully",
+    "loginError": "Login error",
+    "loginSuccess": "Login successful",
+    "signInTitle": "Sign In - {{author}}",
+    "sellerSignInTitle": "Seller Sign In - {{author}}",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign In",
+    "sellerSignIn": "Seller Sign In",
+    "orContinueWith": "Or continue with",
+    "newUser": "New to {{author}}?",
+    "newSellerUser": "New seller to {{author}}?",
+    "createAccount": "Create account",
+    "becomeASeller": "Become a seller"
   },
   "Cart": {
     "cart": "Cart",
@@ -437,7 +462,20 @@
     "published": "Published",
     "productImages": "Product Images",
     "actions": "Actions",
-    "productCreatedSuccessfully": "Product created successfully"
+    "productCreatedSuccessfully": "Product created successfully",
+    "editProduct": "Edit Product",
+    "quickStats": "Quick Stats",
+    "metadata": "Metadata",
+    "atLeastOneImageRequired": "At least one image is required",
+    "atLeastOneValidImageRequired": "At least one valid image is required",
+    "addProduct": "Add Product",
+    "Category": {
+      "Image": "Image",
+      "Name": "Name",
+      "Description": "Description",
+      "Created": "Created At",
+      "Actions": "Actions"
+    }
   },
   "Pagination": {
     "previous": "Previous",
@@ -445,5 +483,9 @@
     "page": "Page",
     "of": "of",
     "goToPage": "Go to page {{page}}"
+  },
+  "BestSelling": {
+    "title": "Best Saling",
+    "showingResults": "Showing {{current}} of {{total}} results"
   }
 }

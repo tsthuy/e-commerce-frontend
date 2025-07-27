@@ -163,10 +163,11 @@
     "areYouSure": "Bạn có chắc chắn?",
     "deleteAddressConfirmation": "Hành động này không thể hoàn tác. Điều này sẽ xóa vĩnh viễn địa chỉ này khỏi hồ sơ của bạn.",
     "deleting": "Đang xóa...",
-    "logoutSuccess": "Đăng xuất thành công"
+    "logoutSuccess": "Đăng xuất thành công",
+    "username": "Tên đăng nhập"
   },
   "Navigation": {
-    "dashboard": "Bảng điều khiển",
+    "dashboard": "Quản lý Shop",
     "products": "Sản phẩm",
     "categories": "Danh mục",
     "orders": "Đơn hàng",
@@ -245,7 +246,19 @@
     "outOfStock": "Hết hàng",
     "products": "sản phẩm",
     "priceMustBeGreaterThan0": "Giá phải lớn hơn 0",
-    "stockMustBePositive": "Số lượng tồn kho phải từ 0 trở lên"
+    "stockMustBePositive": "Số lượng tồn kho phải từ 0 trở lên",
+    "productNotFound": "Không tìm thấy sản phẩm",
+    "productNotFoundDesc": "Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa",
+    "productInformation": "Thông tin sản phẩm",
+    "productVariants": "Biến thể sản phẩm",
+    "variantCount": "biến thể",
+    "productAttributes": "Thuộc tính sản phẩm",
+    "attributeNameRequired": "Tên thuộc tính là bắt buộc",
+    "valueLabelRequired": "Nhãn giá trị là bắt buộc",
+    "atLeastOneValueRequired": "Cần ít nhất một giá trị",
+    "variantSkuRequired": "SKU biến thể là bắt buộc",
+    "variantPriceMustBeGreaterThan0": "Giá biến thể phải lớn hơn 0",
+    "salePriceMustBeLessThanRegularPrice": "Giá khuyến mãi phải nhỏ hơn giá gốc"
   },
   "Order": {
     "processing": "Đang xử lý",
@@ -277,7 +290,19 @@
     "addresses": "Địa chỉ của tôi"
   },
   "Auth": {
-    "loggedOutSuccess": "Đăng xuất thành công"
+    "loggedOutSuccess": "Đăng xuất thành công",
+    "loginError": "Lỗi đăng nhập",
+    "loginSuccess": "Đăng nhập thành công",
+    "signInTitle": "Đăng nhập - {{author}}",
+    "sellerSignInTitle": "Đăng nhập Người bán - {{author}}",
+    "forgotPassword": "Quên mật khẩu?",
+    "signIn": "Đăng nhập",
+    "sellerSignIn": "Đăng nhập Người bán",
+    "orContinueWith": "Hoặc tiếp tục với",
+    "newUser": "Người dùng mới của {{author}}?",
+    "newSellerUser": "Người bán mới của {{author}}?",
+    "createAccount": "Tạo tài khoản",
+    "becomeASeller": "Trở thành người bán"
   },
   "Cart": {
     "cart": "Giỏ hàng",
@@ -389,7 +414,7 @@
     "continueShopping": "Tiếp tục mua sắm"
   },
   "Seller": {
-    "dashboard": "Bảng điều khiển",
+    "dashboard": "Quản lý Shop",
     "availableAmount": "Số tiền có sẵn",
     "readyForWithdrawal": "Sẵn sàng rút tiền",
     "totalRevenue": "Tổng doanh thu",
@@ -437,7 +462,20 @@
     "published": "Đã xuất bản",
     "productImages": "Hình ảnh sản phẩm",
     "actions": "Hành động",
-    "productCreatedSuccessfully": "Tạo sản phẩm thành công"
+    "productCreatedSuccessfully": "Tạo sản phẩm thành công",
+    "editProduct": "Chỉnh sửa sản phẩm",
+    "quickStats": "Thống kê nhanh",
+    "metadata": "Siêu dữ liệu",
+    "atLeastOneImageRequired": "Cần ít nhất một hình ảnh",
+    "atLeastOneValidImageRequired": "Cần ít nhất một hình ảnh hợp lệ",
+    "addProduct": "Thêm sản phẩm",
+    "Category": {
+      "Image": "Image",
+      "Name": "Tên",
+      "Description": "Mô tả",
+      "Created": "Created At",
+      "Actions": "Actions"
+    }
   },
   "Pagination": {
     "previous": "Trước",
@@ -445,5 +483,9 @@
     "page": "Trang",
     "of": "trong",
     "goToPage": "Đến trang {{page}}"
+  },
+  "BestSelling": {
+    "title": "Bán chạy",
+    "showingResults": "Hiển thị {{current}} trong tổng số {{total}} kết quả"
   }
 }

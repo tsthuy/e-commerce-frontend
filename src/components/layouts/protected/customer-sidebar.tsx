@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { KeyRound, MapPin, MessageCircle, Package, RefreshCcw, Truck, User } from 'lucide-react';
+import { KeyRound, MapPin, MessageCircle, Package, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { cn } from '~/libs';
@@ -15,16 +15,6 @@ const sidebarItems = [
     name: 'My Orders',
     route: '/user/orders',
     icon: Package
-  },
-  {
-    name: 'Track Orders',
-    route: '/user/tracks',
-    icon: Truck
-  },
-  {
-    name: 'Refunds',
-    route: '/user/refunds',
-    icon: RefreshCcw
   },
   {
     name: 'Messages',

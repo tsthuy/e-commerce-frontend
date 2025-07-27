@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { Eye, Heart, ShoppingCart, Star } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { DEFAULT_IMG_SAMPLE } from '~/constants';
 
@@ -21,6 +21,9 @@ interface ProductCardProps {
 }
 
 export const ProductCard = memo<ProductCardProps>(({ product, linkTo = '#' }) => {
+  const location = useLocation();
+  const isPreviewMode = location.pathname.includes('/seller/');
+
   const addToCart = useAddToCart();
   const toggleWishlist = useToggleWishlistMutation();
   const { data: isInWishlistResponse } = useCheckProductInWishlist(product.id);
@@ -75,24 +78,26 @@ export const ProductCard = memo<ProductCardProps>(({ product, linkTo = '#' }) =>
           <img alt={product.name} className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105" src={product.defaultImageUrl || DEFAULT_IMG_SAMPLE} />
         </div>
 
-        {/* Action Buttons */}
-        <div className="absolute right-2 top-2 flex flex-col gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-          <Button
-            className={`h-8 w-8 p-0 ${isInWishlist ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}
-            disabled={toggleWishlist.isPending}
-            size="sm"
-            variant={isInWishlist ? 'default' : 'secondary'}
-            onClick={handleToggleWishlist}
-          >
-            <Heart className={`h-4 w-4 ${isInWishlist ? 'fill-current' : ''}`} />
-          </Button>
-          <Button className="h-8 w-8 p-0" size="sm" variant="secondary">
-            <Eye className="h-4 w-4" />
-          </Button>
-          <Button className="h-8 w-8 p-0" disabled={addToCart.isPending} size="sm" variant="secondary" onClick={handleAddToCart}>
-            <ShoppingCart className="h-4 w-4" />
-          </Button>
-        </div>
+        {/* Action Buttons - Hidden in preview mode */}
+        {!isPreviewMode && (
+          <div className="absolute right-2 top-2 flex flex-col gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+            <Button
+              className={`h-8 w-8 p-0 ${isInWishlist ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}
+              disabled={toggleWishlist.isPending}
+              size="sm"
+              variant={isInWishlist ? 'default' : 'secondary'}
+              onClick={handleToggleWishlist}
+            >
+              <Heart className={`h-4 w-4 ${isInWishlist ? 'fill-current' : ''}`} />
+            </Button>
+            <Button className="h-8 w-8 p-0" size="sm" variant="secondary">
+              <Eye className="h-4 w-4" />
+            </Button>
+            <Button className="h-8 w-8 p-0" disabled={addToCart.isPending} size="sm" variant="secondary" onClick={handleAddToCart}>
+              <ShoppingCart className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
 
         {/* Badges */}
         <div className="absolute left-2 top-2 flex flex-col gap-1">

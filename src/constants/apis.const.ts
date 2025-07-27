@@ -35,7 +35,8 @@ export const API_URLS = {
   },
   seller: {
     getProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/profile`,
-    updateProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/profile`
+    updateProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/profile`,
+    getPublicProfile: (sellerId: string): string => `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/public/${sellerId}/profile`
   },
   dashboard: {
     stats: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/dashboard/stats`,
@@ -68,6 +69,7 @@ export const API_URLS = {
     getAll: '/api/products',
     getAllPaged: '/api/products/paged',
     getSellerPaged: '/api/products/seller/paged',
+    getPublicSellerPaged: (sellerId: string): string => `/api/products/seller/${sellerId}/paged`,
     create: '/api/products',
     update: (id: string): string => `/api/products/${id}`,
     delete: (id: string): string => `/api/products/${id}`,

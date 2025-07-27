@@ -9,6 +9,12 @@ export type SellerProfileResponse = {
     url: string;
     publicId: string;
   };
+  createdAt?: string;
+  totalOrders: number;
+  availableAmount: number;
+  totalProducts: number;
+  averageRating?: number;
+  reviewCount?: number;
 };
 
 export type UpdateSellerProfileRequest = {

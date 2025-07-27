@@ -13,5 +13,9 @@ export const sellerApi = {
 
   updateProfile({ data, config }: ApiParams<UpdateSellerProfileRequest>): AxiosPromise<ApiResponse<SellerProfileResponse>> {
     return httpBase.put<UpdateSellerProfileRequest, ApiResponse<SellerProfileResponse>>(API_URLS.seller.updateProfile, data, config);
+  },
+
+  getPublicProfile({ sellerId, config }: ApiParams & { sellerId: string }): AxiosPromise<ApiResponse<SellerProfileResponse>> {
+    return httpBase.get<ApiResponse<SellerProfileResponse>>(API_URLS.seller.getPublicProfile(sellerId), config);
   }
 };

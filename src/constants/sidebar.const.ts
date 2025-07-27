@@ -1,8 +1,8 @@
 import { ComponentIcon } from 'lucide-react';
 
-import type { SidebarItemType } from '~/types';
-
 import { ADMIN_ROUTES, PUBLIC_ROUTES } from '~/routes';
+
+import type { SidebarItemType } from '~/types/sidebar';
 
 export const SIDEBAR_ADMIN: Array<SidebarItemType> = [
   {
@@ -83,11 +83,7 @@ export const SIDEBAR_PUBLIC: Array<SidebarItemType> = [
         label: 'Products',
         permission: null
       },
-      {
-        href: PUBLIC_ROUTES.events.path(),
-        label: 'Events',
-        permission: null
-      },
+
       {
         href: PUBLIC_ROUTES.faq.path(),
         label: 'FAQ',
