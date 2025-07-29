@@ -258,7 +258,24 @@
     "atLeastOneValueRequired": "At least one value is required",
     "variantSkuRequired": "Variant SKU is required",
     "variantPriceMustBeGreaterThan0": "Variant price must be greater than 0",
-    "salePriceMustBeLessThanRegularPrice": "Sale price must be less than regular price"
+    "salePriceMustBeLessThanRegularPrice": "Sale price must be less than regular price",
+    "categorySubtitle": "Products of {{category}}",
+    "productStock": "In Stock",
+    "units": "units",
+    "attributes": "Attributes",
+    "variantInformation": "Variant Information",
+    "variantImages": "Variant Images",
+    "chooseVariant": "Choose Variant",
+    "availability": "Availability",
+    "description": "Description",
+    "category": "Category",
+    "soldBy": "Sold by",
+    "quantity": "Quantity",
+    "addToCart": "Add to Cart",
+    "adding": "Adding...",
+    "customerReviews": "Customer Reviews",
+    "reviews": "reviews",
+    "inStock": "In Stock"
   },
   "Order": {
     "processing": "Processing",
@@ -283,7 +300,10 @@
       "CREDIT_CARD": "Credit Card",
       "BANK_TRANSFER": "Bank Transfer",
       "E_WALLET": "E-Wallet"
-    }
+    },
+    "orders": "Orders",
+    "pending": "Pending",
+    "viewDetails": "View Details"
   },
   "Customer": {
     "myOrders": "My Orders",
@@ -404,7 +424,9 @@
     "message": "Thank you for your purchase. Your order has been confirmed and is being processed.",
     "viewOrders": "View Orders",
     "continueShopping": "Continue Shopping",
-    "paymentSuccess": "Payment successful"
+    "paymentSuccess": "Payment successful",
+    "paymentsSuccess": "payments successful",
+    "confirmingPayment": "Confirming your payment..."
   },
   "CheckoutCancel": {
     "title": "Payment Failed",

@@ -13,7 +13,7 @@ import { useProfile } from '~/hooks';
 
 import { getErrorMessage } from '~/utils';
 
-import { LoadingScreen } from '~/components/common';
+import { ChatWindow, LoadingScreen } from '~/components/common';
 import { FooterPublicLayout, HeaderPublicLayout, MainPublicLayout, TopHeaderPublicLayout, WrapperPublicLayout } from '~/components/layouts/public';
 
 import { AUTH_ROUTES, OTHER_ROUTES, PUBLIC_ROUTES } from '~/routes';
@@ -76,6 +76,9 @@ export const PublicLayout = memo(() => {
             <Redirect to={OTHER_ROUTES[404].path()} />
           </Switch>
         </AnimatePresence>
+
+        {/* Chat Window */}
+        <ChatWindow />
       </MainPublicLayout>
       {!isHiddenFooter && <FooterPublicLayout />}
     </WrapperPublicLayout>

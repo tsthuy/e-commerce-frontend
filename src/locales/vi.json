@@ -258,7 +258,24 @@
     "atLeastOneValueRequired": "Cần ít nhất một giá trị",
     "variantSkuRequired": "SKU biến thể là bắt buộc",
     "variantPriceMustBeGreaterThan0": "Giá biến thể phải lớn hơn 0",
-    "salePriceMustBeLessThanRegularPrice": "Giá khuyến mãi phải nhỏ hơn giá gốc"
+    "salePriceMustBeLessThanRegularPrice": "Giá khuyến mãi phải nhỏ hơn giá gốc",
+    "categorySubtitle": "Sản Phẩm thuộc danh mục {{category}}",
+    "productStock": "Còn hàng",
+    "units": "sản phẩm",
+    "attributes": "Thuộc tính",
+    "variantInformation": "Thông tin biến thể",
+    "variantImages": "Hình ảnh biến thể",
+    "chooseVariant": "Chọn biến thể",
+    "availability": "Tình trạng",
+    "description": "Mô tả",
+    "category": "Danh mục",
+    "soldBy": "Bán bởi",
+    "quantity": "Số lượng",
+    "addToCart": "Thêm vào giỏ",
+    "adding": "Đang thêm...",
+    "customerReviews": "Đánh giá của khách hàng",
+    "reviews": "đánh giá",
+    "inStock": "Còn hàng"
   },
   "Order": {
     "processing": "Đang xử lý",
@@ -283,7 +300,10 @@
       "CREDIT_CARD": "Thẻ tín dụng",
       "BANK_TRANSFER": "Chuyển khoản",
       "E_WALLET": "Ví điện tử"
-    }
+    },
+    "orders": "Đơn hàng",
+    "pending": "Chờ xử lý",
+    "viewDetails": "Xem chi tiết"
   },
   "Customer": {
     "myOrders": "Đơn hàng của tôi",
@@ -404,7 +424,9 @@
     "message": "Cảm ơn bạn đã mua hàng. Đơn hàng của bạn đã được xác nhận và đang được xử lý.",
     "viewOrders": "Xem đơn hàng",
     "continueShopping": "Tiếp tục mua sắm",
-    "paymentSuccess": "Thanh toán thành công"
+    "paymentSuccess": "Thanh toán thành công",
+    "paymentsSuccess": "thanh toán thành công",
+    "confirmingPayment": "Đang xác nhận thanh toán..."
   },
   "CheckoutCancel": {
     "title": "Thanh toán thất bại",

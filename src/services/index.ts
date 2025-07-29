@@ -4,6 +4,7 @@ export * from './admin.api';
 export * from './auth.api';
 export * from './cart.api';
 export * from './category.api';
+export * from './chat.api';
 export * from './dashboard-api';
 export * from './general.api';
 export * from './order.api';

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { memo, useState } from 'react';
 
-import { ArrowLeft, Calendar, DollarSign, Edit, Eye, Package, Star, X } from 'lucide-react';
+import { ArrowLeft, Calendar, DollarSign, Edit, Eye, Package, Star } from 'lucide-react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import type { ProductDetailResponse } from '~/types';
@@ -37,12 +37,6 @@ export const ProductView = memo(() => {
     setSelectedVariant(variant);
     setIsVariantModalOpen(true);
   };
-
-  const closeVariantModal = (): void => {
-    setIsVariantModalOpen(false);
-    setSelectedVariant(null);
-  };
-
   if (isLoading) {
     return (
       <Helmet title={t('Common.loading')}>
@@ -328,9 +322,6 @@ export const ProductView = memo(() => {
                 <span>
                   {t('Product.variantDetails')} - {selectedVariant?.sku}
                 </span>
-                <Button size="sm" variant="ghost" onClick={closeVariantModal}>
-                  <X className="h-4 w-4" />
-                </Button>
               </DialogTitle>
             </DialogHeader>
 

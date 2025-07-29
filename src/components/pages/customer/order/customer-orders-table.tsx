@@ -114,9 +114,9 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
           const paymentMethod = row.getValue('paymentMethod') as string;
           const paymentConfig = {
             CASH_ON_DELIVERY: { label: 'COD', color: 'warning' },
-            CREDIT_CARD: { label: 'Thẻ tín dụng', color: 'primary' },
-            BANK_TRANSFER: { label: 'Chuyển khoản', color: 'info' },
-            E_WALLET: { label: 'Ví điện tử', color: 'success' }
+            CREDIT_CARD: { label: t('Order.paymentMethods.CREDIT_CARD'), color: 'primary' },
+            BANK_TRANSFER: { label: t('Order.paymentMethods.bankTransfer'), color: 'info' },
+            E_WALLET: { label: t('Order.paymentMethods.eWallet'), color: 'success' }
           };
 
           const config = paymentConfig[paymentMethod as keyof typeof paymentConfig] || { label: paymentMethod, color: 'default' };

@@ -1,6 +1,7 @@
 export * from './review.hook';
 export * from './use-category-mutation.hook';
 export * from './use-category.hook';
+export * from './use-chat';
 export * from './use-click-outside.hook';
 export * from './use-cloudinary-upload.hook';
 export * from './use-custom-form.hook';

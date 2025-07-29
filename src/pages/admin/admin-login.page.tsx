@@ -77,9 +77,9 @@ export const AdminLoginPage = memo(() => {
 
   return (
     <Helmet title={`Admin Login - ${SEO_AUTHOR}`}>
-      <div className="mx-auto flex h-screen max-w-screen-xl items-center justify-center px-4">
-        <CustomForm options={{ defaultValues }} schema={schema} onSubmit={handleLogin}>
-          <div className="flex flex-col gap-4">
+      <div className="mx-auto flex h-screen w-full max-w-screen-xl items-center border px-4">
+        <CustomForm className="w-full" options={{ defaultValues }} schema={schema} onSubmit={handleLogin}>
+          <div className="flex w-full flex-col gap-4">
             <img alt={SEO_AUTHOR} className="mx-auto h-[90px] w-auto" src={LOGO} />
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-900">Admin Portal</h2>

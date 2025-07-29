@@ -38,7 +38,7 @@ export const PROTECTED_ROUTES: {
     Element: CheckoutPage
   },
   checkoutSuccess: {
-    path: (orderId?: string): string => `${PREFIX_PROTECTED_ROUTE}/checkout/success/${orderId || ':orderId'}`,
+    path: (orderIds?: string): string => `${PREFIX_PROTECTED_ROUTE}/checkout/success/${orderIds || ':orderIds'}`,
     permission: null,
     Element: CheckoutSuccessPage
   },
