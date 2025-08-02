@@ -68,7 +68,7 @@ export const OrderDetailDialog = memo<OrderDetailDialogProps>(({ order, isOpen, 
           <div className="space-y-6">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-4">
-                <div>
+                <div className="border-b border-r p-2">
                   <h3 className="mb-2 text-lg font-semibold">{t('Order.orderInfo')}</h3>
                   <div className="space-y-2">
                     <div className="flex justify-between">
@@ -90,7 +90,7 @@ export const OrderDetailDialog = memo<OrderDetailDialogProps>(({ order, isOpen, 
                   </div>
                 </div>
 
-                <div>
+                <div className="border-b border-r p-2">
                   <h3 className="mb-2 text-lg font-semibold">{t('Order.orderPayment')}</h3>
                   <div className="space-y-2">
                     <div className="flex justify-between">
@@ -105,7 +105,7 @@ export const OrderDetailDialog = memo<OrderDetailDialogProps>(({ order, isOpen, 
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-4 border p-2">
                 <div>
                   <h3 className="mb-2 text-lg font-semibold">{t('Order.orderCustomer')}</h3>
                   <div className="space-y-2">
@@ -117,9 +117,9 @@ export const OrderDetailDialog = memo<OrderDetailDialogProps>(({ order, isOpen, 
                       <span className="text-muted-foreground">{t('Common.email')}:</span>
                       <span>{order.customerEmail}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between border-b pb-2">
                       <span className="text-muted-foreground">{t('Common.phone')}:</span>
-                      <span>{order.shippingAddress?.recipientPhone || 'N/A'}</span>
+                      <span className="">{order.shippingAddress?.recipientPhone || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
@@ -157,7 +157,9 @@ export const OrderDetailDialog = memo<OrderDetailDialogProps>(({ order, isOpen, 
                       <div className="grid grid-cols-12 items-center gap-4">
                         <div className="col-span-6">
                           <div className="flex items-center gap-3">
-                            {item.variantImageUrl && <img alt={item.productName} className="h-12 w-12 rounded object-cover" src={item.variantImageUrl || item.productImageUrl || DEFAULT_IMG_SAMPLE} />}
+                            {(item.variantImageUrl || item.productImageUrl) && (
+                              <img alt={item.productName} className="h-12 w-12 rounded object-cover" src={item.variantImageUrl || item.productImageUrl || DEFAULT_IMG_SAMPLE} />
+                            )}
                             <div>
                               <p className="font-medium">{item.productName}</p>
                               <p className="text-sm text-muted-foreground">SKU: {item.productSku}</p>

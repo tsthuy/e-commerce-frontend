@@ -4,7 +4,7 @@ import type { CategoryResponse } from '~/types';
 
 import { useTranslation } from '~/hooks';
 
-import { Container, Helmet } from '~/components/common';
+import { Helmet } from '~/components/common';
 import { CategoriesTable, CategoryForm } from '~/components/pages/seller/category';
 
 export const Categories = memo(() => {
@@ -28,11 +28,11 @@ export const Categories = memo(() => {
   }, []);
 
   return (
-    <Helmet title={t('Seller.categories')}>
-      <Container className="px-6 py-8">
+    <Helmet title={t('Admin.categories')}>
+      <div className="border p-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold">{t('Seller.categories')}</h1>
-          <p className="text-muted-foreground">{t('Seller.manageCategories')}</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('Admin.categories')}</h1>
+          <p className="text-muted-foreground">{t('Admin.manageCategories')}</p>
         </div>
 
         {/* Categories Table with all features */}
@@ -40,7 +40,7 @@ export const Categories = memo(() => {
 
         {/* Category Form Modal */}
         <CategoryForm category={editingCategory} isOpen={isFormOpen} onClose={handleCloseForm} />
-      </Container>
+      </div>
     </Helmet>
   );
 });

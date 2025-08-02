@@ -106,6 +106,13 @@ export const API_URLS = {
     create: '/api/v1/protected/reviews',
     getProductReviews: (productId: string): string => `/api/v1/general/products/${productId}/reviews`,
     checkExists: '/api/v1/protected/reviews/check'
+  },
+  chat: {
+    sendMessage: '/api/chat/message',
+    getMessages: '/api/chat/messages',
+    getHistory: (sessionId: string): string => `/api/chat/history/${sessionId}`,
+    clearHistory: (sessionId: string): string => `/api/chat/history/${sessionId}`,
+    health: '/api/chat/health'
   }
 };
 
@@ -120,6 +127,7 @@ export const API_ENDPOINTS = {
   WISHLIST: API_URLS.wishlist,
   ORDER: API_URLS.order,
   REVIEW: API_URLS.review,
+  CHAT: API_URLS.chat,
   GENERAL: API_URLS.general,
   DASHBOARD: API_URLS.dashboard,
   ADMIN: API_URLS.admin

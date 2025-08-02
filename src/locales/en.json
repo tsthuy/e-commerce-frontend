@@ -164,7 +164,9 @@
     "deleteAddressConfirmation": "This action cannot be undone. This will permanently delete this address from your profile.",
     "deleting": "Deleting...",
     "logoutSuccess": "Logged out successfully",
-    "username": "Username"
+    "username": "Username",
+    "AdminActions": "Actions",
+    "status": "Status"
   },
   "Navigation": {
     "dashboard": "Dashboard",
@@ -275,7 +277,12 @@
     "adding": "Adding...",
     "customerReviews": "Customer Reviews",
     "reviews": "reviews",
-    "inStock": "In Stock"
+    "inStock": "In Stock",
+    "items": "items",
+    "productRating": "The evaluation point of the product",
+    "productReviews": "Number of comments of the product",
+    "variantDetails": "Details of variation",
+    "product": "Product"
   },
   "Order": {
     "processing": "Processing",
@@ -303,7 +310,18 @@
     },
     "orders": "Orders",
     "pending": "Pending",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "orderStatus": "Status",
+    "items": "Items",
+    "orderCustomer": "Client",
+    "orderInfo": "Order information",
+    "orderPayment": "Payment",
+    "orderDetails": "Order details",
+    "allOrders": "All orders",
+    "totalOrdersCount": "{{count}} Order",
+    "orderNotes": "Notes",
+    "images": "Image",
+    "searchOrdersPlaceholder": "Search by OrderId"
   },
   "Customer": {
     "myOrders": "My Orders",
@@ -416,7 +434,9 @@
     "paymentMethodsDescriptions": {
       "CASH_ON_DELIVERY": "Pay when you receive your order",
       "ADVANCE_PAYMENT": "Pay online with credit card via Stripe"
-    }
+    },
+    "creditCard": "Stripe",
+    "cashOnDelivery": "COD"
   },
   "CheckoutSuccess": {
     "title": "Payment Successful",
@@ -496,8 +516,11 @@
       "Name": "Name",
       "Description": "Description",
       "Created": "Created At",
-      "Actions": "Actions"
-    }
+      "Actions": "Actions",
+      "Delete": "Delete"
+    },
+    "totalImages": "All photos of the product",
+    "price": "Price"
   },
   "Pagination": {
     "previous": "Previous",
@@ -509,5 +532,29 @@
   "BestSelling": {
     "title": "Best Saling",
     "showingResults": "Showing {{current}} of {{total}} results"
+  },
+  "Admin": {
+    "categories": "All categories",
+    "manageCategories": "Manage and monitor all cayegory in the system",
+    "Category": {
+      "AddCategory": "Create new",
+      "SearchByName": "Search by name"
+    }
+  },
+  "Category": {
+    "editCategory": "Edit",
+    "addNewCategory": "Add new",
+    "updateCategoryInformation": "Update",
+    "createNewCategory": "Create new",
+    "categoryName": "Category name",
+    "enterCategoryName": "Enter the name of the category",
+    "slug": "Slug",
+    "enterSlug": "Enter Slug",
+    "description": "Describe",
+    "enterDescription": "Enter the description",
+    "categoryImage": "Image",
+    "selectImage": "Select Image",
+    "createCategory": "Create new",
+    "updateCategory": "Update"
   }
 }

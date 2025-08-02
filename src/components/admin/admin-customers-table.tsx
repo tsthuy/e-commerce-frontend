@@ -31,7 +31,7 @@ export const AdminCustomersTable = memo(() => {
       cell: ({ row }) => {
         const customer = row.original;
         return (
-          <Avatar className="h-10 w-10">
+          <Avatar className="h-14 w-14 !rounded-lg">
             <AvatarImage alt={customer.fullName} src={customer.avatar?.url} />
             <AvatarFallback>
               {customer.fullName
@@ -176,7 +176,7 @@ export const AdminCustomersTable = memo(() => {
 
   return (
     <div className="space-y-4">
-      <DataTable isLoading={isLoading} table={table}>
+      <DataTable classNameHeader="bg-primary text-primary-foreground hover:bg-primary/80 dark:bg-primary dark:text-primary-foreground" isLoading={isLoading} table={table}>
         <DataTableToolbar filterFields={filterFields} table={table} />
       </DataTable>
 

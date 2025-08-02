@@ -11,7 +11,7 @@ import { validates } from '~/utils';
 
 import { Button } from '~/components/common';
 import { CustomForm, CustomInput } from '~/components/form';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '~/components/ui';
 
 interface CategoryFormProps {
   isOpen: boolean;
@@ -128,7 +128,6 @@ export const CategoryForm = memo<CategoryFormProps>(({ isOpen, onClose, category
       <DialogContent className="max-h-[90vh] max-w-[400px] overflow-hidden rounded-md sm:max-w-[50%]">
         <DialogHeader>
           <DialogTitle className="text-center text-xl uppercase">{isEdit ? t('Category.editCategory') : t('Category.addNewCategory')}</DialogTitle>
-          <DialogDescription className="text-center text-primary">{isEdit ? t('Category.updateCategoryInformation') : t('Category.createNewCategory')}</DialogDescription>
         </DialogHeader>
 
         <div className="flex h-full max-h-[calc(90vh-180px)] flex-col">
@@ -161,7 +160,6 @@ export const CategoryForm = memo<CategoryFormProps>(({ isOpen, onClose, category
                         <input accept="image/*" className="sr-only" disabled={isLoading} type="file" onChange={handleImageChange} />
                       </label>
                     </div>
-                    <p className="text-xs text-gray-500">{t('Category.imageHint')}</p>
                   </div>
                 )}
               </div>

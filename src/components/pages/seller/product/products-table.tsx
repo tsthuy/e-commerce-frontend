@@ -29,7 +29,12 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
         header: ({ table }) => (
           <input checked={table.getIsAllPageRowsSelected()} className="rounded border border-gray-300" type="checkbox" onChange={(e) => table.toggleAllPageRowsSelected(e.target.checked)} />
         ),
-        cell: ({ row }) => <input checked={row.getIsSelected()} className="rounded border border-gray-300" type="checkbox" onChange={(e) => row.toggleSelected(e.target.checked)} />,
+        cell: ({ row }) => (
+          <div className="flex items-center gap-4">
+            <input checked={row.getIsSelected()} className="rounded border border-gray-300" type="checkbox" onChange={(e) => row.toggleSelected(e.target.checked)} />
+            <img alt={row.getValue('name')} className="h-14 w-14 rounded-md object-cover" src={row.original.defaultImageUrl} />
+          </div>
+        ),
         enableSorting: false,
         enableHiding: false
       },

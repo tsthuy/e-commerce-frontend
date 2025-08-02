@@ -60,37 +60,37 @@ export const AdminDashboard = memo(() => {
       {
         title: 'Total Users',
         value: dashboardStats?.totalUsers || 0,
-        icon: <UsersIcon className="h-4 w-4" />,
+        icon: <UsersIcon className="h-4 w-4" color="blue" />,
         subtitle: `${dashboardStats?.totalCustomers || 0} customers, ${dashboardStats?.totalSellers || 0} sellers`
       },
       {
         title: 'Total Products',
         value: dashboardStats?.totalProducts || 0,
-        icon: <PackageIcon className="h-4 w-4" />,
+        icon: <PackageIcon className="h-4 w-4" color="orange" />,
         subtitle: `${dashboardStats?.activeProducts || 0} active products`
       },
       {
         title: 'Total Orders',
         value: dashboardStats?.totalOrders || 0,
-        icon: <ShoppingCartIcon className="h-4 w-4" />,
+        icon: <ShoppingCartIcon className="h-4 w-4" color="green" />,
         subtitle: `${dashboardStats?.completedOrders || 0} completed, ${dashboardStats?.cancelledOrders || 0} cancelled`
       },
       {
         title: 'Total Revenue',
         value: formatCurrency(dashboardStats?.totalRevenue || 0),
-        icon: <DollarSignIcon className="h-4 w-4" />,
+        icon: <DollarSignIcon className="h-4 w-4" color="purple" />,
         subtitle: `Avg order: ${formatCurrency(dashboardStats?.avgOrderValue || 0)}`
       },
       {
         title: 'Commission Earned',
         value: formatCurrency(dashboardStats?.totalCommissionEarned || 0),
-        icon: <TrendingUpIcon className="h-4 w-4" />,
+        icon: <TrendingUpIcon className="h-4 w-4" color="teal" />,
         subtitle: `Success rate: ${dashboardStats?.orderSuccessRate?.toFixed(1) || 0}%`
       },
       {
         title: 'Active Sellers',
         value: dashboardStats?.activeSellers || 0,
-        icon: <BarChart3Icon className="h-4 w-4" />,
+        icon: <BarChart3Icon className="h-4 w-4" color="indigo" />,
         subtitle: 'Currently active'
       }
     ],

@@ -6,6 +6,8 @@ import { DEFAULT_IMG_SAMPLE } from '~/constants';
 
 import type { OrderResponse, OrderStatus } from '~/types';
 
+import { cn } from '~/libs';
+
 import { formatDate, formatPrice } from '~/utils';
 
 import { Badge, Button, Card, CardContent, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '~/components/ui';
@@ -141,19 +143,26 @@ export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({
                 <Card key={group.productId}>
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
-                      {group.variantImageUrl && <img alt={group.productName} className="h-16 w-16 rounded object-cover" src={group.variantImageUrl || group.productImageUrl || DEFAULT_IMG_SAMPLE} />}
                       <div className="flex-1">
-                        <h4 className="font-semibold">{group.productName}</h4>
-
                         {/* Show all variants for this product */}
-                        <div className="mt-2 space-y-1">
+                        <div className="mt-2 space-y-2">
                           {group.items.map((item) => (
-                            <div key={item.id} className="text-sm text-gray-600">
-                              {item.variantName && <span className="font-medium">{item.variantName}</span>}
+                            <div key={item.id} className="flex items-center gap-4 text-sm text-gray-600">
+                              <div className="">
+                                {(item.variantImageUrl || group.productImageUrl) && (
+                                  <img alt={group.productName} className="h-16 w-16 rounded object-cover" src={item.variantImageUrl || group.productImageUrl || DEFAULT_IMG_SAMPLE} />
+                                )}
+                              </div>
 
-                              <span className="ml-2">
-                                Qty: {item.quantity} × {formatPrice(item.unitPrice)} = {formatPrice(item.subtotal)}
-                              </span>
+                              <div className="">
+                                <h4 className="font-semibold">{group.productName}</h4>
+
+                                {item.variantName && <span className="font-medium">{item.variantName}</span>}
+
+                                <span className={cn(item.variantName != null && 'ml-2')}>
+                                  Qty: {item.quantity} × {formatPrice(item.unitPrice)} = {formatPrice(item.subtotal)}
+                                </span>
+                              </div>
                             </div>
                           ))}
                         </div>

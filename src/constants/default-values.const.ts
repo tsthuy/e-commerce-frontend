@@ -102,6 +102,7 @@ export const LOGO = '/images/logo/logo.svg';
 export const BG = '/images/bg.avif';
 export const DEFAULT_IMG_BANNER = '/images/common/banner.svg';
 export const DEFAULT_IMG_AVATAR = '/images/common/no-avatar.webp';
+export const DEFAULT_ADMIN_AVATAR = '/admin.png';
 export const DEFAULT_IMG_SAMPLE = '/images/sample.jpg';
 export const DEFAULT_IMG_EMPTY = '/gifs/empty.gif';
 export const DEFAULT_IMG_SEARCHING = '/gifs/searching.gif';

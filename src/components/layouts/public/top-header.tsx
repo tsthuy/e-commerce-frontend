@@ -49,7 +49,7 @@ export const TopHeaderPublicLayout = memo(() => {
 
           <NavItems className="hidden lg:flex" />
 
-          <div className="flex flex-shrink-0 gap-x-4">
+          <div className="flex flex-shrink-0 gap-x-4 pr-[40px] lg:p-0">
             <div className="hidden gap-x-2 md:flex">
               <UserActions />
             </div>
@@ -74,9 +74,7 @@ export const TopHeaderPublicLayout = memo(() => {
             </div>
           </div>
         </div>
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 pr-4">
-          <LanguageSwitcher />
-        </div>
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 pr-4"></div>
       </div>
     </header>
   );
@@ -135,6 +133,7 @@ export const UserActions = memo(() => {
           </Avatar>
         </Link>
       )}
+      <LanguageSwitcher showText={false} />
     </>
   );
 });

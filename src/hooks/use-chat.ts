@@ -11,7 +11,12 @@ import { getErrorMessage } from '~/utils';
 import { useChatStore } from '~/stores/chat.store';
 
 export const useChat = () => {
-  const { isOpen, messages, isLoading, sessionId, error, toggleChat, closeChat, addMessage, updateMessage, setLoading, setError, setSessionId } = useChatStore();
+  const { isOpen, messages, isLoading, sessionId, error, toggleChat, closeChat, addMessage, updateMessage, setLoading, setError, setSessionId, clearMessages } = useChatStore();
+
+  const handleCloseChat = useCallback(() => {
+    closeChat();
+    clearMessages(); // Clear current session messages when closing
+  }, [closeChat, clearMessages]);
 
   const sendMessage = useCallback(
     async (content: string) => {
@@ -69,7 +74,7 @@ export const useChat = () => {
 
     // Actions
     toggleChat,
-    closeChat,
+    closeChat: handleCloseChat,
     sendMessage
   };
 };

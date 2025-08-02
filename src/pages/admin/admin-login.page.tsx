@@ -2,7 +2,7 @@ import { memo, useMemo, useState } from 'react';
 
 import Cookie from 'js-cookie';
 import { KeyRoundIcon, UserIcon } from 'lucide-react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -14,7 +14,7 @@ import { adminApi } from '~/services';
 
 import { useTranslation } from '~/hooks';
 
-import { getErrorMessage, validates } from '~/utils';
+import { getErrorMessage, hasRole, isAuthenticated, validates } from '~/utils';
 
 import { Button, Helmet } from '~/components/common';
 import { CustomForm, CustomInput, CustomInputPassword } from '~/components/form';
@@ -22,6 +22,15 @@ import { CustomForm, CustomInput, CustomInputPassword } from '~/components/form'
 export const AdminLoginPage = memo(() => {
   const { push } = useHistory();
   const { t } = useTranslation();
+
+  const location = useLocation();
+
+  const { pathname } = location;
+  const loggedStatus = isAuthenticated();
+
+  const isAdmin = hasRole('ADMIN');
+
+  const ignoreRedirect: Array<string> = useMemo(() => [], []);
 
   const schema = useMemo(
     () =>
@@ -75,9 +84,14 @@ export const AdminLoginPage = memo(() => {
     }
   };
 
+  if (isAdmin && loggedStatus && !ignoreRedirect.includes(pathname)) {
+    push('/admin/dashboard');
+    return null;
+  }
+
   return (
     <Helmet title={`Admin Login - ${SEO_AUTHOR}`}>
-      <div className="mx-auto flex h-screen w-full max-w-screen-xl items-center border px-4">
+      <div className="mx-auto flex h-screen w-full max-w-screen-xl items-center px-4">
         <CustomForm className="w-full" options={{ defaultValues }} schema={schema} onSubmit={handleLogin}>
           <div className="flex w-full flex-col gap-4">
             <img alt={SEO_AUTHOR} className="mx-auto h-[90px] w-auto" src={LOGO} />

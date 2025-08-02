@@ -6,6 +6,8 @@ import { Loader2, Send } from 'lucide-react';
 
 import { cn } from '~/utils';
 
+import { Textarea } from '~/components/ui';
+
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   isLoading: boolean;
@@ -23,7 +25,6 @@ export const ChatInput = memo<ChatInputProps>(({ onSendMessage, isLoading, disab
     onSendMessage(trimmedMessage);
     setMessage('');
 
-    // Reset textarea height
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
@@ -39,7 +40,6 @@ export const ChatInput = memo<ChatInputProps>(({ onSendMessage, isLoading, disab
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
 
-    // Auto-resize textarea
     const textarea = e.target;
     textarea.style.height = 'auto';
     textarea.style.height = `${Math.min(textarea.scrollHeight, 100)}px`;
@@ -49,16 +49,16 @@ export const ChatInput = memo<ChatInputProps>(({ onSendMessage, isLoading, disab
 
   return (
     <div className="border-t border-gray-200 bg-white p-3">
-      <div className="flex items-end gap-2">
+      <div className="flex items-center justify-center gap-2">
         <div className="relative flex-1">
-          <textarea
+          <Textarea
             ref={textareaRef}
             disabled={disabled || isLoading}
             placeholder="Nhập tin nhắn của bạn..."
             rows={1}
             value={message}
             className={cn(
-              'w-full resize-none rounded-lg border border-gray-300 px-3 py-2 pr-10',
+              'w-full resize-none rounded-lg border border-gray-300 px-3 pr-10',
               'focus:border-transparent focus:outline-none focus:ring-2 focus:ring-teal-500',
               'max-h-[100px] min-h-[40px] text-sm placeholder-gray-400',
               (disabled || isLoading) && 'cursor-not-allowed bg-gray-50'

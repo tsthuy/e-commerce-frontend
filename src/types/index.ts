@@ -6,6 +6,7 @@ export * from './api';
 export * from './auth';
 export * from './cart';
 export * from './category';
+export * from './chat.types';
 export * from './cloudinary';
 export * from './common';
 export * from './conversation.type';

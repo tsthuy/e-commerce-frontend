@@ -110,7 +110,7 @@ export const ProductCard = memo<ProductCardProps>(({ product, linkTo = '#' }) =>
       <div className="flex flex-col space-y-2 p-4">
         {/* Product Name */}
         <Link className="text-lg font-semibold hover:text-primary hover:underline" title={product.name} to={linkTo}>
-          {truncateText(product.name, 40)}
+          {truncateText(product.name, 25)}
         </Link>
 
         {/* Description */}
@@ -119,7 +119,11 @@ export const ProductCard = memo<ProductCardProps>(({ product, linkTo = '#' }) =>
         </p>
 
         {/* Category */}
-        {product.categoryName && <span className="text-xs text-gray-500">{product.categoryName}</span>}
+        {product.categoryName && (
+          <div className="py-2">
+            <Badge className="w-fit">{product.categoryName}</Badge>
+          </div>
+        )}
 
         {/* Rating */}
         <div className="flex items-center gap-1">

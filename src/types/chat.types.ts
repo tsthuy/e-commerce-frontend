@@ -6,6 +6,24 @@ export interface ChatMessage {
   status?: 'sending' | 'sent' | 'error';
 }
 
+export interface ChatMessageResponse {
+  id: string;
+  customerProfileId?: string;
+  userMessage: string;
+  botResponse: string;
+  timestamp: string;
+}
+
+export interface ChatMessageListResponse {
+  messages: ChatMessageResponse[];
+  totalElements: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+}
+
 export interface ChatResponse {
   message: string;
   sessionId: string;

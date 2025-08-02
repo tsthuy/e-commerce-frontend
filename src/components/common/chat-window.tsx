@@ -2,16 +2,25 @@ import { memo, useEffect, useRef } from 'react';
 
 import { MessageCircle, X } from 'lucide-react';
 
+import type { ApiResponse, ChatMessage, ChatMessageListResponse, ChatMessageResponse } from '~/types';
+
 import { cn } from '~/utils';
 
 import { ChatInput } from './chat-input';
 import { ChatMessageComponent } from './chat-message';
 
 import { useChat } from '~/hooks/use-chat';
+import { useMessagesList } from '~/hooks/use-messages.hook';
 
 export const ChatWindow = memo(() => {
   const { isOpen, messages, isLoading, sendMessage, toggleChat, closeChat } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Load chat history when chat is opened
+  const { data: chatHistory, isLoading: isLoadingHistory } = useMessagesList({
+    data: { page: 0, size: 50 },
+    enabled: isOpen
+  });
 
   // Welcome message
   const welcomeMessage = {
@@ -22,8 +31,60 @@ export const ChatWindow = memo(() => {
     status: 'sent' as const
   };
 
-  // Show welcome message if no messages
-  const displayMessages = messages.length === 0 ? [welcomeMessage] : messages;
+  // Convert chat history to ChatMessage format
+  const convertHistoryToMessages = (history: ApiResponse<ChatMessageListResponse> | undefined): ChatMessage[] => {
+    if (!history?.result?.messages) return [];
+
+    // eslint-disable-next-line no-console
+    console.log('🔍 Converting chat history:', history.result);
+
+    return history.result.messages.flatMap((item: ChatMessageResponse) => [
+      // User message
+      {
+        id: `${item.id}-user`,
+        content: item.userMessage,
+        isUser: true,
+        timestamp: new Date(item.timestamp),
+        status: 'sent' as const
+      },
+      // Bot response
+      {
+        id: `${item.id}-bot`,
+        content: item.botResponse,
+        isUser: false,
+        timestamp: new Date(item.timestamp),
+        status: 'sent' as const
+      }
+    ]);
+  };
+
+  // Combine history and current messages
+  const historyMessages = convertHistoryToMessages(chatHistory);
+
+  // Filter out current session messages that might already be in history
+  // Only keep messages from current session that are not saved yet (e.g., sending status)
+  const currentSessionMessages = messages.filter(
+    (msg) =>
+      msg.status === 'sending' ||
+      msg.status === 'error' ||
+      !historyMessages.some(
+        (histMsg) => histMsg.content === msg.content && Math.abs(new Date(histMsg.timestamp).getTime() - new Date(msg.timestamp).getTime()) < 5000 // within 5 seconds
+      )
+  );
+
+  // eslint-disable-next-line no-console
+  console.log('📋 History messages:', historyMessages);
+  // eslint-disable-next-line no-console
+  console.log('💬 Current session messages:', currentSessionMessages);
+
+  const allMessages = [...historyMessages, ...currentSessionMessages];
+
+  // Sort messages by timestamp
+  const sortedMessages = allMessages.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+  // Show welcome message only if no history and no current messages and not loading
+  const hasAnyMessages = historyMessages.length > 0 || currentSessionMessages.length > 0;
+  const displayMessages = hasAnyMessages ? sortedMessages : !isLoadingHistory ? [welcomeMessage] : [];
 
   // Auto scroll to bottom
   useEffect(() => {
@@ -63,9 +124,15 @@ export const ChatWindow = memo(() => {
             <X size={18} />
           </button>
         </div>
-
         {/* Messages */}
         <div className="flex-1 space-y-1 overflow-y-auto p-4">
+          {/* History loading indicator */}
+          {isLoadingHistory && (
+            <div className="mb-4 flex justify-center">
+              <div className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-500">Đang tải lịch sử chat...</div>
+            </div>
+          )}
+
           {displayMessages.map((message) => (
             <ChatMessageComponent key={message.id} message={message} />
           ))}
@@ -88,7 +155,6 @@ export const ChatWindow = memo(() => {
 
           <div ref={messagesEndRef} />
         </div>
-
         {/* Input */}
         <ChatInput isLoading={isLoading} onSendMessage={sendMessage} />
       </div>

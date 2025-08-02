@@ -124,7 +124,7 @@ export const MessagePage = memo(() => {
 
   return (
     <Helmet title={t('Messages.title')}>
-      <Container className="py-6">
+      <Container className="p-2 py-6">
         <div className="mx-auto max-w-4xl">
           {/* Header */}
           <div className="mb-6">
