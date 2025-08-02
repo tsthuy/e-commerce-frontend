@@ -1,15 +1,51 @@
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { AnimatePresence } from 'framer-motion';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { default as Cookie } from 'js-cookie';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 
+import { COOKIE_KEYS } from '~/constants';
+
+import { authApi } from '~/services';
+
+import { useSellerProfile } from '~/hooks';
+
+import { getErrorMessage } from '~/utils';
+
+import { LoadingScreen } from '~/components/common';
 import { SellerHeader, SellerSideBar } from '~/components/layouts/seller';
 import { MainSellerLayout } from '~/components/layouts/seller/main';
 
-import { SELLER_ROUTES } from '~/routes';
+import { AUTH_ROUTES, SELLER_ROUTES } from '~/routes';
 
 export const SellerLayout = memo(() => {
   const location = useLocation();
+
+  const loggedStatus = !!Cookie.get(COOKIE_KEYS.accessToken) && !!Cookie.get(COOKIE_KEYS.refreshToken);
+  const { isSuccess: isSuccessProfile, isError: isErrorProfile } = useSellerProfile({ enabled: loggedStatus, retry: 1 });
+
+  const [isLoadingScreen, setIsLoadingScreen] = useState<boolean>(loggedStatus);
+
+  useEffect(() => {
+    if (isSuccessProfile) setIsLoadingScreen(false);
+  }, [isSuccessProfile]);
+
+  useEffect(() => {
+    if (isErrorProfile) handleLogout();
+  }, [isErrorProfile]);
+
+  const handleLogout = async (): Promise<void> => {
+    try {
+      await authApi.logout({ data: { directUri: AUTH_ROUTES.sellerLogin.path() } });
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Something went wrong! Please try again.'));
+    }
+  };
+
+  if (!loggedStatus) return <Redirect to={AUTH_ROUTES.sellerLogin.path()} />;
+
+  if (isLoadingScreen) return <LoadingScreen />;
 
   return (
     <>

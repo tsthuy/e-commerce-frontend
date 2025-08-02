@@ -31,7 +31,7 @@ export const AdminSellersTable = memo(() => {
       cell: ({ row }) => {
         const seller = row.original;
         return (
-          <Avatar className="h-10 w-10">
+          <Avatar className="h-14 w-14 !rounded-lg">
             <AvatarImage alt={seller.shopName} src={seller.avatar?.url} />
             <AvatarFallback>
               {seller.shopName
@@ -126,7 +126,7 @@ export const AdminSellersTable = memo(() => {
       {
         label: 'Search Sellers',
         value: 'shopName' as keyof AdminSellerResponse,
-        placeholder: 'Search by shop name, email, phone...'
+        placeholder: 'Search by shop name, email...'
       }
     ],
     []
@@ -184,7 +184,7 @@ export const AdminSellersTable = memo(() => {
 
   return (
     <div className="space-y-4">
-      <DataTable isLoading={isLoading} table={table}>
+      <DataTable classNameHeader="bg-primary text-primary-foreground hover:bg-primary/80 dark:bg-primary dark:text-primary-foreground" isLoading={isLoading} table={table}>
         <DataTableToolbar filterFields={filterFields} table={table} />
       </DataTable>
 

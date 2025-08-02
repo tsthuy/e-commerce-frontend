@@ -107,7 +107,7 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
       {
         label: t('Seller.Category.SearchCategories'),
         value: 'name' as keyof CategoryResponse,
-        placeholder: t('Seller.Category.SearchByName')
+        placeholder: t('Admin.Category.SearchByName')
       }
     ],
     [t]
@@ -182,7 +182,7 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
         <TasksTableToolbarActions
           table={table}
           createAction={{
-            label: t('Seller.Category.AddCategory'),
+            label: t('Admin.Category.AddCategory'),
             action: () => onCreate?.()
           }}
           deleteAction={{

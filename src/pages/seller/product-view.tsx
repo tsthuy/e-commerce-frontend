@@ -268,21 +268,19 @@ export const ProductView = memo(() => {
                   <span className="text-gray-600">{t('Product.productVariants')}</span>
                   <span className="font-medium">{product.variantCount}</span>
                 </div>
-                {product.averageRating && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{t('Product.productRating')}</span>
-                    <div className="flex items-center">
-                      <Star className="mr-1 h-4 w-4 text-yellow-400" />
-                      <span className="font-medium">{product.averageRating}</span>
-                    </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">{t('Product.productRating')}</span>
+                  <div className="-mr-2 flex items-center gap-2">
+                    <span className="font-medium">{product.averageRating || 0}</span>
+                    <Star className="mr-1 h-4 w-4" fill={product.averageRating ? 'yellow' : 'gray'} />
                   </div>
-                )}
-                {product.reviewCount && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{t('Product.productReviews')}</span>
-                    <span className="font-medium">{product.reviewCount}</span>
-                  </div>
-                )}
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">{t('Product.productReviews')}</span>
+                  <span className="font-medium">{product.reviewCount || 0}</span>
+                </div>
               </div>
             </Card>
 

@@ -31,10 +31,8 @@ export const SellerHeader = memo(() => {
               <AvatarImage alt={seller?.shopName || 'Shop'} src={seller?.shopAvatar?.url || DEFAULT_IMG_AVATAR} />
               <AvatarFallback>{seller?.shopName?.substring(0, 2).toUpperCase() || 'S'}</AvatarFallback>
             </Avatar>
+            <LanguageSwitcher showText={false} />
           </div>
-        </div>
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 pr-4">
-          <LanguageSwitcher />
         </div>
       </div>
     </header>

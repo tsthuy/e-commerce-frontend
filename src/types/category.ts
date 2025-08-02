@@ -16,6 +16,8 @@ export interface CategoryRequest {
   slug?: string;
   description?: string;
   imageUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface CategoryResponse {

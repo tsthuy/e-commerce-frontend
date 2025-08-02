@@ -89,7 +89,14 @@ export const OrdersTable = memo<OrdersTableProps>(({ onViewOrder, initialFilters
         header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Common.total')} />,
         cell: ({ row }): JSX.Element => {
           const amount = row.getValue('total') as number;
-          return <div className="font-medium text-green-600">{formatPrice(amount)}</div>;
+          const order = row.original;
+
+          return (
+            <div className="flex justify-between gap-2 font-medium text-green-600">
+              <p>{formatPrice(amount)}</p>
+              <img alt="order" className="h-12 w-12 object-cover" src={order.items[0]?.variantImageUrl || order.items[0]?.productImageUrl} />
+            </div>
+          );
         },
         enableSorting: true,
         enableHiding: true
@@ -164,7 +171,13 @@ export const OrdersTable = memo<OrdersTableProps>(({ onViewOrder, initialFilters
         header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Common.date')} />,
         cell: ({ row }): JSX.Element => {
           const date = row.getValue('createdAt') as string;
-          return <div className="text-sm">{formatDate(date)}</div>;
+          return (
+            <div className="text-sm">
+              <Badge className="border-yellow-300 bg-yellow-100 text-yellow-800" variant="outline">
+                {formatDate(date, 'DD/MM/YYYY HH:mm')}
+              </Badge>
+            </div>
+          );
         },
         enableSorting: true,
         enableHiding: true
@@ -200,7 +213,7 @@ export const OrdersTable = memo<OrdersTableProps>(({ onViewOrder, initialFilters
       {
         label: 'Tìm kiếm đơn hàng',
         value: 'orderNumber' as keyof OrderResponse,
-        placeholder: 'Tìm theo mã đơn hàng, tên khách hàng...'
+        placeholder: 'Search by order number, customer name, or email'
       }
     ],
     []

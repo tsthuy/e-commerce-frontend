@@ -57,13 +57,12 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
       },
       {
         accessorKey: 'sellerShopName',
-        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Order.seller')} />,
+        header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Order.images')} />,
         cell: ({ row }): JSX.Element => {
           const order = row.original;
           return (
-            <div>
-              <div className="font-medium">{order.sellerShopName}</div>
-              <div className="text-sm text-muted-foreground">{order.sellerName}</div>
+            <div className="flex items-center justify-center text-center">
+              <img alt="order" className="h-12 w-12 object-cover" src={order.items[0]?.variantImageUrl || order.items[0]?.productImageUrl} />
             </div>
           );
         },
@@ -75,7 +74,7 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
         header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Order.totalAmount')} />,
         cell: ({ row }): JSX.Element => {
           const order = row.original;
-          return <div className="text-right font-medium">{formatPrice(order.total)}</div>;
+          return <div className="text-center font-medium">{formatPrice(order.total)}</div>;
         },
         enableSorting: true,
         enableHiding: true
@@ -97,7 +96,7 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
           const order = row.original;
           const totalQty = order.items?.reduce((sum: number, item) => sum + item.quantity, 0) || 0;
           return (
-            <div className="text-center">
+            <div className="flex items-center justify-center gap-2 text-center">
               <Badge className="font-mono" variant="outline">
                 {totalQty}
               </Badge>
@@ -135,7 +134,13 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
         header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Order.orderDate')} />,
         cell: ({ row }): JSX.Element => {
           const order = row.original;
-          return <div className="text-sm">{formatDate(order.createdAt)}</div>;
+          return (
+            <div className="text-sm">
+              <Badge className="border-yellow-300 bg-yellow-100 text-yellow-800" variant="outline">
+                {formatDate(order.createdAt, 'DD/MM/YYYY HH:mm')}
+              </Badge>
+            </div>
+          );
         },
         enableSorting: true,
         enableHiding: true

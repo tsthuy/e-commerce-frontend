@@ -1,17 +1,35 @@
 import { memo } from 'react';
 
+import { LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
-import { DEFAULT_IMG_AVATAR, LOGO, SEO_AUTHOR } from '~/constants';
+import { DEFAULT_ADMIN_AVATAR, LOGO, SEO_AUTHOR } from '~/constants';
+
+import { authApi } from '~/services';
+
+import { useTranslation } from '~/hooks';
+
+import { getErrorMessage } from '~/utils';
 
 import { LanguageSwitcher } from '~/components/common';
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui';
+import { Avatar, AvatarFallback, AvatarImage, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '~/components/ui';
 
 import { useAdminProfile } from '~/hooks/use-admin-profile.hook';
 import { ADMIN_AUTH_ROUTES } from '~/routes/admin-auth.route';
 
 export const AdminAuthHeader = memo(() => {
+  const { t } = useTranslation();
   const { data: admin } = useAdminProfile({});
+
+  const handleLogout = async (): Promise<void> => {
+    try {
+      await authApi.logout({ data: { directUri: ADMIN_AUTH_ROUTES.login.path() } });
+      toast.success(t('Auth.loggedOutSuccess'));
+    } catch (error) {
+      toast.error(getErrorMessage(error, t('Common.somethingWentWrong')));
+    }
+  };
 
   return (
     <header className="sticky top-0 z-10 h-header-public w-full border-b bg-white py-2 shadow">
@@ -27,16 +45,27 @@ export const AdminAuthHeader = memo(() => {
                 {admin?.firstName} {admin?.lastName}
               </p>
               <p className="text-xs text-gray-500">{admin?.email || 'admin@admin.com'}</p>
-              <p className="text-xs text-blue-600">{admin?.department || 'System Administration'}</p>
             </div>
-            <Avatar>
-              <AvatarImage alt={admin?.username || 'Admin'} src={DEFAULT_IMG_AVATAR} />
-              <AvatarFallback>AD</AvatarFallback>
-            </Avatar>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger className="rounded-full focus:outline-none focus:ring-[2px] focus:ring-primary focus:ring-offset-2">
+                <Avatar>
+                  <AvatarImage alt="avatar" className="!object-contain" src={DEFAULT_ADMIN_AVATAR} />
+                  <AvatarFallback>AB</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 gap-2">
+                <DropdownMenuLabel>{t('Common.AdminActions')}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem className="cursor-pointer text-destructive focus:bg-destructive/10" onClick={handleLogout}>
+                  <LogOut className="mr-2 size-6" /> {t('Common.logout')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <LanguageSwitcher showText={false} />
           </div>
-        </div>
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 pr-4">
-          <LanguageSwitcher />
         </div>
       </div>
     </header>

@@ -88,7 +88,14 @@ export const AdminOrdersTable = memo<AdminOrdersTableProps>(({ onViewOrder, init
         header: ({ column }): JSX.Element => <DataTableColumnHeader column={column} title={t('Common.total')} />,
         cell: ({ row }): JSX.Element => {
           const amount = row.getValue('total') as number;
-          return <div className="font-medium text-green-600">{formatPrice(amount)}</div>;
+
+          const order = row.original;
+          return (
+            <div className="flex justify-between gap-2 font-medium text-green-600">
+              <p>{formatPrice(amount)}</p>
+              <img alt="order" className="h-12 w-12 rounded object-cover" src={order.items[0]?.variantImageUrl || order.items[0]?.productImageUrl} />
+            </div>
+          );
         },
         enableSorting: true,
         enableHiding: true
@@ -248,11 +255,11 @@ export const AdminOrdersTable = memo<AdminOrdersTableProps>(({ onViewOrder, init
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">{t('Order.allOrders')}</h2>
-          {ordersResponse && <p className="text-sm text-muted-foreground">{t('Order.totalOrdersCount', { count: ordersResponse.totalElements })}</p>}
+          <h2 className="text-lg font-semibold">
+            {t('Order.allOrders')} ({ordersResponse && ordersResponse.totalElements})
+          </h2>
         </div>
       </div>
-
       <DataTable classNameHeader="bg-primary text-primary-foreground hover:bg-primary/80 dark:bg-primary dark:text-primary-foreground" isLoading={isLoading} table={table}>
         <DataTableToolbar filterFields={filterFields} table={table} />
       </DataTable>

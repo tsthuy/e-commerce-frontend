@@ -8,13 +8,14 @@ import { DEFAULT_IMG_AVATAR } from '~/constants';
 
 import type { ConversationMetadata } from '~/types';
 
+import { useSellerProfile } from '~/hooks';
+
 import { formatRelativeTime } from '~/utils';
 
 import { Container, Helmet } from '~/components/common';
 import { Avatar, Button, Input } from '~/components/ui';
 
 import { useInfoUserForChat } from '~/hooks/use-info-user-for-chat.hook';
-import { useProfile } from '~/hooks/use-profile.hook';
 import { ConversationService } from '~/services/conversation.service';
 
 // Component con để sử dụng hook cho từng conversation
@@ -82,7 +83,7 @@ ConversationItem.displayName = 'ConversationItem';
 
 export const ShopInboxPage = memo(() => {
   const history = useHistory();
-  const { data: profileResponse } = useProfile({ enabled: true });
+  const { data: profileResponse } = useSellerProfile({ enabled: true });
   const { t } = useTranslation();
 
   const [conversations, setConversations] = useState<ConversationMetadata[]>([]);
@@ -150,7 +151,7 @@ export const ShopInboxPage = memo(() => {
         <title>{t('Messages.shopInbox')}</title>
       </Helmet>
 
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-4xl p-2">
         <div className="mb-6">
           <h1 className="mb-2 text-2xl font-bold text-gray-900">{t('Messages.shopInbox')}</h1>
           <p className="text-gray-600">{t('Messages.manageConversations')}</p>

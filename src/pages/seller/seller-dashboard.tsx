@@ -1,5 +1,6 @@
 import { memo, useState } from 'react';
 
+import { DollarSignIcon, PackageIcon, ShoppingCartIcon } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 import { useTranslation } from '~/hooks';
@@ -78,10 +79,25 @@ export const SellerDashboard = memo(() => {
 
       {stats && (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <DashboardCard subtitle={t('Seller.readyForWithdrawal')} title={t('Seller.availableAmount')} value={formatCurrency(stats.availableAmount)} />
-          <DashboardCard subtitle={`${stats.completedOrders} ${t('Seller.completedOrders')}`} title={t('Seller.totalRevenue')} value={formatCurrency(stats.totalRevenue)} />
-          <DashboardCard subtitle={`${stats.cancelledOrders} ${t('Seller.cancelled')}`} title={t('Seller.totalOrders')} value={stats.totalOrders} />
-          <DashboardCard subtitle={t('Seller.activeListings')} title={t('Seller.products')} value={stats.totalProducts} />
+          <DashboardCard
+            icon={<DollarSignIcon className="h-4 w-4" color="green" />}
+            subtitle={t('Seller.readyForWithdrawal')}
+            title={t('Seller.availableAmount')}
+            value={formatCurrency(stats.availableAmount)}
+          />
+          <DashboardCard
+            icon={<DollarSignIcon className="h-4 w-4" color="green" />}
+            subtitle={`${stats.completedOrders} ${t('Seller.completedOrders')}`}
+            title={t('Seller.totalRevenue')}
+            value={formatCurrency(stats.totalRevenue)}
+          />
+          <DashboardCard
+            icon={<ShoppingCartIcon className="h-4 w-4" color="purple" />}
+            subtitle={`${stats.cancelledOrders} ${t('Seller.cancelled')}`}
+            title={t('Seller.totalOrders')}
+            value={stats.totalOrders}
+          />
+          <DashboardCard icon={<PackageIcon className="h-4 w-4" color="orange" />} subtitle={t('Seller.activeListings')} title={t('Seller.products')} value={stats.totalProducts} />
         </div>
       )}
 

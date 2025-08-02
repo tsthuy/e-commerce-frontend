@@ -28,7 +28,7 @@ export const LanguageSwitcher = memo<LanguageSwitcherProps>(({ variant = 'outlin
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="flex items-center gap-2" size={size} variant={variant}>
+        <Button className="flex items-center gap-2 !py-5" size={size} variant={variant}>
           {showIcon &&
             (selectedLanguage?.logo ? (
               <img

@@ -611,8 +611,8 @@ export const ProductEditForm = memo(() => {
         costPrice: values.costPrice || undefined,
         stock: values.stock,
         categoryId: values.categoryId,
-        status: values.status,
-        isPublished: values.isPublished,
+        status: 'ACTIVE',
+        isPublished: true,
         images: uploadedImages.map((img) => ({
           url: img.url,
           publicId: img.publicId,
@@ -768,6 +768,7 @@ export const ProductEditForm = memo(() => {
 
                   <CustomSelect
                     isRequired
+                    className="hidden"
                     disabled={isLoading}
                     label="Status"
                     name="status"
@@ -778,7 +779,7 @@ export const ProductEditForm = memo(() => {
                     ]}
                   />
 
-                  <div className="flex items-center pt-8">
+                  <div className="hidden items-center pt-8">
                     <CustomSwitch disabled={isLoading} label="Published" name="isPublished" />
                   </div>
                 </div>

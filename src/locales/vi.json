@@ -164,7 +164,9 @@
     "deleteAddressConfirmation": "Hành động này không thể hoàn tác. Điều này sẽ xóa vĩnh viễn địa chỉ này khỏi hồ sơ của bạn.",
     "deleting": "Đang xóa...",
     "logoutSuccess": "Đăng xuất thành công",
-    "username": "Tên đăng nhập"
+    "username": "Tên đăng nhập",
+    "AdminActions": "Hành động",
+    "status": "Trạng Thái"
   },
   "Navigation": {
     "dashboard": "Quản lý Shop",
@@ -275,7 +277,12 @@
     "adding": "Đang thêm...",
     "customerReviews": "Đánh giá của khách hàng",
     "reviews": "đánh giá",
-    "inStock": "Còn hàng"
+    "inStock": "Còn hàng",
+    "items": "Sản Phẩm ",
+    "productRating": "Điểm đánh giá của sản phẩm",
+    "productReviews": "Số lượng bình luận của sản phẩm",
+    "variantDetails": "Chi tiết biến thể",
+    "product": "Sản Phẩm"
   },
   "Order": {
     "processing": "Đang xử lý",
@@ -303,7 +310,18 @@
     },
     "orders": "Đơn hàng",
     "pending": "Chờ xử lý",
-    "viewDetails": "Xem chi tiết"
+    "viewDetails": "Xem chi tiết",
+    "orderStatus": "Trạng Thái",
+    "items": "Số lượng",
+    "orderCustomer": "Khách Hàng",
+    "orderInfo": "Thông tin đơn hàng",
+    "orderPayment": "Thanh toán",
+    "orderDetails": "Chi tiết đơn hàng",
+    "allOrders": "Tất cả đơn hàng",
+    "totalOrdersCount": "{{count}} đơn hàng",
+    "orderNotes": "Ghi chú",
+    "images": "Image",
+    "searchOrdersPlaceholder": "Tìm kiếm bằng OrderId"
   },
   "Customer": {
     "myOrders": "Đơn hàng của tôi",
@@ -416,7 +434,9 @@
     "paymentMethodsDescriptions": {
       "CASH_ON_DELIVERY": "Thanh toán khi bạn nhận được đơn hàng",
       "ADVANCE_PAYMENT": "Thanh toán trực tuyến bằng thẻ tín dụng qua Stripe"
-    }
+    },
+    "creditCard": "Stripe",
+    "cashOnDelivery": "COD"
   },
   "CheckoutSuccess": {
     "title": "Thanh toán thành công",
@@ -496,8 +516,11 @@
       "Name": "Tên",
       "Description": "Mô tả",
       "Created": "Created At",
-      "Actions": "Actions"
-    }
+      "Actions": "Actions",
+      "Delete": "Xóa"
+    },
+    "totalImages": "Tất cả ảnh của sản phẩm",
+    "price": "Giá Bán"
   },
   "Pagination": {
     "previous": "Trước",
@@ -509,5 +532,29 @@
   "BestSelling": {
     "title": "Bán chạy",
     "showingResults": "Hiển thị {{current}} trong tổng số {{total}} kết quả"
+  },
+  "Admin": {
+    "categories": "Tất Cả Danh Mục",
+    "manageCategories": "Quản lý và giám sát tất cả các danh mục trong hệ thống",
+    "Category": {
+      "AddCategory": "Tạo Mới",
+      "SearchByName": "Tìm kiếm bằng Name"
+    }
+  },
+  "Category": {
+    "editCategory": "Chỉnh Sửa",
+    "addNewCategory": "Thêm mới",
+    "updateCategoryInformation": "Cập Nhật",
+    "createNewCategory": "Tạo Mới",
+    "categoryName": "Tên Danh Mục",
+    "enterCategoryName": "Nhập Tên Danh Mục",
+    "slug": "Slug",
+    "enterSlug": "Nhập Slug",
+    "description": "Mô tả",
+    "enterDescription": "Nhập mô tả",
+    "categoryImage": "Image",
+    "selectImage": "Chọn Image",
+    "createCategory": "Tạo Mới",
+    "updateCategory": "Cập Nhật"
   }
 }

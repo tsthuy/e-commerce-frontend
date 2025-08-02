@@ -22,9 +22,14 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
         accessorKey: 'name',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Product Name" />,
         cell: ({ row }) => (
-          <div>
-            <div className="font-medium">{row.getValue('name')}</div>
-            {row.original.sku && <div className="text-sm text-muted-foreground">SKU: {row.original.sku}</div>}
+          <div className="flex items-center gap-4">
+            <div className="">
+              <img alt={row.getValue('name')} className="h-14 min-w-14 rounded-md border object-cover" src={row.original.defaultImageUrl} />
+            </div>
+            <div className="">
+              <div className="font-medium">{row.getValue('name')}</div>
+              {row.original.sku && <div className="text-sm text-muted-foreground">SKU: {row.original.sku}</div>}
+            </div>
           </div>
         ),
         enableSorting: true,
