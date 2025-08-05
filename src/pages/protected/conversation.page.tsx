@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ArrowLeft, Image, Send, User } from 'lucide-react';
 import { useHistory, useParams } from 'react-router-dom';
@@ -7,6 +7,8 @@ import { Virtuoso } from 'react-virtuoso';
 import { DEFAULT_IMG_AVATAR } from '~/constants';
 
 import type { ConversationMetadata, Message } from '~/types';
+
+import { useSellerProfile } from '~/hooks';
 
 import { formatRelativeTime } from '~/utils';
 
@@ -25,7 +27,7 @@ interface ConversationPageParams {
 export const ConversationPage = memo(() => {
   const history = useHistory();
   const { conversationId } = useParams<ConversationPageParams>();
-  const { data: profileResponse } = useProfile({ enabled: true });
+  // const { data: profileResponse } = useProfile({ enabled: true });
   const { uploadFiles } = useCloudinaryUpload();
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -41,6 +43,13 @@ export const ConversationPage = memo(() => {
 
   // Determine user type from URL
   const userType = window.location.pathname.includes('/seller/') ? 'seller' : 'customer';
+
+  const customerProfile = useProfile({ enabled: userType === 'customer' });
+  const sellerProfile = useSellerProfile({ enabled: userType === 'seller' });
+
+  const profileResponse = useMemo(() => {
+    return userType === 'seller' ? sellerProfile.data : customerProfile.data;
+  }, [userType, customerProfile.data, sellerProfile.data]);
 
   // Get receiver type (opposite of current user)
   const receiverType = userType === 'seller' ? 'customer' : 'seller';
@@ -267,7 +276,6 @@ export const ConversationPage = memo(() => {
             </div>
           </div>
         </div>
-
         {/* Messages */}
         <div className="mb-4 h-[calc(100vh-250px)] overflow-hidden rounded-lg border bg-gray-50">
           {messages.length === 0 ? (
@@ -300,7 +308,6 @@ export const ConversationPage = memo(() => {
             />
           )}
         </div>
-
         {/* Input */}
         <div className="flex gap-2">
           <div className="flex gap-2">

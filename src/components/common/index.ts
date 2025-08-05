@@ -13,6 +13,7 @@ export * from './html-render';
 export * from './image-lightbox';
 export * from './language-switcher';
 export * from './loading';
+export * from './markdown-message';
 export * from './not-found';
 export * from './review-form';
 export * from './review-list';

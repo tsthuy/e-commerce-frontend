@@ -4,6 +4,8 @@ import { AlertCircle, Bot, Clock, User } from 'lucide-react';
 
 import { cn } from '~/utils';
 
+import { MarkdownMessage } from './markdown-message';
+
 import type { ChatMessage } from '~/types/chat.types';
 
 interface ChatMessageProps {
@@ -23,7 +25,7 @@ export const ChatMessageComponent = memo<ChatMessageProps>(({ message }) => {
       {/* Message bubble */}
       <div className={cn('relative max-w-[80%] rounded-lg px-3 py-2', isUser ? 'bg-teal-500 text-white' : 'bg-gray-100 text-gray-800')}>
         {/* Message content */}
-        <div className="whitespace-pre-wrap break-words text-sm">{content}</div>
+        {isUser ? <div className="whitespace-pre-wrap break-words text-sm">{content}</div> : <MarkdownMessage className="whitespace-pre-wrap break-words text-sm" content={content} />}
 
         {/* Status indicator for user messages */}
         {isUser && (
