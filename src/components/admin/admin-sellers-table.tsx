@@ -2,26 +2,53 @@
 import { memo, useMemo, useState } from 'react';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import { Eye } from 'lucide-react';
+import { Eye, Trash2 } from 'lucide-react';
 
 import { useDataTable } from '~/hooks';
 
 import { AdminSellerDetailDialog } from '~/components/admin/admin-seller-detail-dialog';
 import { DataTable, DataTableColumnHeader, DataTableToolbar } from '~/components/common/table';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '~/components/ui/alert-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 
-import { useAdminSellerList } from '~/hooks/use-admin-seller.hook';
+import { useAdminSellerList, useDeleteAdminSeller } from '~/hooks/use-admin-seller.hook';
 import type { AdminSellerResponse } from '~/types/admin-seller';
 
 export const AdminSellersTable = memo(() => {
   const [selectedSeller, setSelectedSeller] = useState<AdminSellerResponse | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [sellerToDelete, setSellerToDelete] = useState<AdminSellerResponse | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const deleteSellerMutation = useDeleteAdminSeller();
 
   const handleViewDetail = (seller: AdminSellerResponse) => {
     setSelectedSeller(seller);
     setIsDetailOpen(true);
+  };
+
+  const handleDeleteClick = (seller: AdminSellerResponse): void => {
+    setSellerToDelete(seller);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async (): Promise<void> => {
+    if (sellerToDelete) {
+      try {
+        await deleteSellerMutation.mutateAsync(sellerToDelete.id);
+        setIsDeleteDialogOpen(false);
+        setSellerToDelete(null);
+      } catch (error) {
+        console.error('Error deleting seller:', error);
+      }
+    }
+  };
+
+  const handleDeleteCancel = (): void => {
+    setIsDeleteDialogOpen(false);
+    setSellerToDelete(null);
   };
 
   const columns: ColumnDef<AdminSellerResponse>[] = [
@@ -109,12 +136,17 @@ export const AdminSellersTable = memo(() => {
     {
       id: 'actions',
       header: 'Actions',
-      cell: ({ row }) => {
+      cell: ({ row }): JSX.Element => {
         const seller = row.original;
         return (
-          <Button size="sm" variant="ghost" onClick={() => handleViewDetail(seller)}>
-            <Eye className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="ghost" onClick={() => handleViewDetail(seller)}>
+              <Eye className="h-4 w-4" />
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => handleDeleteClick(seller)}>
+              <Trash2 className="h-4 w-4 text-red-500" />
+            </Button>
+          </div>
         );
       },
       enableSorting: false
@@ -189,6 +221,26 @@ export const AdminSellersTable = memo(() => {
       </DataTable>
 
       <AdminSellerDetailDialog open={isDetailOpen} seller={selectedSeller} onOpenChange={setIsDetailOpen} />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the seller account for <strong>{sellerToDelete?.shopName}</strong> ({sellerToDelete?.email}). This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteSellerMutation.isPending} onClick={handleDeleteCancel}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled={deleteSellerMutation.isPending} onClick={handleDeleteConfirm}>
+              {deleteSellerMutation.isPending ? 'Deleting...' : 'Delete Seller'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 });

@@ -1,9 +1,12 @@
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
+import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import type { AdminOrderListParams, AdminOrderListResponse, AdminOrderResponse, AdminProductListParams, AdminProductListResponse, AdminProductResponse, UseQueryParams } from '~/types';
 
 import { queries } from '~/queries';
+
+import { adminApi } from '~/services/admin.api';
 
 // Admin Products Hooks
 export interface UseAdminProductListParams extends UseQueryParams {
@@ -53,4 +56,19 @@ export function useAdminOrderDetail({ orderId, enabled = true, retry = false }: 
   });
 
   return queryResponse;
+}
+
+export function useDeleteAdminProduct(): UseMutationResult<void, Error, string> {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (productId: string) => {
+      await adminApi.deleteProduct({ productId });
+    },
+    onSuccess: () => {
+      toast.success('Product deleted successfully');
+      queryClient.invalidateQueries({ queryKey: queries.admin.getAllProducts._def });
+      queryClient.invalidateQueries({ queryKey: queries.product.adminList._def });
+    }
+  });
 }

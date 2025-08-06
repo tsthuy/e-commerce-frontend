@@ -15,5 +15,9 @@ export const adminCustomerApi = {
 
   getDetail({ customerId, config }: ApiParams & { customerId: string }): AxiosPromise<ApiResponse<AdminCustomerResponse>> {
     return httpBase.get(API_URLS.admin.customerDetail(customerId), config);
+  },
+
+  deleteCustomer({ customerId, config }: ApiParams & { customerId: string }): AxiosPromise<ApiResponse<void>> {
+    return httpBase.delete<ApiResponse<void>>(API_URLS.admin.deleteCustomer(customerId), config);
   }
 };

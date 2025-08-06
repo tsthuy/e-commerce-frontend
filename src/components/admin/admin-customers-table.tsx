@@ -2,26 +2,53 @@
 import { memo, useMemo, useState } from 'react';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import { Eye } from 'lucide-react';
+import { Eye, Trash2 } from 'lucide-react';
 
 import { useDataTable } from '~/hooks';
 
 import { AdminCustomerDetailDialog } from '~/components/admin/admin-customer-detail-dialog';
 import { DataTable, DataTableColumnHeader, DataTableToolbar } from '~/components/common/table';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '~/components/ui/alert-dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 
-import { useAdminCustomerList } from '~/hooks/use-admin-customer.hook';
+import { useAdminCustomerList, useDeleteAdminCustomer } from '~/hooks/use-admin-customer.hook';
 import type { AdminCustomerResponse } from '~/types/admin-customer';
 
 export const AdminCustomersTable = memo(() => {
   const [selectedCustomer, setSelectedCustomer] = useState<AdminCustomerResponse | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [customerToDelete, setCustomerToDelete] = useState<AdminCustomerResponse | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const handleViewDetail = (customer: AdminCustomerResponse) => {
+  const deleteCustomerMutation = useDeleteAdminCustomer();
+
+  const handleViewDetail = (customer: AdminCustomerResponse): void => {
     setSelectedCustomer(customer);
     setIsDetailOpen(true);
+  };
+
+  const handleDeleteClick = (customer: AdminCustomerResponse): void => {
+    setCustomerToDelete(customer);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async (): Promise<void> => {
+    if (customerToDelete) {
+      try {
+        await deleteCustomerMutation.mutateAsync(customerToDelete.id);
+        setIsDeleteDialogOpen(false);
+        setCustomerToDelete(null);
+      } catch (error) {
+        console.error('Error deleting customer:', error);
+      }
+    }
+  };
+
+  const handleDeleteCancel = (): void => {
+    setIsDeleteDialogOpen(false);
+    setCustomerToDelete(null);
   };
 
   const columns: ColumnDef<AdminCustomerResponse>[] = [
@@ -101,12 +128,17 @@ export const AdminCustomersTable = memo(() => {
     {
       id: 'actions',
       header: 'Actions',
-      cell: ({ row }) => {
+      cell: ({ row }): JSX.Element => {
         const customer = row.original;
         return (
-          <Button size="sm" variant="ghost" onClick={() => handleViewDetail(customer)}>
-            <Eye className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="ghost" onClick={() => handleViewDetail(customer)}>
+              <Eye className="h-4 w-4" />
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => handleDeleteClick(customer)}>
+              <Trash2 className="h-4 w-4 text-red-500" />
+            </Button>
+          </div>
         );
       },
       enableSorting: false
@@ -181,6 +213,26 @@ export const AdminCustomersTable = memo(() => {
       </DataTable>
 
       <AdminCustomerDetailDialog customer={selectedCustomer} open={isDetailOpen} onOpenChange={setIsDetailOpen} />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the customer account for <strong>{customerToDelete?.fullName}</strong> ({customerToDelete?.email}). This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteCustomerMutation.isPending} onClick={handleDeleteCancel}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled={deleteCustomerMutation.isPending} onClick={handleDeleteConfirm}>
+              {deleteCustomerMutation.isPending ? 'Deleting...' : 'Delete Customer'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 });

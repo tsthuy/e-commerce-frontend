@@ -1,3 +1,5 @@
+import type { ProductResponse } from '~/types/product';
+
 export interface AdminProductListParams {
   page?: number;
   size?: number;
@@ -44,7 +46,7 @@ export interface AdminProductResponse {
 }
 
 export interface AdminProductListResponse {
-  content: AdminProductResponse[];
+  content: ProductResponse[];
   totalElements: number;
   totalPages: number;
   pageSize: number;

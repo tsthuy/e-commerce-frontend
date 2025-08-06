@@ -1,7 +1,9 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState } from 'react';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import { Eye } from 'lucide-react';
+import { Eye, Trash2 } from 'lucide-react';
+
+import { DEFAULT_ADMIN_AVATAR } from '~/constants';
 
 import type { ProductResponse } from '~/types';
 
@@ -9,12 +11,41 @@ import { useAdminProductList, useDataTable } from '~/hooks';
 
 import { DataTable, DataTableColumnHeader, DataTableToolbar } from '~/components/common/table';
 import { Button } from '~/components/ui';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '~/components/ui/alert-dialog';
+
+import { useDeleteAdminProduct } from '~/hooks/use-admin-management.hook';
 
 interface AdminProductsTableProps {
   onView?: (product: ProductResponse) => void;
 }
 
 export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => {
+  const [productToDelete, setProductToDelete] = useState<ProductResponse | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const deleteProductMutation = useDeleteAdminProduct();
+
+  const handleDeleteClick = (product: ProductResponse): void => {
+    setProductToDelete(product);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async (): Promise<void> => {
+    if (productToDelete) {
+      try {
+        await deleteProductMutation.mutateAsync(productToDelete.id);
+        setIsDeleteDialogOpen(false);
+        setProductToDelete(null);
+      } catch (error) {
+        console.error('Error deleting product:', error);
+      }
+    }
+  };
+
+  const handleDeleteCancel = (): void => {
+    setIsDeleteDialogOpen(false);
+    setProductToDelete(null);
+  };
   // Define table columns - removed edit and delete actions for admin
   const columns: ColumnDef<ProductResponse>[] = useMemo(
     () => [
@@ -24,7 +55,7 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
         cell: ({ row }) => (
           <div className="flex items-center gap-4">
             <div className="">
-              <img alt={row.getValue('name')} className="h-14 min-w-14 rounded-md border object-cover" src={row.original.defaultImageUrl} />
+              <img alt={row.getValue('name')} className="h-14 min-w-14 rounded-md border object-cover" src={row.original.defaultImageUrl || DEFAULT_ADMIN_AVATAR} />
             </div>
             <div className="">
               <div className="font-medium">{row.getValue('name')}</div>
@@ -120,10 +151,13 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
       {
         id: 'actions',
         header: 'Actions',
-        cell: ({ row }) => (
+        cell: ({ row }): JSX.Element => (
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" onClick={() => onView?.(row.original)}>
               <Eye className="h-4 w-4" />
+            </Button>
+            <Button className="text-red-600 hover:text-red-700" size="sm" variant="outline" onClick={() => handleDeleteClick(row.original)}>
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         ),
@@ -197,9 +231,31 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
   table.options.pageCount = pageCount;
 
   return (
-    <DataTable classNameHeader="bg-primary text-primary-foreground hover:bg-primary/80 dark:bg-primary dark:text-primary-foreground" isLoading={isLoading} table={table}>
-      <DataTableToolbar filterFields={filterFields} table={table} />
-    </DataTable>
+    <div className="space-y-4">
+      <DataTable classNameHeader="bg-primary text-primary-foreground hover:bg-primary/80 dark:bg-primary dark:text-primary-foreground" isLoading={isLoading} table={table}>
+        <DataTableToolbar filterFields={filterFields} table={table} />
+      </DataTable>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the product <strong>{productToDelete?.name}</strong>. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteProductMutation.isPending} onClick={handleDeleteCancel}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled={deleteProductMutation.isPending} onClick={handleDeleteConfirm}>
+              {deleteProductMutation.isPending ? 'Deleting...' : 'Delete Product'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   );
 });
 

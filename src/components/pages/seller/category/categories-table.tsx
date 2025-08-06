@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState } from 'react';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import { Edit, Trash2 } from 'lucide-react';
@@ -10,6 +10,7 @@ import { useCategoryDelete, useCategoryList, useDataTable } from '~/hooks';
 
 import { DataTable, DataTableColumnHeader, DataTableToolbar, TasksTableToolbarActions } from '~/components/common/table';
 import { Button } from '~/components/ui';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '~/components/ui/alert-dialog';
 
 interface CategoriesTableProps {
   onEdit?: (category: CategoryResponse) => void;
@@ -19,6 +20,26 @@ interface CategoriesTableProps {
 export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate }) => {
   const { t } = useTranslation();
   const deleteMutation = useCategoryDelete();
+  const [categoryToDelete, setCategoryToDelete] = useState<CategoryResponse | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const handleDeleteClick = (category: CategoryResponse): void => {
+    setCategoryToDelete(category);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = (): void => {
+    if (categoryToDelete) {
+      deleteMutation.mutate(categoryToDelete.id);
+      setIsDeleteDialogOpen(false);
+      setCategoryToDelete(null);
+    }
+  };
+
+  const handleDeleteCancel = (): void => {
+    setIsDeleteDialogOpen(false);
+    setCategoryToDelete(null);
+  };
 
   // Define table columns
   const columns: ColumnDef<CategoryResponse>[] = useMemo(
@@ -89,7 +110,7 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
             <Button size="sm" variant="outline" onClick={() => onEdit?.(row.original)}>
               <Edit className="h-4 w-4" />
             </Button>
-            <Button className="text-red-600 hover:text-red-700" disabled={deleteMutation.isPending} size="sm" variant="outline" onClick={() => deleteMutation.mutate(row.original.id)}>
+            <Button className="text-red-600 hover:text-red-700" disabled={deleteMutation.isPending} size="sm" variant="outline" onClick={() => handleDeleteClick(row.original)}>
               <Trash2 className="h-4 w-4" />
             </Button>
           </div>
@@ -177,21 +198,41 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
   };
 
   return (
-    <DataTable classNameHeader="bg-primary text-primary-foreground hover:bg-primary/80 dark:bg-primary dark:text-primary-foreground" isLoading={isLoading} table={table}>
-      <DataTableToolbar filterFields={filterFields} table={table}>
-        <TasksTableToolbarActions
-          table={table}
-          createAction={{
-            label: t('Admin.Category.AddCategory'),
-            action: () => onCreate?.()
-          }}
-          deleteAction={{
-            label: t('Seller.Category.Delete'),
-            action: handleBulkDelete
-          }}
-        />
-      </DataTableToolbar>
-    </DataTable>
+    <div className="space-y-4">
+      <DataTable classNameHeader="bg-primary text-primary-foreground hover:bg-primary/80 dark:bg-primary dark:text-primary-foreground" isLoading={isLoading} table={table}>
+        <DataTableToolbar filterFields={filterFields} table={table}>
+          <TasksTableToolbarActions
+            table={table}
+            createAction={{
+              label: t('Admin.Category.AddCategory'),
+              action: () => onCreate?.()
+            }}
+            deleteAction={{
+              label: t('Seller.Category.Delete'),
+              action: handleBulkDelete
+            }}
+          />
+        </DataTableToolbar>
+      </DataTable>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('Seller.Category.ConfirmDelete')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('Seller.Category.DeleteConfirmMessage', { name: categoryToDelete?.name })}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteMutation.isPending} onClick={handleDeleteCancel}>
+              {t('Common.Cancel')}
+            </AlertDialogCancel>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled={deleteMutation.isPending} onClick={handleDeleteConfirm}>
+              {deleteMutation.isPending ? t('Common.Deleting') : t('Common.Delete')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
   );
 });
 
