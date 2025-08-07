@@ -9,6 +9,8 @@ import { CLOUDINARY_FOLDERS } from '~/constants';
 
 import type { AttributeValue, DataForm, ProductAttribute, ProductImage, ProductPayload, ProductVariant, VariantAttributeValue } from '~/types';
 
+import { cn } from '~/libs';
+
 import { useCategoryList, useCloudinaryUpload, useProductCreate, useProductDetail, useProductUpdate, useTranslation } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
@@ -30,6 +32,27 @@ export const ProductForm = memo(() => {
   const [bulkEditPrice, setBulkEditPrice] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formKey, setFormKey] = useState<number>(0); // Key để force re-render form
+
+  // 🎯 Auto-create default "Tình trạng" attribute for create mode
+  useEffect(() => {
+    if (!isEditMode && attributes.length === 0) {
+      const defaultAttribute: ProductAttribute = {
+        name: 'Tình trạng',
+        values: [
+          { label: '99%', value: '99_percent' },
+          { label: '70%', value: '70_percent' }
+        ]
+      };
+      setAttributes([defaultAttribute]);
+    }
+  }, [isEditMode]);
+
+  // Auto-generate variants when default attribute is set
+  useEffect(() => {
+    if (!isEditMode && attributes.length === 1 && attributes[0].name === 'Tình trạng' && variants.length === 0) {
+      setTimeout(() => autoGenerateVariants(), 100);
+    }
+  }, [attributes, isEditMode]);
 
   // Hooks for API operations
   const { data: productDetail, isLoading: isLoadingDetail } = useProductDetail({
@@ -504,6 +527,24 @@ export const ProductForm = memo(() => {
     }
   };
 
+  // 🎯 Handle set default image for variant
+  const handleSetDefaultVariantImage = (variantIndex: number, imageIndex: number): void => {
+    const newVariants = [...variants];
+
+    // Reset all images isDefault to false
+    if (newVariants[variantIndex].images) {
+      newVariants[variantIndex].images!.forEach((img) => {
+        img.isDefault = false;
+      });
+
+      // Set selected image as default
+      newVariants[variantIndex].images![imageIndex].isDefault = true;
+    }
+
+    setVariants(newVariants);
+    toast.success('Default image updated');
+  };
+
   // Handle form submission với format đúng cho backend
   const handleSubmit = async (values: DataForm<typeof schema>): Promise<void> => {
     if (isLoading || isUploading) return;
@@ -754,6 +795,23 @@ export const ProductForm = memo(() => {
                         <div className="text-sm text-muted-foreground">{attributes.length > 0 && `${attributes.length} attribute(s) • Auto-generates ${variants.length} variant(s)`}</div>
                       </div>
 
+                      {/* 🎯 Info banner for default attribute in create mode */}
+                      {!isEditMode && attributes.length > 0 && attributes[0].name === 'Tình trạng' && (
+                        <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3">
+                          <div className="flex items-start gap-2">
+                            <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-500">
+                              <span className="text-xs font-bold text-white">!</span>
+                            </div>
+                            <div className="text-sm">
+                              <p className="font-medium text-blue-800">Đặc biệt cho đồ cũ</p>
+                              <p className="text-blue-700">
+                                Chúng tôi đã tự động tạo attribute <strong>"Tình trạng"</strong> với 2 mức độ phổ biến (99%, 70%). Bạn có thể thêm mức độ khác như 60%, 50% hoặc tùy chỉnh theo nhu cầu.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
                       {attributes.map((attr, index) => (
                         <div key={index} className="mb-4 rounded-lg border border-border bg-card p-4">
                           <div className="mb-3 flex items-center gap-2">
@@ -848,29 +906,6 @@ export const ProductForm = memo(() => {
                             <Button size="sm" type="button" variant="outline" onClick={() => setShowVariantOverview(!showVariantOverview)}>
                               {showVariantOverview ? <EyeOff className="mr-1 h-3 w-3" /> : <Eye className="mr-1 h-3 w-3" />}
                               {showVariantOverview ? 'Hide Overview' : 'Show Overview'}
-                            </Button>
-
-                            <Button
-                              size="sm"
-                              type="button"
-                              variant="ghost"
-                              onClick={() => {
-                                // const debugInfo = variants.map((v, i) => ({
-                                //   index: i,
-                                //   sku: v.sku,
-                                //   price: v.price,
-                                //   stock: v.stock,
-                                //   images: v.images?.length || 0,
-                                //   imageUrls: v.images?.map((img) => img.url.substring(0, 50) + '...') || [],
-                                //   hasValidImages: v.images && v.images.length > 0,
-                                //   errors: validateVariant(v)
-                                // }));
-                                // eslint-disable-next-line no-console
-                                // console.log('Variant Debug Info:', debugInfo);
-                                toast.success(`Debug info available. ${variants.length} variants found.`);
-                              }}
-                            >
-                              Debug
                             </Button>
                           </div>
                         )}
@@ -1092,30 +1127,53 @@ export const ProductForm = memo(() => {
                                             }
                                           }}
                                         />
-                                        <p className="mt-1 text-xs text-muted-foreground">Upload JPG, PNG, or WebP images</p>
+                                        <p className="mt-1 text-xs text-muted-foreground">Upload JPG, PNG, or WebP images. Click on image to set as default.</p>
                                       </div>
 
                                       {variant.images && variant.images.length > 0 ? (
                                         <div className="mt-3 flex flex-wrap gap-2">
                                           {variant.images.map((img, imgIndex) => (
-                                            <div key={imgIndex} className="relative h-16 w-16 overflow-hidden rounded-md border">
+                                            <div
+                                              key={imgIndex}
+                                              title={img.isDefault ? 'Default image (click another to change)' : 'Click to set as default'}
+                                              className={`group relative h-20 w-20 cursor-pointer overflow-hidden rounded-md border-2 transition-all hover:border-blue-300 ${
+                                                img.isDefault ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'
+                                              }`}
+                                              onClick={() => handleSetDefaultVariantImage(index, imgIndex)}
+                                            >
                                               <img alt={`Variant ${imgIndex + 1}`} className="h-full w-full object-cover" src={img.url} />
+                                              {/* 🎯 Enhanced delete button with better visibility */}
                                               <Button
-                                                className="absolute right-0 top-0 h-5 w-5 rounded-full p-0"
                                                 size="icon"
                                                 type="button"
                                                 variant="destructive"
-                                                onClick={() => {
+                                                className={cn(
+                                                  'absolute -right-[54px] -top-[80px] h-6 w-6 rounded-full bg-red-500 p-0 opacity-70 shadow-md hover:bg-red-600 hover:opacity-100 group-hover:opacity-100',
+                                                  img.isDefault && 'hidden'
+                                                )}
+                                                onClick={(e) => {
+                                                  e.stopPropagation(); // Prevent triggering default image selection
                                                   const newVariants = [...variants];
                                                   if (img.publicId) {
                                                     deleteUploadedImage(img.publicId);
                                                   }
                                                   newVariants[index].images?.splice(imgIndex, 1);
+
+                                                  // If deleted image was default and there are other images, set first as default
+                                                  if (img.isDefault && newVariants[index].images && newVariants[index].images!.length > 0) {
+                                                    newVariants[index].images![0].isDefault = true;
+                                                  }
+
                                                   setVariants(newVariants);
+                                                  toast.success('Image removed successfully');
                                                 }}
                                               >
-                                                <Trash2 className="h-3 w-3" />
+                                                <Trash2 className="h-3 w-3 text-white" />
                                               </Button>
+                                              {/* 🎯 Default image indicator */}
+                                              {img.isDefault && (
+                                                <div className="absolute bottom-0 left-0 right-0 bg-blue-500 bg-opacity-90 px-1 py-0.5 text-center text-xs font-medium text-white">Default</div>
+                                              )}
                                             </div>
                                           ))}
                                         </div>

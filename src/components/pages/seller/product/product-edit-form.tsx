@@ -620,7 +620,7 @@ export const ProductEditForm = memo(() => {
         }))
       };
 
-      // Include attributes và variants khi có data
+      // ✅ ALWAYS include attributes và variants fields để ensure clear hoặc update
       if (validAttributes.length > 0) {
         payload.attributes = validAttributes.map((attr) => ({
           name: attr.name,
@@ -665,6 +665,10 @@ export const ProductEditForm = memo(() => {
               isDefault: img.isDefault
             })) || []
         }));
+      } else {
+        // ✅ Explicitly clear attributes và variants khi không có validAttributes
+        payload.attributes = [];
+        payload.variants = [];
       }
 
       await updateMutation.mutateAsync({ productId: id, data: payload });

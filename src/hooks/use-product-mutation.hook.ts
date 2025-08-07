@@ -19,7 +19,7 @@ export const useProductCreate = () => {
       toast.success('Product created successfully');
       // Invalidate product lists to refresh data
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.product.list] });
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.product.sellerList] });
+      queryClient.invalidateQueries({ queryKey: queries.product.sellerList._def });
     },
     onError: (error: unknown) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,9 +37,8 @@ export const useProductUpdate = () => {
     onSuccess: (_, variables) => {
       toast.success('Product updated successfully');
       // Invalidate specific product detail and lists
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.product.detail, variables.productId] });
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.product.list] });
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.product.sellerList] });
+      queryClient.invalidateQueries({ ...queries.product.detail({ data: { productId: variables.productId } }) });
+      queryClient.invalidateQueries({ queryKey: queries.product.sellerList._def });
     },
     onError: (error: unknown) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
