@@ -1,4 +1,4 @@
-import type { AxiosPromise } from 'axios';
+import type { AxiosPromise, AxiosRequestConfig } from 'axios';
 
 import { API_URLS } from '~/constants';
 
@@ -119,5 +119,15 @@ export const productApi = {
 
   delete({ productId, config }: ApiParams & { productId: string }): AxiosPromise<ApiResponse<void>> {
     return httpBase.delete(API_URLS.product.delete(productId), config);
+  },
+
+  semanticSearch({ data, config }: { data: { query: string; page?: number; size?: number }; config?: AxiosRequestConfig }): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>('/api/products/semantic-search', {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
   }
 };

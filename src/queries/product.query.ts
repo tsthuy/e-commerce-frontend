@@ -40,5 +40,12 @@ export const productQueries = createQueryKeys('product', {
       const { data } = await productApi.detail(params);
       return data.result;
     }
+  }),
+  semanticSearch: (params: QueryParams<{ query: string; page?: number; size?: number }>) => ({
+    queryKey: [params],
+    queryFn: async (): Promise<ProductListResponse> => {
+      const { data } = await productApi.semanticSearch(params);
+      return data.result;
+    }
   })
 });
