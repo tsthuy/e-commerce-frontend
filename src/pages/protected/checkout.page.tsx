@@ -17,6 +17,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, 
 
 import { useCartList } from '~/hooks/use-cart.hook';
 import { useProfile } from '~/hooks/use-profile.hook';
+import { useStableBehaviorTracking } from '~/hooks/use-stable-behavior-tracking.hook';
 import { useTranslation } from '~/hooks/use-translation.hook';
 import { useCreateOrderMutation } from '~/queries/order.mutation';
 import { PROTECTED_ROUTES } from '~/routes/protected.route';
@@ -28,7 +29,9 @@ export const CheckoutPage = memo(() => {
   const { t } = useTranslation();
   const { data: profile, isLoading: profileLoading } = useProfile({});
   const { data: cartResponse, isLoading: cartLoading } = useCartList();
+  const cart = cartResponse?.result;
   const createOrder = useCreateOrderMutation();
+  const { trackBehavior } = useStableBehaviorTracking();
   const [isOrderCreating, setIsOrderCreating] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
@@ -57,12 +60,28 @@ export const CheckoutPage = memo(() => {
   const handleNotesChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNotes(e.target.value);
   }, []);
+  const trackPurchaseBehavior = useCallback(() => {
+    if (!cart?.items) return;
+    const productIds = Array.from(new Set(cart.items.map((item) => item.product.id)));
+
+    productIds.forEach((productId) => {
+      trackBehavior({
+        productId,
+        actionType: 'PURCHASE'
+      });
+    });
+
+    console.log(`🛒 Tracked PURCHASE behavior for ${productIds.length} products:`, productIds);
+  }, [cart?.items, trackBehavior]);
 
   const handlePlaceOrder = useCallback(() => {
     if (!selectedAddressId) {
       toast.error(t('Checkout.selectAddress'));
       return;
     }
+
+    trackPurchaseBehavior();
+
     try {
       if (paymentMethod === PaymentMethod.ADVANCE_PAYMENT) {
         const stripeCheckoutData = {
@@ -99,7 +118,7 @@ export const CheckoutPage = memo(() => {
     } finally {
       queryClient.invalidateQueries({ queryKey: queries.cart.list._def });
     }
-  }, [selectedAddressId, paymentMethod, notes, createOrder, push, t]);
+  }, [selectedAddressId, paymentMethod, notes, createOrder, push, t, trackPurchaseBehavior]);
 
   if (profileLoading || cartLoading) {
     return (
@@ -108,8 +127,6 @@ export const CheckoutPage = memo(() => {
       </div>
     );
   }
-
-  const cart = cartResponse?.result;
 
   if (!cart || cart.items.length === 0) {
     return (
@@ -130,9 +147,7 @@ export const CheckoutPage = memo(() => {
         <h1 className="mb-6 text-2xl font-bold">{t('Checkout.title')}</h1>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Left column - Shipping & Payment */}
           <div className="space-y-6 lg:col-span-2">
-            {/* Shipping Address */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -145,8 +160,6 @@ export const CheckoutPage = memo(() => {
                 <AddressSelector addresses={profile?.addresses || []} selectedAddressId={selectedAddressId} onSelectAddress={handleAddressChange} />
               </CardContent>
             </Card>
-
-            {/* Payment Method */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -159,8 +172,6 @@ export const CheckoutPage = memo(() => {
                 <PaymentMethodSelector selectedMethod={paymentMethod} onSelectMethod={handlePaymentMethodChange} />
               </CardContent>
             </Card>
-
-            {/* Sellers & Products */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -170,7 +181,6 @@ export const CheckoutPage = memo(() => {
                 <CardDescription>{t('Checkout.productsFromSellers')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Group items by seller */}
                 {Array.from(new Set(cart.items.map((item) => item.product.sellerName))).map((sellerId) => {
                   const sellerItems = cart.items.filter((item) => item.product.sellerName === sellerId);
                   const sellerName = sellerItems[0]?.product.sellerName || 'Unknown Seller';
@@ -210,8 +220,6 @@ export const CheckoutPage = memo(() => {
                 })}
               </CardContent>
             </Card>
-
-            {/* Order Notes */}
             <Card>
               <CardHeader>
                 <CardTitle>{t('Checkout.orderNotes')}</CardTitle>
@@ -223,7 +231,6 @@ export const CheckoutPage = memo(() => {
             </Card>
           </div>
 
-          {/* Right column - Order Summary */}
           <div className="lg:col-span-1">
             <Card className="sticky top-6">
               <CardHeader>

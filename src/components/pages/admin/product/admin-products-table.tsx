@@ -7,7 +7,7 @@ import { DEFAULT_ADMIN_AVATAR } from '~/constants';
 
 import type { ProductResponse } from '~/types';
 
-import { useAdminProductList, useDataTable } from '~/hooks';
+import { useAdminProductList, useDataTable, useTranslation } from '~/hooks';
 
 import { DataTable, DataTableColumnHeader, DataTableToolbar } from '~/components/common/table';
 import { Button } from '~/components/ui';
@@ -20,6 +20,7 @@ interface AdminProductsTableProps {
 }
 
 export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => {
+  const { t } = useTranslation();
   const [productToDelete, setProductToDelete] = useState<ProductResponse | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -46,12 +47,12 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
     setIsDeleteDialogOpen(false);
     setProductToDelete(null);
   };
-  // Define table columns - removed edit and delete actions for admin
+
   const columns: ColumnDef<ProductResponse>[] = useMemo(
     () => [
       {
         accessorKey: 'name',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Product Name" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.products.productName')} />,
         cell: ({ row }) => (
           <div className="flex items-center gap-4">
             <div className="">
@@ -59,7 +60,11 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
             </div>
             <div className="">
               <div className="font-medium">{row.getValue('name')}</div>
-              {row.original.sku && <div className="text-sm text-muted-foreground">SKU: {row.original.sku}</div>}
+              {row.original.sku && (
+                <div className="text-sm text-muted-foreground">
+                  {t('Admin.products.sku')}: {row.original.sku}
+                </div>
+              )}
             </div>
           </div>
         ),
@@ -68,14 +73,14 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
       },
       {
         accessorKey: 'categoryName',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.products.category')} />,
         cell: ({ row }) => <div className="text-sm">{row.getValue('categoryName') || '-'}</div>,
         enableSorting: false,
         enableHiding: true
       },
       {
         accessorKey: 'seller',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Seller" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.products.seller')} />,
         cell: ({ row }) => (
           <div className="text-sm">
             <div className="font-medium">{row.original.sellerName || 'N/A'}</div>
@@ -86,7 +91,7 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
       },
       {
         accessorKey: 'price',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Price" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.products.price')} />,
         cell: ({ row }): JSX.Element => {
           const price = row.getValue('price') as number;
           const salePrice = row.original.salePrice;
@@ -108,7 +113,7 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
       },
       {
         accessorKey: 'stock',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Stock" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.products.stock')} />,
         cell: ({ row }): JSX.Element => {
           const stock = row.getValue('stock') as number;
           return <div className={`text-sm ${stock <= 0 ? 'text-red-600' : stock < 10 ? 'text-yellow-600' : 'text-green-600'}`}>{stock}</div>;
@@ -118,7 +123,7 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
       },
       {
         accessorKey: 'status',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.products.status')} />,
         cell: ({ row }): JSX.Element => {
           const status = row.getValue('status') as string;
           const isPublished = row.original.isPublished;
@@ -131,7 +136,7 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
               >
                 {status}
               </span>
-              {isPublished && <span className="mt-1 text-xs text-blue-600">Published</span>}
+              {isPublished && <span className="mt-1 text-xs text-blue-600">{t('Admin.products.published')}</span>}
             </div>
           );
         },
@@ -140,7 +145,7 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
       },
       {
         accessorKey: 'createdAt',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.products.created')} />,
         cell: ({ row }): JSX.Element => {
           const date = new Date(row.getValue('createdAt'));
           return <div className="text-sm">{date.toLocaleDateString()}</div>;
@@ -150,7 +155,7 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
       },
       {
         id: 'actions',
-        header: 'Actions',
+        header: t('Admin.products.actions'),
         cell: ({ row }): JSX.Element => (
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" onClick={() => onView?.(row.original)}>
@@ -165,22 +170,18 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
         enableHiding: false
       }
     ],
-    [onView]
+    [onView, t]
   );
-
-  // Filter fields for search and filtering
   const filterFields = useMemo(
     () => [
       {
-        label: 'Search products',
+        label: t('Admin.products.searchProducts'),
         value: 'name' as keyof ProductResponse,
-        placeholder: 'Search by name or SKU...'
+        placeholder: t('Admin.products.searchByNameOrSku')
       }
     ],
-    []
+    [t]
   );
-
-  // Initialize table with empty data first to get state
   const { table } = useDataTable({
     data: [],
     columns,
@@ -191,13 +192,10 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
       columnPinning: { right: ['actions'] }
     }
   });
-
-  // Get current table state for API call
   const pagination = table.getState().pagination;
   const sorting = table.getState().sorting;
   const columnFilters = table.getState().columnFilters;
 
-  // Build query parameters from table state
   const queryParamsFromTable = useMemo(() => {
     const searchFilter = columnFilters.find((filter) => filter.id === 'name');
     const sortConfig = sorting[0];
@@ -219,7 +217,6 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
     return params;
   }, [pagination, sorting, columnFilters]);
 
-  // Fetch data with dynamic parameters using admin hook
   const { data: productsResponse, isLoading } = useAdminProductList({
     data: queryParamsFromTable
   });
@@ -236,21 +233,20 @@ export const AdminProductsTable = memo<AdminProductsTableProps>(({ onView }) => 
         <DataTableToolbar filterFields={filterFields} table={table} />
       </DataTable>
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t('Admin.products.deleteConfirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the product <strong>{productToDelete?.name}</strong>. This action cannot be undone.
+              {t('Admin.products.deleteConfirmDescription')} <strong>{productToDelete?.name}</strong>.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={deleteProductMutation.isPending} onClick={handleDeleteCancel}>
-              Cancel
+              {t('Admin.products.cancel')}
             </AlertDialogCancel>
             <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled={deleteProductMutation.isPending} onClick={handleDeleteConfirm}>
-              {deleteProductMutation.isPending ? 'Deleting...' : 'Delete Product'}
+              {deleteProductMutation.isPending ? t('Admin.products.deleting') : t('Admin.products.deleteProduct')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

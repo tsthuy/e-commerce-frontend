@@ -27,10 +27,8 @@ export const ProductCreateForm = memo(() => {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { t } = useTranslation();
-
-  // Hooks for API operations
   const { data: categoriesResponse } = useCategoryList({
-    data: { page: 0, size: 100 } // Get all categories for dropdown
+    data: { page: 0, size: 100 }
   });
 
   const createMutation = useProductCreate();
@@ -73,17 +71,13 @@ export const ProductCreateForm = memo(() => {
     isPublished: false,
     images: [] as File[]
   };
-
-  // Handle form submission
   const handleSubmit = async (values: DataForm<typeof schema>): Promise<void> => {
     if (isLoading || isUploading) return;
 
     setIsLoading(true);
     try {
-      // Upload images first
       const uploadedImages = [];
 
-      // Upload new images
       if (values.images && values.images.length > 0) {
         for (const file of values.images) {
           // eslint-disable-next-line no-await-in-loop
@@ -91,12 +85,11 @@ export const ProductCreateForm = memo(() => {
           uploadedImages.push({
             url: response.secure_url,
             publicId: response.public_id,
-            isDefault: uploadedImages.length === 0 // First image is default
+            isDefault: uploadedImages.length === 0
           });
         }
       }
 
-      // Prepare payload
       const payload: ProductPayload = {
         name: values.name,
         sku: values.sku,
@@ -130,7 +123,6 @@ export const ProductCreateForm = memo(() => {
 
         <CustomForm options={{ defaultValues }} schema={schema} onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            {/* Basic Info Section */}
             <div className="lg:col-span-2">
               <Card className="mb-6 p-6">
                 <h2 className="mb-4 flex items-center text-xl font-semibold">
@@ -208,7 +200,6 @@ export const ProductCreateForm = memo(() => {
               </Card>
             </div>
 
-            {/* Actions */}
             <div>
               <Card className="p-6">
                 <h2 className="mb-4 text-xl font-semibold">{t('Seller.actions')}</h2>

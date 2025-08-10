@@ -4,6 +4,8 @@ import { memo, useRef, useState } from 'react';
 
 import { Loader2, Send } from 'lucide-react';
 
+import { useTranslation } from '~/hooks';
+
 import { cn } from '~/utils';
 
 import { Textarea } from '~/components/ui';
@@ -15,6 +17,7 @@ interface ChatInputProps {
 }
 
 export const ChatInput = memo<ChatInputProps>(({ onSendMessage, isLoading, disabled = false }) => {
+  const { t } = useTranslation();
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -54,7 +57,7 @@ export const ChatInput = memo<ChatInputProps>(({ onSendMessage, isLoading, disab
           <Textarea
             ref={textareaRef}
             disabled={disabled || isLoading}
-            placeholder="Nhập tin nhắn của bạn..."
+            placeholder={t('Chat.enterMessage')}
             rows={1}
             value={message}
             className={cn(

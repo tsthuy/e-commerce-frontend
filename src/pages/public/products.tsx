@@ -24,7 +24,7 @@ export const ProductsPage = memo(() => {
   const categoryId = searchParams.get('categoryId') || undefined;
   const categoryName = searchParams.get('categoryName') || undefined;
   const searchQuery = searchParams.get('search') || undefined;
-  const pageSize = 8; // 8 items per page (2 rows x 4 items)
+  const pageSize = 8;
 
   const queryParams: ProductPaginationParams = {
     page: currentPage,
@@ -34,21 +34,18 @@ export const ProductsPage = memo(() => {
     search: searchQuery,
     ...(categoryId && { categoryId })
   };
-
-  // Use semantic search if search query is present, otherwise use regular product list
   const regularProductQuery = useProductList({
     data: queryParams,
-    enabled: !searchQuery // Only enabled when no search query
+    enabled: !searchQuery
   });
 
   const semanticSearchQuery = useProductSemanticSearchDebounced({
     query: searchQuery || '',
     page: currentPage,
     size: pageSize,
-    enabled: !!searchQuery // Only enabled when search query exists
+    enabled: !!searchQuery
   });
 
-  // Choose the appropriate query result
   const { data, isLoading, isError } = searchQuery ? semanticSearchQuery : regularProductQuery;
   const isDebouncing = searchQuery ? semanticSearchQuery.isDebouncing : false;
 
@@ -61,8 +58,6 @@ export const ProductsPage = memo(() => {
   const products = data?.content || [];
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
-
-  // Determine page title
   const getPageTitle = (): string => {
     if (searchQuery) {
       return `${t('Product.searchResults')} "${searchQuery}"`;
@@ -73,7 +68,6 @@ export const ProductsPage = memo(() => {
     return t('Product.allProducts');
   };
 
-  // Determine page heading
   const getPageHeading = (): string => {
     if (searchQuery) {
       return `${t('Product.searchResults')}: "${searchQuery}"`;
@@ -89,9 +83,9 @@ export const ProductsPage = memo(() => {
       <Helmet titleEntire={getPageTitle()}>
         <Container className="py-8">
           <div className="flex h-64 items-center justify-center">
-            <div className="text-center">
+            <div className="flex flex-col items-center justify-center gap-2 text-center">
               <SpinnerSquare />
-              {isDebouncing && <p className="mt-2 text-sm text-gray-500">Đang tìm kiếm bằng AI...</p>}
+              {isDebouncing && <p className="mt-2 text-sm text-gray-500">{t('Product.searchingWithAI')}</p>}
             </div>
           </div>
         </Container>
@@ -118,7 +112,6 @@ export const ProductsPage = memo(() => {
   return (
     <Helmet titleEntire={getPageTitle()}>
       <Container className="py-8">
-        {/* Header */}
         <div className="mb-8 text-center">
           <div className="mx-auto w-full max-w-[calc(1280px+4px*4*2)] px-4 py-8">
             <div className="flex items-center justify-center">
@@ -146,8 +139,6 @@ export const ProductsPage = memo(() => {
           {categoryName && !searchQuery && <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-gray-400">{t('Product.categorySubtitle', { category: categoryName })}</p>}
           {searchQuery && <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-gray-400">{t('Product.searchSubtitle', { query: searchQuery })}</p>}
         </div>
-
-        {/* Products Count */}
         {totalElements > 0 && (
           <div className="mb-6 text-center">
             <p className="text-sm text-gray-500">
@@ -158,11 +149,8 @@ export const ProductsPage = memo(() => {
             </p>
           </div>
         )}
-
-        {/* Products Grid */}
         {simpleProducts.length > 0 ? (
           <div className="mx-auto w-full max-w-[calc(1280px+4px*4*2)] px-4">
-            {/* Grid with exactly 8 items (2 rows x 4 columns) */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4">
               {simpleProducts.map((product) => (
                 <div key={product.id} className="w-full">
@@ -170,8 +158,6 @@ export const ProductsPage = memo(() => {
                 </div>
               ))}
             </div>
-
-            {/* Pagination */}
             {totalPages > 1 && (
               <div className="mt-8 flex justify-end">
                 <Pagination>
@@ -189,11 +175,9 @@ export const ProductsPage = memo(() => {
                       />
                     </PaginationItem>
 
-                    {/* Page numbers */}
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       let pageNum = i;
 
-                      // Calculate which pages to show
                       if (totalPages > 5) {
                         if (currentPage <= 2) {
                           pageNum = i;
@@ -220,7 +204,6 @@ export const ProductsPage = memo(() => {
                       );
                     })}
 
-                    {/* Ellipsis if needed */}
                     {totalPages > 5 && currentPage < totalPages - 3 && (
                       <PaginationItem>
                         <PaginationEllipsis />

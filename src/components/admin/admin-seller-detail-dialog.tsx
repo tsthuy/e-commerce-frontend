@@ -24,7 +24,6 @@ export const AdminSellerDetailDialog = memo<AdminSellerDetailDialogProps>(({ sel
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Seller Info */}
           <div className="flex items-start space-x-4">
             <Avatar className="h-16 w-16">
               <AvatarImage alt={seller.shopName} src={seller.avatar?.url} />
@@ -46,7 +45,6 @@ export const AdminSellerDetailDialog = memo<AdminSellerDetailDialogProps>(({ sel
             </div>
           </div>
 
-          {/* Basic Info */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium text-muted-foreground">Phone</label>
@@ -58,8 +56,6 @@ export const AdminSellerDetailDialog = memo<AdminSellerDetailDialogProps>(({ sel
               <p className="mt-1">{new Date(seller.createdAt).toLocaleDateString()}</p>
             </div>
           </div>
-
-          {/* Business Statistics */}
           <div className="space-y-3">
             <h4 className="text-md font-semibold">Business Statistics</h4>
             <div className="grid grid-cols-3 gap-4 rounded-lg border p-4">
@@ -78,7 +74,6 @@ export const AdminSellerDetailDialog = memo<AdminSellerDetailDialogProps>(({ sel
             </div>
           </div>
 
-          {/* Last Updated */}
           <div>
             <label className="text-sm font-medium text-muted-foreground">Last Updated</label>
             <p className="mt-1 text-sm">{new Date(seller.updatedAt).toLocaleString()}</p>

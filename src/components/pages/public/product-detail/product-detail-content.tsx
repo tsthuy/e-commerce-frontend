@@ -2,6 +2,8 @@ import { memo, useMemo, useState } from 'react';
 
 import type { ProductDetailResponse } from '~/types';
 
+import { useTranslation } from '~/hooks';
+
 import { ReviewList, StarRating } from '~/components/common';
 import { ProductImageGallery } from '~/components/pages/public/product-detail/product-image-gallery';
 import { ProductInfo } from '~/components/pages/public/product-detail/product-info';
@@ -12,16 +14,12 @@ interface ProductDetailContentProps {
 }
 
 export const ProductDetailContent = memo<ProductDetailContentProps>(({ product }) => {
-  // State for selected variant
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(product.variants.length > 0 ? product.variants[0].id : null);
-
-  // State for selected image URL (this is the key change)
   const [selectedImageUrl, setSelectedImageUrl] = useState<string>(() => {
-    // Start with product's default image or first image
     return product.defaultImageUrl || product.images[0]?.url || '';
   });
 
-  // State for selected attributes
+  const { t } = useTranslation();
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>(() => {
     if (product.variants.length > 0) {
       const firstVariant = product.variants[0];
@@ -35,16 +33,12 @@ export const ProductDetailContent = memo<ProductDetailContentProps>(({ product }
     }
     return {};
   });
-
-  // State for quantity
   const [quantity, setQuantity] = useState<number>(1);
 
-  // Get current selected variant
   const selectedVariant = useMemo(() => {
     return product.variants.find((variant) => variant.id === selectedVariantId) || null;
   }, [product.variants, selectedVariantId]);
 
-  // Combine all images (product images + variant images) with source info
   const allImages = useMemo(() => {
     const images: Array<{
       url: string;
@@ -53,8 +47,6 @@ export const ProductDetailContent = memo<ProductDetailContentProps>(({ product }
       variantId?: string;
       alt: string;
     }> = [];
-
-    // Add product images
     product.images.forEach((img) => {
       images.push({
         url: img.url,
@@ -64,7 +56,6 @@ export const ProductDetailContent = memo<ProductDetailContentProps>(({ product }
       });
     });
 
-    // Add variant images
     product.variants.forEach((variant) => {
       variant.images.forEach((img) => {
         images.push({
@@ -79,18 +70,13 @@ export const ProductDetailContent = memo<ProductDetailContentProps>(({ product }
 
     return images;
   }, [product]);
-
-  // Handle image selection from gallery
   const handleImageSelect = (imageUrl: string): void => {
     setSelectedImageUrl(imageUrl);
 
-    // Find if this image belongs to a variant
     const image = allImages.find((img) => img.url === imageUrl);
     if (image && image.source === 'variant' && image.variantId) {
-      // If it's a variant image, update the selected variant
       setSelectedVariantId(image.variantId);
 
-      // Update selected attributes based on the variant
       const variant = product.variants.find((v) => v.id === image.variantId);
       if (variant) {
         const newAttributes = variant.attributes.reduce(
@@ -103,19 +89,15 @@ export const ProductDetailContent = memo<ProductDetailContentProps>(({ product }
         setSelectedAttributes(newAttributes);
       }
     } else if (image && image.source === 'product') {
-      // If it's a product image (not variant), keep current variant or select first one
       if (!selectedVariantId && product.variants.length > 0) {
         setSelectedVariantId(product.variants[0].id);
       }
     }
   };
 
-  // Handle attribute change
   const handleAttributeChange = (attributeName: string, attributeValue: string): void => {
     const newAttributes = { ...selectedAttributes, [attributeName]: attributeValue };
     setSelectedAttributes(newAttributes);
-
-    // Find matching variant
     const matchingVariant = product.variants.find((variant) => {
       return variant.attributes.every((attr) => {
         const attrValue = attr.attributeValue || attr.attributeValueLabel;
@@ -125,8 +107,6 @@ export const ProductDetailContent = memo<ProductDetailContentProps>(({ product }
 
     if (matchingVariant) {
       setSelectedVariantId(matchingVariant.id);
-
-      // Update selected image to the variant's default image
       if (matchingVariant.images && matchingVariant.images.length > 0) {
         const defaultImg = matchingVariant.images.find((img) => img.isDefault);
         const newImageUrl = defaultImg?.url || matchingVariant.images[0].url;
@@ -135,7 +115,6 @@ export const ProductDetailContent = memo<ProductDetailContentProps>(({ product }
     }
   };
 
-  // Handle quantity change
   const handleQuantityChange = (newQuantity: number): void => {
     const maxStock = selectedVariant?.stock || product.stock;
     setQuantity(Math.min(Math.max(1, newQuantity), maxStock));
@@ -144,12 +123,10 @@ export const ProductDetailContent = memo<ProductDetailContentProps>(({ product }
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Left side - Image Gallery */}
         <div className="space-y-4">
           <ProductImageGallery allImages={allImages} currentMainImage={selectedImageUrl} productName={product.name} onImageSelect={handleImageSelect} />
         </div>
 
-        {/* Right side - Product Info */}
         <div className="space-y-6">
           <ProductInfo product={product} quantity={quantity} selectedVariant={selectedVariant} onQuantityChange={handleQuantityChange} />
 
@@ -166,16 +143,17 @@ export const ProductDetailContent = memo<ProductDetailContentProps>(({ product }
         </div>
       </div>
 
-      {/* Reviews Section */}
       <div className="border-t pt-8">
         <div className="mb-6">
-          <h3 className="mb-4 text-2xl font-semibold">Customer Reviews</h3>
+          <h3 className="mb-4 text-2xl font-semibold">{t('Product.customerReviews')}</h3>
           <div className="mb-4 flex items-center gap-4">
             <div className="flex items-center gap-2">
               <StarRating rating={product.averageRating || 0} size="lg" />
               <span className="text-lg font-medium">{(product.averageRating || 0).toFixed(1)}</span>
             </div>
-            <span className="text-gray-600">({product.reviewCount || 0} reviews)</span>
+            <span className="text-gray-600">
+              ({product.reviewCount || 0} {t('Product.reviews')})
+            </span>
           </div>
         </div>
 

@@ -41,7 +41,6 @@ export interface CartItemResponse {
   createdAt: string;
   updatedAt: string;
 
-  // Thông tin variant nếu có
   variantName?: string;
   variantImage?: string;
   variantStock?: number;

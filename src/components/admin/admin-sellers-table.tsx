@@ -3,6 +3,7 @@ import { memo, useMemo, useState } from 'react';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import { Eye, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { useDataTable } from '~/hooks';
 
@@ -17,6 +18,7 @@ import { useAdminSellerList, useDeleteAdminSeller } from '~/hooks/use-admin-sell
 import type { AdminSellerResponse } from '~/types/admin-seller';
 
 export const AdminSellersTable = memo(() => {
+  const { t } = useTranslation();
   const [selectedSeller, setSelectedSeller] = useState<AdminSellerResponse | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [sellerToDelete, setSellerToDelete] = useState<AdminSellerResponse | null>(null);
@@ -54,7 +56,7 @@ export const AdminSellersTable = memo(() => {
   const columns: ColumnDef<AdminSellerResponse>[] = [
     {
       accessorKey: 'avatar',
-      header: 'Avatar',
+      header: t('Admin.sellers.avatar'),
       cell: ({ row }) => {
         const seller = row.original;
         return (
@@ -74,7 +76,7 @@ export const AdminSellersTable = memo(() => {
     },
     {
       accessorKey: 'shopName',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Shop Name" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.sellers.shopName')} />,
       cell: ({ row }) => {
         const seller = row.original;
         return (
@@ -87,7 +89,7 @@ export const AdminSellersTable = memo(() => {
     },
     {
       accessorKey: 'phone',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Phone" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.sellers.phone')} />,
       cell: ({ row }) => {
         const phone = row.getValue('phone') as string;
         return phone || '-';
@@ -95,15 +97,15 @@ export const AdminSellersTable = memo(() => {
     },
     {
       accessorKey: 'createdViaOAuth',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Account Type" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.sellers.accountType')} />,
       cell: ({ row }) => {
         const isOAuth = row.getValue('createdViaOAuth') as boolean;
-        return <Badge variant={isOAuth ? 'default' : 'secondary'}>{isOAuth ? 'OAuth' : 'Local'}</Badge>;
+        return <Badge variant={isOAuth ? 'default' : 'secondary'}>{isOAuth ? t('Admin.sellers.oauth') : t('Admin.sellers.local')}</Badge>;
       }
     },
     {
       accessorKey: 'totalProducts',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Total Products" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.sellers.totalProducts')} />,
       cell: ({ row }) => {
         const totalProducts = row.getValue('totalProducts') as number | null;
         return <span className="font-medium">{totalProducts || 0}</span>;
@@ -111,7 +113,7 @@ export const AdminSellersTable = memo(() => {
     },
     {
       accessorKey: 'totalOrders',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Total Orders" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.sellers.totalOrders')} />,
       cell: ({ row }) => {
         const totalOrders = row.getValue('totalOrders') as number | null;
         return <span className="font-medium">{totalOrders || 0}</span>;
@@ -119,7 +121,7 @@ export const AdminSellersTable = memo(() => {
     },
     {
       accessorKey: 'availableAmount',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Available Amount" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.sellers.availableAmount')} />,
       cell: ({ row }) => {
         const availableAmount = row.getValue('availableAmount') as number | null;
         return <span className="font-medium">${(availableAmount || 0).toFixed(2)}</span>;
@@ -127,7 +129,7 @@ export const AdminSellersTable = memo(() => {
     },
     {
       accessorKey: 'createdAt',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Joined Date" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.sellers.joinedDate')} />,
       cell: ({ row }) => {
         const date = row.getValue('createdAt') as string | null;
         return date ? new Date(date).toLocaleDateString() : '-';
@@ -135,7 +137,7 @@ export const AdminSellersTable = memo(() => {
     },
     {
       id: 'actions',
-      header: 'Actions',
+      header: t('Admin.sellers.actions'),
       cell: ({ row }): JSX.Element => {
         const seller = row.original;
         return (
@@ -156,15 +158,13 @@ export const AdminSellersTable = memo(() => {
   const filterFields = useMemo(
     () => [
       {
-        label: 'Search Sellers',
+        label: t('Admin.sellers.searchSellers'),
         value: 'shopName' as keyof AdminSellerResponse,
-        placeholder: 'Search by shop name, email...'
+        placeholder: t('Admin.sellers.searchByShopNameEmail')
       }
     ],
-    []
+    [t]
   );
-
-  // Initialize table with empty data first
   const { table } = useDataTable({
     data: [],
     columns,
@@ -174,13 +174,10 @@ export const AdminSellersTable = memo(() => {
       sorting: [{ id: 'createdAt', desc: true }]
     }
   });
-
-  // Get current table state for API call
   const pagination = table.getState().pagination;
   const sorting = table.getState().sorting;
   const columnFilters = table.getState().columnFilters;
 
-  // Build query parameters from table state
   const queryParams = useMemo(() => {
     const searchFilter = columnFilters.find((filter) => filter.id === 'shopName');
     const sortConfig = sorting[0];
@@ -194,8 +191,6 @@ export const AdminSellersTable = memo(() => {
       params.sortBy = sortConfig.id;
       params.sortDirection = sortConfig.desc ? 'desc' : 'asc';
     }
-
-    // Only search by text (shopName, email, phone)
     if (searchFilter?.value) {
       params.search = String(searchFilter.value);
     }
@@ -210,7 +205,6 @@ export const AdminSellersTable = memo(() => {
   const sellers = sellersData?.result?.content || [];
   const pageCount = sellersData?.result?.totalPages || 0;
 
-  // Update table options with fetched data
   table.options.data = sellers;
   table.options.pageCount = pageCount;
 
@@ -222,21 +216,20 @@ export const AdminSellersTable = memo(() => {
 
       <AdminSellerDetailDialog open={isDetailOpen} seller={selectedSeller} onOpenChange={setIsDetailOpen} />
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t('Admin.sellers.deleteConfirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the seller account for <strong>{sellerToDelete?.shopName}</strong> ({sellerToDelete?.email}). This action cannot be undone.
+              {t('Admin.sellers.deleteConfirmDescription')} <strong>{sellerToDelete?.shopName}</strong> ({sellerToDelete?.email}). {t('Admin.sellers.deleteConfirmDescriptionSuffix')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={deleteSellerMutation.isPending} onClick={handleDeleteCancel}>
-              Cancel
+              {t('Admin.sellers.cancel')}
             </AlertDialogCancel>
             <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled={deleteSellerMutation.isPending} onClick={handleDeleteConfirm}>
-              {deleteSellerMutation.isPending ? 'Deleting...' : 'Delete Seller'}
+              {deleteSellerMutation.isPending ? t('Admin.sellers.deleting') : t('Admin.sellers.deleteSeller')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

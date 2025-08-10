@@ -46,6 +46,6 @@ export const ADMIN_AUTH_ROUTES = {
   },
   settings: {
     path: () => '/admin/settings',
-    Element: null // Will implement later
+    Element: null
   }
 } as const;

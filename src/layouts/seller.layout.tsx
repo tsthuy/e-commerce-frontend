@@ -9,7 +9,7 @@ import { COOKIE_KEYS } from '~/constants';
 
 import { authApi } from '~/services';
 
-import { useSellerProfile } from '~/hooks';
+import { useSellerProfile, useTranslation } from '~/hooks';
 
 import { getErrorMessage } from '~/utils';
 
@@ -20,6 +20,7 @@ import { MainSellerLayout } from '~/components/layouts/seller/main';
 import { AUTH_ROUTES, SELLER_ROUTES } from '~/routes';
 
 export const SellerLayout = memo(() => {
+  const { t } = useTranslation();
   const location = useLocation();
 
   const loggedStatus = !!Cookie.get(COOKIE_KEYS.accessToken) && !!Cookie.get(COOKIE_KEYS.refreshToken);
@@ -39,7 +40,7 @@ export const SellerLayout = memo(() => {
     try {
       await authApi.logout({ data: { directUri: AUTH_ROUTES.sellerLogin.path() } });
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Something went wrong! Please try again.'));
+      toast.error(getErrorMessage(error, t('Common.somethingWentWrong')));
     }
   };
 

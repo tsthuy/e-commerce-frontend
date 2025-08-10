@@ -10,7 +10,7 @@ export interface DashboardStats {
 }
 
 export interface ChartDataPoint {
-  date: string; // ISO date string
+  date: string;
   label: string;
   orderCount: number;
   completedOrders: number;

@@ -45,7 +45,6 @@ export const adminApi = {
     });
   },
 
-  // Admin Products Management
   getAllProducts({ data, config }: ApiParams<AdminProductListParams>): AxiosPromise<ApiResponse<AdminProductListResponse>> {
     return httpBase.get<ApiResponse<AdminProductListResponse>>(API_URLS.admin.allProducts, {
       params: data,
@@ -61,7 +60,6 @@ export const adminApi = {
     return httpBase.delete<ApiResponse<void>>(API_URLS.admin.deleteProduct(productId), config);
   },
 
-  // Admin Orders Management
   getAllOrders({ data, config }: ApiParams<AdminOrderListParams>): AxiosPromise<ApiResponse<AdminOrderListResponse>> {
     return httpBase.get<ApiResponse<AdminOrderListResponse>>(API_URLS.admin.allOrders, {
       params: data,

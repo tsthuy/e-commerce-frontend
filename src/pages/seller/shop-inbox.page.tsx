@@ -20,7 +20,6 @@ import { ConversationService } from '~/services/conversation.service';
 
 // Component con để sử dụng hook cho từng conversation
 const ConversationItem = memo(({ conversation, handleClick }: { conversation: ConversationMetadata; handleClick: (id: string) => void }) => {
-  // Seller is talking to customer
   const { data: customerInfo } = useInfoUserForChat({
     id: conversation.receiverId,
     type: 'customer'
@@ -113,7 +112,6 @@ export const ShopInboxPage = memo(() => {
       setLoading(true);
 
       unsubscribe = ConversationService.subscribeToConversations({ userId: profileResponse.id, userType: 'seller' }, (newConversations) => {
-        // Sort by updatedAt descending (most recent first)
         const sortedConversations = newConversations.sort((a, b) => {
           const aTime = a.updatedAt?.seconds || 0;
           const bTime = b.updatedAt?.seconds || 0;
@@ -156,8 +154,6 @@ export const ShopInboxPage = memo(() => {
           <h1 className="mb-2 text-2xl font-bold text-gray-900">{t('Messages.shopInbox')}</h1>
           <p className="text-gray-600">{t('Messages.manageConversations')}</p>
         </div>
-
-        {/* Search */}
         <div className="mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -165,7 +161,6 @@ export const ShopInboxPage = memo(() => {
           </div>
         </div>
 
-        {/* Conversations List */}
         <div className="space-y-2">
           {filteredConversations.length === 0 ? (
             <div className="rounded-lg border bg-gray-50 p-8 text-center">
@@ -178,7 +173,6 @@ export const ShopInboxPage = memo(() => {
           )}
         </div>
 
-        {/* Quick Actions */}
         {filteredConversations.length > 0 && (
           <div className="mt-6 rounded-lg border bg-gray-50 p-4">
             <h3 className="mb-2 font-medium text-gray-900">{t('Messages.quickActions')}</h3>
@@ -187,7 +181,6 @@ export const ShopInboxPage = memo(() => {
                 size="sm"
                 variant="outline"
                 onClick={() => {
-                  // Mark all as seen
                   conversations.forEach(async (conv) => {
                     if (!conv.isSeen && profileResponse?.id) {
                       await ConversationService.markConversationAsSeen(profileResponse.id, conv.conversationId, 'seller');

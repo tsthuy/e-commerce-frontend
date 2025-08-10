@@ -28,7 +28,6 @@ export function DataTableToolbar<TData>({ table, filterFields = [], children, cl
 
   const isFiltered = table.getState().columnFilters.length > 1;
 
-  // Memoize computation of searchableColumns and filterableColumns
   const { searchableColumns, filterableColumns, filterSearchableColumns } = useMemo(() => {
     return {
       searchableColumns: filterFields.filter((field) => !field.options && !field.autocomplete),

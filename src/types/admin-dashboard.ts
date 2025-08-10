@@ -15,7 +15,7 @@ export interface AdminDashboardStats {
 }
 
 export interface AdminChartDataPoint {
-  date: string; // ISO date string
+  date: string;
   label: string;
   orderCount: number;
   completedOrders: number;

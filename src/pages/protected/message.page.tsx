@@ -41,7 +41,6 @@ const ConversationItem = memo(({ conversation, handleClick }: { conversation: Co
       className={`flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-gray-50 ${!conversation.isSeen ? 'border-primary bg-primary/5' : 'border-gray-200'}`}
       onClick={() => handleClick(conversation.conversationId)}
     >
-      {/* Avatar */}
       <div className="relative flex items-center justify-center">
         <Avatar className="flex h-12 w-12 items-center justify-center">
           {receiverInfo?.avatarUrl || conversation.receiverAvatar ? (
@@ -56,8 +55,6 @@ const ConversationItem = memo(({ conversation, handleClick }: { conversation: Co
           </div>
         )}
       </div>
-
-      {/* Conversation Info */}
       <div className="flex-1">
         <div className="flex items-center justify-between">
           <h3 className="font-medium text-gray-900">{receiverInfo?.name || conversation.receiverName || 'Unknown User'}</h3>
@@ -66,7 +63,6 @@ const ConversationItem = memo(({ conversation, handleClick }: { conversation: Co
       </div>
       <span className="text-sm text-gray-500">{formatRelativeTime(conversation.updatedAt.toDate())}</span>
 
-      {/* Unread indicator */}
       {!conversation.isSeen && <div className="h-2 w-2 rounded-full bg-primary" />}
     </div>
   );
@@ -126,19 +122,16 @@ export const MessagePage = memo(() => {
     <Helmet title={t('Messages.title')}>
       <Container className="p-2 py-6">
         <div className="mx-auto max-w-4xl">
-          {/* Header */}
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-900">{t('Messages.title')}</h1>
             <p className="text-gray-600">{t('Messages.chatWithSellers')}</p>
           </div>
 
-          {/* Search */}
           <div className="relative mb-6">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input className="pl-10" placeholder={t('Messages.searchConversations')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
 
-          {/* Conversations List */}
           <div className="space-y-2">
             {filteredConversations.length === 0 ? (
               <div className="py-12 text-center">

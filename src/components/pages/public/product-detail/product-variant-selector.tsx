@@ -35,13 +35,10 @@ interface ProductVariantSelectorProps {
 
 export const ProductVariantSelector = memo<ProductVariantSelectorProps>(({ product, selectedAttributes, selectedVariant, quantity, onAttributeChange, onQuantityChange }) => {
   const maxStock = selectedVariant?.stock || product.stock;
-
-  // Get available values for each attribute based on available variants
   const getAvailableValues = (attributeName: string): string[] => {
     const currentSelections = { ...selectedAttributes };
-    delete currentSelections[attributeName]; // Remove current attribute from filter
+    delete currentSelections[attributeName];
 
-    // Find variants that match current selections (excluding the current attribute)
     const matchingVariants = product.variants.filter((variant) => {
       return Object.entries(currentSelections).every(([attrName, attrValue]) => {
         return variant.attributes.some((attr) => {
@@ -51,7 +48,6 @@ export const ProductVariantSelector = memo<ProductVariantSelectorProps>(({ produ
       });
     });
 
-    // Get available values for the current attribute from matching variants
     const availableValues = new Set<string>();
     matchingVariants.forEach((variant) => {
       variant.attributes.forEach((attr) => {
@@ -67,7 +63,6 @@ export const ProductVariantSelector = memo<ProductVariantSelectorProps>(({ produ
 
   return (
     <div className="space-y-6">
-      {/* Attribute Selectors */}
       <div className="space-y-4">
         {product.attributes.map((attribute) => {
           const availableValues = getAvailableValues(attribute.name);
@@ -108,7 +103,6 @@ export const ProductVariantSelector = memo<ProductVariantSelectorProps>(({ produ
         })}
       </div>
 
-      {/* Quantity Selector */}
       <div className="space-y-2">
         <h4 className="text-sm font-medium text-gray-900">Quantity</h4>
         <div className="flex items-center gap-3">

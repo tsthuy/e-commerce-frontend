@@ -169,8 +169,6 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
     ],
     [onViewOrder]
   );
-
-  // Filter fields for search and filtering
   const filterFields = useMemo(
     () => [
       {
@@ -182,7 +180,6 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
     []
   );
 
-  // Initialize table with empty data first to get state
   const { table } = useDataTable({
     data: [] as OrderResponse[],
     columns,
@@ -194,12 +191,9 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
     }
   });
 
-  // Get current table state for API call
   const pagination = table.getState().pagination;
   const sorting = table.getState().sorting;
   const columnFilters = table.getState().columnFilters;
-
-  // Build query parameters from table state
   const queryParams = useMemo(() => {
     const searchFilter = columnFilters.find((filter) => filter.id === 'orderNumber');
     const sortConfig = sorting[0];
@@ -221,8 +215,6 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
 
     return params;
   }, [pagination, sorting, columnFilters, initialFilters]);
-
-  // Fetch data with dynamic parameters
   const { data: ordersResponse, isLoading } = useCustomerOrders({
     data: queryParams
   });
@@ -230,7 +222,6 @@ export const CustomerOrdersTable = memo<CustomerOrdersTableProps>(({ onViewOrder
   const orders = ordersResponse?.result?.content || [];
   const pageCount = ordersResponse?.result?.totalPages || 0;
 
-  // Update table options with fetched data
   table.options.data = orders;
   table.options.pageCount = pageCount;
 

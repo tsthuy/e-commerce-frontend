@@ -41,7 +41,6 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
       },
       {
         onSuccess: () => {
-          // Remove item from wishlist after successfully adding to cart
           removeWishlistItem.mutate(productId);
         }
       }
@@ -50,8 +49,6 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
 
   const handleAddAllToCart = useCallback((): void => {
     if (!wishlist?.items || wishlist.items.length === 0) return;
-
-    // Filter out items that are out of stock
     const availableItems = wishlist.items.filter((item) => item.product.stock > 0);
 
     if (availableItems.length === 0) {
@@ -59,11 +56,8 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
     }
 
     setIsAddingAll(true);
-
-    // Create a batch operation instead of sequential to avoid UI lag
     const addItemPromises = availableItems.map((item, index) => {
       return new Promise<void>((resolve) => {
-        // Add small delay to prevent overwhelming the server
         setTimeout(() => {
           addToCart.mutate(
             {
@@ -72,7 +66,6 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
             },
             {
               onSuccess: () => {
-                // Remove item from wishlist after successfully adding to cart
                 removeWishlistItem.mutate(item.product.id, {
                   onSettled: () => {
                     resolve();
@@ -81,15 +74,14 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
               },
               onError: (error) => {
                 console.error('Failed to add item to cart:', error);
-                resolve(); // Continue even if this item fails
+                resolve();
               }
             }
           );
-        }, index * 200); // 200ms delay between each request
+        }, index * 200);
       });
     });
 
-    // Wait for all operations to complete
     Promise.all(addItemPromises).finally(() => {
       setIsAddingAll(false);
     });
@@ -133,29 +125,23 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
                     <Card key={item.id} className="overflow-hidden">
                       <CardContent className="p-4">
                         <div className="flex gap-4">
-                          {/* Ảnh sản phẩm */}
                           <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
                             <img alt={item.product.name} className="h-full w-full object-cover" src={item.product.defaultImageUrl || DEFAULT_IMG_AVATAR} />
                           </div>
 
                           <div className="flex-1 space-y-2">
-                            {/* Tên sản phẩm */}
                             <div className="space-y-1">
                               <h4 className="line-clamp-2 font-medium leading-tight">{item.product.name}</h4>
                               <p className="text-sm text-muted-foreground">
                                 {t('Common.seller')}: {item.product.sellerName}
                               </p>
                             </div>
-
-                            {/* Giá */}
                             <div className="flex items-center gap-2">
                               <span className="font-semibold text-primary">{formatPrice(item.product.salePrice || item.product.price)}</span>
                               {item.product.salePrice && item.product.salePrice < item.product.price && (
                                 <span className="text-sm text-muted-foreground line-through">{formatPrice(item.product.price)}</span>
                               )}
                             </div>
-
-                            {/* Stock info */}
                             <div className="flex items-center justify-between text-xs text-muted-foreground">
                               <span>
                                 {t('Product.stockRemaining')}: {item.product.stock}
@@ -165,7 +151,6 @@ export const WishlistSheet = ({ children }: WishlistSheetProps): JSX.Element => 
                               </span>
                             </div>
 
-                            {/* Actions */}
                             <div className="flex items-center justify-between">
                               <Button className="h-8 text-xs" disabled={addToCart.isPending || item.product.stock <= 0} size="sm" variant="outline" onClick={() => handleAddToCart(item.product.id)}>
                                 <ShoppingCart className="mr-1 h-3 w-3" />

@@ -17,17 +17,12 @@ export const ChatMessageComponent = memo<ChatMessageProps>(({ message }) => {
 
   return (
     <div className={cn('mb-4 flex gap-3', isUser ? 'flex-row-reverse' : 'flex-row')}>
-      {/* Avatar */}
       <div className={cn('flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full', isUser ? 'bg-teal-500 text-white' : 'bg-gray-100 text-gray-600')}>
         {isUser ? <User size={16} /> : <Bot size={16} />}
       </div>
-
-      {/* Message bubble */}
       <div className={cn('relative max-w-[80%] rounded-lg px-3 py-2', isUser ? 'bg-teal-500 text-white' : 'bg-gray-100 text-gray-800')}>
-        {/* Message content */}
         {isUser ? <div className="whitespace-pre-wrap break-words text-sm">{content}</div> : <MarkdownMessage className="whitespace-pre-wrap break-words text-sm" content={content} />}
 
-        {/* Status indicator for user messages */}
         {isUser && (
           <div className="mt-1 flex items-center justify-end gap-1">
             {status === 'sending' && (
@@ -53,7 +48,6 @@ export const ChatMessageComponent = memo<ChatMessageProps>(({ message }) => {
           </div>
         )}
 
-        {/* Timestamp for bot messages */}
         {!isUser && (
           <div className="mt-1 text-xs text-gray-500">
             {new Date(timestamp).toLocaleTimeString('vi-VN', {

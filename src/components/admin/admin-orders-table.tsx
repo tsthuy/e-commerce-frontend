@@ -197,13 +197,10 @@ export const AdminOrdersTable = memo<AdminOrdersTableProps>(({ onViewOrder, init
       ...initialFilters
     }
   });
-
-  // Get current table state for API call
   const pagination = table.getState().pagination;
   const sorting = table.getState().sorting;
   const columnFilters = table.getState().columnFilters;
 
-  // Build query parameters from table state
   const queryParams = useMemo((): AdminOrderListParams => {
     const params: AdminOrderListParams = {
       page: pagination.pageIndex,
@@ -211,14 +208,11 @@ export const AdminOrdersTable = memo<AdminOrdersTableProps>(({ onViewOrder, init
       ...initialFilters
     };
 
-    // Handle sorting
     if (sorting.length > 0) {
       const sort = sorting[0];
       params.sortBy = sort.id;
       params.sortDirection = sort.desc ? 'DESC' : 'ASC';
     }
-
-    // Handle search/filtering
     columnFilters.forEach((filter) => {
       const value = filter.value as string;
       if (value) {
@@ -238,8 +232,6 @@ export const AdminOrdersTable = memo<AdminOrdersTableProps>(({ onViewOrder, init
 
     return params;
   }, [pagination, sorting, columnFilters, initialFilters]);
-
-  // Fetch data with dynamic parameters
   const { data: ordersResponse, isLoading } = useAdminOrderList({
     data: queryParams
   });
@@ -247,7 +239,6 @@ export const AdminOrdersTable = memo<AdminOrdersTableProps>(({ onViewOrder, init
   const orders = ordersResponse?.content || [];
   const pageCount = ordersResponse?.totalPages || 0;
 
-  // Update table options with fetched data
   table.options.data = orders;
   table.options.pageCount = pageCount;
 

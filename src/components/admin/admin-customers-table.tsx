@@ -3,6 +3,7 @@ import { memo, useMemo, useState } from 'react';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import { Eye, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { useDataTable } from '~/hooks';
 
@@ -17,6 +18,7 @@ import { useAdminCustomerList, useDeleteAdminCustomer } from '~/hooks/use-admin-
 import type { AdminCustomerResponse } from '~/types/admin-customer';
 
 export const AdminCustomersTable = memo(() => {
+  const { t } = useTranslation();
   const [selectedCustomer, setSelectedCustomer] = useState<AdminCustomerResponse | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [customerToDelete, setCustomerToDelete] = useState<AdminCustomerResponse | null>(null);
@@ -54,7 +56,7 @@ export const AdminCustomersTable = memo(() => {
   const columns: ColumnDef<AdminCustomerResponse>[] = [
     {
       accessorKey: 'avatar',
-      header: 'Avatar',
+      header: t('Admin.customers.avatar'),
       cell: ({ row }) => {
         const customer = row.original;
         return (
@@ -74,7 +76,7 @@ export const AdminCustomersTable = memo(() => {
     },
     {
       accessorKey: 'fullName',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Full Name" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.customers.fullName')} />,
       cell: ({ row }) => {
         const customer = row.original;
         return (
@@ -87,7 +89,7 @@ export const AdminCustomersTable = memo(() => {
     },
     {
       accessorKey: 'phone',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Phone" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.customers.phone')} />,
       cell: ({ row }) => {
         const phone = row.getValue('phone') as string;
         return phone || '-';
@@ -95,15 +97,15 @@ export const AdminCustomersTable = memo(() => {
     },
     {
       accessorKey: 'createdViaOAuth',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Account Type" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.customers.accountType')} />,
       cell: ({ row }) => {
         const isOAuth = row.getValue('createdViaOAuth') as boolean;
-        return <Badge variant={isOAuth ? 'default' : 'secondary'}>{isOAuth ? 'OAuth' : 'Local'}</Badge>;
+        return <Badge variant={isOAuth ? 'default' : 'secondary'}>{isOAuth ? t('Admin.customers.oauth') : t('Admin.customers.local')}</Badge>;
       }
     },
     {
       accessorKey: 'totalOrders',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Total Orders" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.customers.totalOrders')} />,
       cell: ({ row }) => {
         const totalOrders = row.getValue('totalOrders') as number | null;
         return <span className="font-medium">{totalOrders || 0}</span>;
@@ -111,7 +113,7 @@ export const AdminCustomersTable = memo(() => {
     },
     {
       accessorKey: 'totalSpent',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Total Spent" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.customers.totalSpent')} />,
       cell: ({ row }) => {
         const totalSpent = row.getValue('totalSpent') as number | null;
         return <span className="font-medium">${(totalSpent || 0).toFixed(2)}</span>;
@@ -119,7 +121,7 @@ export const AdminCustomersTable = memo(() => {
     },
     {
       accessorKey: 'createdAt',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Joined Date" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('Admin.customers.joinedDate')} />,
       cell: ({ row }) => {
         const date = row.getValue('createdAt') as string | null;
         return date ? new Date(date).toLocaleDateString() : '-';
@@ -127,7 +129,7 @@ export const AdminCustomersTable = memo(() => {
     },
     {
       id: 'actions',
-      header: 'Actions',
+      header: t('Admin.customers.actions'),
       cell: ({ row }): JSX.Element => {
         const customer = row.original;
         return (
@@ -148,15 +150,13 @@ export const AdminCustomersTable = memo(() => {
   const filterFields = useMemo(
     () => [
       {
-        label: 'Search Customers',
+        label: t('Admin.customers.searchCustomers'),
         value: 'fullName' as keyof AdminCustomerResponse,
-        placeholder: 'Search by name, email, phone...'
+        placeholder: t('Admin.customers.searchByNameEmailPhone')
       }
     ],
-    []
+    [t]
   );
-
-  // Initialize table with empty data first
   const { table } = useDataTable({
     data: [],
     columns,
@@ -166,13 +166,10 @@ export const AdminCustomersTable = memo(() => {
       sorting: [{ id: 'createdAt', desc: true }]
     }
   });
-
-  // Get current table state for API call
   const pagination = table.getState().pagination;
   const sorting = table.getState().sorting;
   const columnFilters = table.getState().columnFilters;
 
-  // Build query parameters from table state
   const queryParams = useMemo(() => {
     const searchFilter = columnFilters.find((filter) => filter.id === 'fullName');
     const sortConfig = sorting[0];
@@ -186,8 +183,6 @@ export const AdminCustomersTable = memo(() => {
       params.sortBy = sortConfig.id;
       params.sortDirection = sortConfig.desc ? 'desc' : 'asc';
     }
-
-    // Only search by text (fullName, email, phone)
     if (searchFilter?.value) {
       params.search = String(searchFilter.value);
     }
@@ -202,7 +197,6 @@ export const AdminCustomersTable = memo(() => {
   const customers = customersData?.result?.content || [];
   const pageCount = customersData?.result?.totalPages || 0;
 
-  // Update table options with fetched data
   table.options.data = customers;
   table.options.pageCount = pageCount;
 
@@ -214,21 +208,20 @@ export const AdminCustomersTable = memo(() => {
 
       <AdminCustomerDetailDialog customer={selectedCustomer} open={isDetailOpen} onOpenChange={setIsDetailOpen} />
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t('Admin.customers.deleteConfirmTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the customer account for <strong>{customerToDelete?.fullName}</strong> ({customerToDelete?.email}). This action cannot be undone.
+              {t('Admin.customers.deleteConfirmDescription')} <strong>{customerToDelete?.fullName}</strong> ({customerToDelete?.email}). {t('Admin.customers.deleteConfirmDescriptionSuffix')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={deleteCustomerMutation.isPending} onClick={handleDeleteCancel}>
-              Cancel
+              {t('Admin.customers.cancel')}
             </AlertDialogCancel>
             <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled={deleteCustomerMutation.isPending} onClick={handleDeleteConfirm}>
-              {deleteCustomerMutation.isPending ? 'Deleting...' : 'Delete Customer'}
+              {deleteCustomerMutation.isPending ? t('Admin.customers.deleting') : t('Admin.customers.deleteCustomer')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -76,7 +76,7 @@ export const OrdersTable = memo<OrdersTableProps>(({ onViewOrder, initialFilters
           const order = row.original;
           return (
             <div>
-              <div className="font-medium">{order.customerName || 'N/A'}</div>
+              <div className="font-medium">{order.customerName || t('Order.notAvailable')}</div>
               <div className="text-sm text-muted-foreground">{order.customerEmail || ''}</div>
             </div>
           );
@@ -94,7 +94,7 @@ export const OrdersTable = memo<OrdersTableProps>(({ onViewOrder, initialFilters
           return (
             <div className="flex justify-between gap-2 font-medium text-green-600">
               <p>{formatPrice(amount)}</p>
-              <img alt="order" className="h-12 w-12 object-cover" src={order.items[0]?.variantImageUrl || order.items[0]?.productImageUrl} />
+              <img alt={t('Order.orderImage')} className="h-12 w-12 object-cover" src={order.items[0]?.variantImageUrl || order.items[0]?.productImageUrl} />
             </div>
           );
         },
@@ -149,10 +149,10 @@ export const OrdersTable = memo<OrdersTableProps>(({ onViewOrder, initialFilters
         cell: ({ row }): JSX.Element => {
           const paymentMethod = row.getValue('paymentMethod') as string;
           const paymentConfig = {
-            CASH_ON_DELIVERY: { label: 'COD', color: 'warning' },
-            CREDIT_CARD: { label: t('Checkout.creditCard'), color: 'primary' },
-            BANK_TRANSFER: { label: t('Checkout.bankTransfer'), color: 'info' },
-            E_WALLET: { label: t('Checkout.eWallet'), color: 'success' }
+            CASH_ON_DELIVERY: { label: t('Order.paymentMethods.CASH_ON_DELIVERY'), color: 'warning' },
+            CREDIT_CARD: { label: t('Order.paymentMethods.CREDIT_CARD'), color: 'primary' },
+            BANK_TRANSFER: { label: t('Order.paymentMethods.BANK_TRANSFER'), color: 'info' },
+            E_WALLET: { label: t('Order.paymentMethods.E_WALLET'), color: 'success' }
           };
 
           const config = paymentConfig[paymentMethod as keyof typeof paymentConfig] || { label: paymentMethod, color: 'default' };
@@ -204,22 +204,19 @@ export const OrdersTable = memo<OrdersTableProps>(({ onViewOrder, initialFilters
         enableHiding: false
       }
     ],
-    [updateOrderStatusMutation.isPending, onViewOrder]
+    [updateOrderStatusMutation.isPending, onViewOrder, t]
   );
-
-  // Filter fields for search and filtering
   const filterFields = useMemo(
     () => [
       {
-        label: 'Tìm kiếm đơn hàng',
+        label: t('Order.searchOrdersLabel'),
         value: 'orderNumber' as keyof OrderResponse,
-        placeholder: 'Search by order number, customer name, or email'
+        placeholder: t('Order.searchOrdersHint')
       }
     ],
-    []
+    [t]
   );
 
-  // Initialize table with empty data first to get state
   const { table } = useDataTable({
     data: [] as OrderResponse[],
     columns,
@@ -231,12 +228,9 @@ export const OrdersTable = memo<OrdersTableProps>(({ onViewOrder, initialFilters
     }
   });
 
-  // Get current table state for API call
   const pagination = table.getState().pagination;
   const sorting = table.getState().sorting;
   const columnFilters = table.getState().columnFilters;
-
-  // Build query parameters from table state
   const queryParams = useMemo(() => {
     const searchFilter = columnFilters.find((filter) => filter.id === 'orderNumber');
     const sortConfig = sorting[0];
@@ -258,8 +252,6 @@ export const OrdersTable = memo<OrdersTableProps>(({ onViewOrder, initialFilters
 
     return params;
   }, [pagination, sorting, columnFilters, initialFilters]);
-
-  // Fetch data with dynamic parameters
   const { data: ordersResponse, isLoading } = useSellerOrders({
     data: queryParams
   });
@@ -267,7 +259,6 @@ export const OrdersTable = memo<OrdersTableProps>(({ onViewOrder, initialFilters
   const orders = ordersResponse?.result?.content || [];
   const pageCount = ordersResponse?.result?.totalPages || 0;
 
-  // Update table options with fetched data
   table.options.data = orders;
   table.options.pageCount = pageCount;
 
@@ -278,7 +269,7 @@ export const OrdersTable = memo<OrdersTableProps>(({ onViewOrder, initialFilters
           <TasksTableToolbarActions
             table={table}
             createAction={{
-              label: 'Xuất Excel',
+              label: t('Order.exportExcel'),
               action: () => {}
             }}
           />

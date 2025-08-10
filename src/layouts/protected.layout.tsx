@@ -9,7 +9,7 @@ import { COOKIE_KEYS } from '~/constants';
 
 import { authApi } from '~/services';
 
-import { useProfile } from '~/hooks';
+import { useProfile, useTranslation } from '~/hooks';
 
 import { getErrorMessage } from '~/utils';
 
@@ -20,6 +20,7 @@ import { FooterPublicLayout, TopHeaderPublicLayout } from '~/components/layouts/
 import { AUTH_ROUTES, OTHER_ROUTES, PROTECTED_ROUTES } from '~/routes';
 
 export const ProtectedLayout = memo(() => {
+  const { t } = useTranslation();
   const location = useLocation();
   const { push } = useHistory();
 
@@ -41,7 +42,7 @@ export const ProtectedLayout = memo(() => {
     try {
       await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Something went wrong! Please try again.'));
+      toast.error(getErrorMessage(error, t('Common.somethingWentWrong')));
     }
   };
 

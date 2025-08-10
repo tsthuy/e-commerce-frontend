@@ -20,8 +20,6 @@ interface ProductsTableProps {
 export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreate }) => {
   const { t } = useTranslation();
   const deleteMutation = useProductDelete();
-
-  // Define table columns
   const columns: ColumnDef<ProductResponse>[] = useMemo(
     () => [
       {
@@ -143,8 +141,6 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
     ],
     [onEdit, onView, deleteMutation, t]
   );
-
-  // Filter fields for search and filtering
   const filterFields = useMemo(
     () => [
       {
@@ -156,7 +152,6 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
     []
   );
 
-  // Initialize table with empty data first to get state
   const { table } = useDataTable({
     data: [],
     columns,
@@ -167,13 +162,9 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
       columnPinning: { right: ['actions'] }
     }
   });
-
-  // Get current table state for API call
   const pagination = table.getState().pagination;
   const sorting = table.getState().sorting;
   const columnFilters = table.getState().columnFilters;
-
-  // Build query parameters from table state
   const queryParamsFromTable = useMemo(() => {
     const searchFilter = columnFilters.find((filter) => filter.id === 'name');
     const sortConfig = sorting[0];
@@ -194,8 +185,6 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
 
     return params;
   }, [pagination, sorting, columnFilters]);
-
-  // Fetch data with dynamic parameters
   const { data: productsResponse, isLoading } = useSellerProductList({
     data: queryParamsFromTable
   });
@@ -214,7 +203,6 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
       deleteMutation.mutate(id);
     });
 
-    // Clear selection after delete
     table.resetRowSelection();
   };
 

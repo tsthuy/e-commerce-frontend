@@ -35,33 +35,22 @@ export const useGoogleAuth = () => {
 
     try {
       setIsLoading(true);
-
-      // Firebase Google Sign In
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
 
-      // Prepare request data
       const requestData: GoogleOAuthRequest = {
         idToken,
         authenticationType,
         ...additionalData
       };
-
-      // Call backend API
       const response = await authApi.loginWithGoogle({ data: requestData });
 
-      // Backend returns: { code: 1000, result: { accessToken, refreshToken, ... } }
       if (response.data?.result) {
         const { accessToken, refreshToken, isNewUser, message } = response.data.result;
-
-        // Save tokens
         Cookie.set(COOKIE_KEYS.accessToken, accessToken, COOKIE_OPTIONS);
         Cookie.set(COOKIE_KEYS.refreshToken, refreshToken, COOKIE_OPTIONS);
-
-        // Show success message
         toast.success(message || 'Login successful!');
 
-        // Redirect based on authentication type
         if (authenticationType === 'CUSTOMER') {
           push(PUBLIC_ROUTES.index.path());
         } else {

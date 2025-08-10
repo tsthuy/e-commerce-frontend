@@ -93,13 +93,11 @@ export const API_URLS = {
     clear: '/api/v1/wishlist/clear'
   },
   order: {
-    // Customer endpoints
     list: '/api/orders',
     create: '/api/orders',
     detail: (orderId: string): string => `/api/orders/${orderId}`,
     cancel: (orderId: string): string => `/api/orders/${orderId}/cancel`,
 
-    // Seller endpoints
     sellerList: '/api/orders/seller',
     sellerDetail: (orderId: string): string => `/api/orders/seller/${orderId}`,
     updateStatus: (orderId: string): string => `/api/orders/seller/${orderId}/status`,
@@ -120,7 +118,6 @@ export const API_URLS = {
 };
 
 export const API_ENDPOINTS = {
-  // Sao chép từ API_URLS cho tương thích
   AUTH: API_URLS.auth,
   PROFILE: API_URLS.profile,
   USER_INFO: API_URLS.userInfo,

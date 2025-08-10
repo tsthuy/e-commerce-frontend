@@ -6,7 +6,7 @@ import { Star } from 'lucide-react';
 
 import type { ProductReviewListParams } from '~/types';
 
-import { useProductReviews } from '~/hooks';
+import { useProductReviews, useTranslation } from '~/hooks';
 
 import { StarRating } from '~/components/common';
 import { Avatar, AvatarImage } from '~/components/ui/avatar';
@@ -20,6 +20,8 @@ interface ReviewListProps {
 }
 
 export const ReviewList = ({ productId, className }: ReviewListProps): JSX.Element => {
+  const { t } = useTranslation();
+
   const [params, setParams] = useState<ProductReviewListParams>({
     productId,
     page: 0,
@@ -63,7 +65,7 @@ export const ReviewList = ({ productId, className }: ReviewListProps): JSX.Eleme
       <div className={className}>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-gray-500">Failed to load reviews. Please try again.</p>
+            <p className="text-gray-500">{t('Reviews.failedToLoadReviews')}</p>
           </CardContent>
         </Card>
       </div>
@@ -77,8 +79,8 @@ export const ReviewList = ({ productId, className }: ReviewListProps): JSX.Eleme
           <CardContent className="p-4 text-center">
             <div className="flex flex-col items-center gap-2">
               <Star className="h-8 w-8 text-gray-300" />
-              <p className="text-gray-500">No reviews yet</p>
-              <p className="text-sm text-gray-400">Be the first to review this product!</p>
+              <p className="text-gray-500">{t('Reviews.noReviewsYet')}</p>
+              <p className="text-sm text-gray-400">{t('Reviews.beFirstToReview')}</p>
             </div>
           </CardContent>
         </Card>
@@ -113,7 +115,7 @@ export const ReviewList = ({ productId, className }: ReviewListProps): JSX.Eleme
         {data.result.totalPages > 1 && (
           <div className="mt-6 flex justify-center gap-2">
             <Button disabled={params.page === 0} size="sm" variant="outline" onClick={() => handlePageChange((params.page || 0) - 1)}>
-              Previous
+              {t('Reviews.previous')}
             </Button>
             <div className="flex items-center gap-1">
               {Array.from({ length: Math.min(5, data.result.totalPages) }, (_, index) => {
@@ -130,7 +132,7 @@ export const ReviewList = ({ productId, className }: ReviewListProps): JSX.Eleme
               })}
             </div>
             <Button disabled={(params.page || 0) >= data.result.totalPages - 1} size="sm" variant="outline" onClick={() => handlePageChange((params.page || 0) + 1)}>
-              Next
+              {t('Reviews.next')}
             </Button>
           </div>
         )}

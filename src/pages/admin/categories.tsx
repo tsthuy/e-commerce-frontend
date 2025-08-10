@@ -35,10 +35,8 @@ export const Categories = memo(() => {
           <p className="text-muted-foreground">{t('Admin.manageCategories')}</p>
         </div>
 
-        {/* Categories Table with all features */}
         <CategoriesTable onCreate={handleCreate} onEdit={handleEdit} />
 
-        {/* Category Form Modal */}
         <CategoryForm category={editingCategory} isOpen={isFormOpen} onClose={handleCloseForm} />
       </div>
     </Helmet>

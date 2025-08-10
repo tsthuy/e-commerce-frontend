@@ -78,7 +78,6 @@ export const ProductView = memo(() => {
   return (
     <Helmet title={product.name}>
       <Container className="px-6 py-8">
-        {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Button variant="outline" onClick={handleBack}>
@@ -96,9 +95,7 @@ export const ProductView = memo(() => {
           </Button>
         </div>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Main Content */}
           <div className="space-y-6 lg:col-span-2">
-            {/* Basic Information */}
             <Card className="p-6">
               <h2 className="mb-4 text-xl font-semibold">{t('Product.productInformation')}</h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -146,8 +143,6 @@ export const ProductView = memo(() => {
                 <p className="mt-1 text-gray-900">{product.description}</p>
               </div>
             </Card>
-
-            {/* Images */}
             {product.images && product.images.length > 0 && (
               <Card className="p-6">
                 <h2 className="mb-4 text-xl font-semibold">{t('Product.productImages')}</h2>
@@ -162,7 +157,6 @@ export const ProductView = memo(() => {
               </Card>
             )}
 
-            {/* Attributes */}
             {product.attributes && product.attributes.length > 0 && (
               <Card className="p-6">
                 <h2 className="mb-4 text-xl font-semibold">{t('Product.productAttributes')}</h2>
@@ -183,7 +177,6 @@ export const ProductView = memo(() => {
               </Card>
             )}
 
-            {/* Variants */}
             {product.variants && product.variants.length > 0 && (
               <Card className="p-6">
                 <h2 className="mb-4 text-xl font-semibold">
@@ -249,10 +242,7 @@ export const ProductView = memo(() => {
               </Card>
             )}
           </div>
-
-          {/* Sidebar */}
           <div className="space-y-6">
-            {/* Statistics */}
             <Card className="p-6">
               <h2 className="mb-4 text-lg font-semibold">{t('Seller.quickStats')}</h2>
               <div className="space-y-4">
@@ -283,8 +273,6 @@ export const ProductView = memo(() => {
                 </div>
               </div>
             </Card>
-
-            {/* Metadata */}
             <Card className="p-6">
               <h2 className="mb-4 text-lg font-semibold">{t('Seller.metadata')}</h2>
               <div className="space-y-4">
@@ -312,7 +300,7 @@ export const ProductView = memo(() => {
             </Card>
           </div>
         </div>
-        {/* Variant Detail Modal */}
+
         <Dialog open={isVariantModalOpen} onOpenChange={setIsVariantModalOpen}>
           <DialogContent className="max-w-4xl">
             <DialogHeader>
@@ -325,7 +313,6 @@ export const ProductView = memo(() => {
 
             {selectedVariant && (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {/* Images */}
                 <div>
                   <h3 className="mb-3 font-semibold">{t('Product.variantImages')}</h3>
                   {selectedVariant.images && selectedVariant.images.length > 0 ? (
@@ -347,7 +334,6 @@ export const ProductView = memo(() => {
                   )}
                 </div>
 
-                {/* Information */}
                 <div>
                   <h3 className="mb-3 font-semibold">{t('Product.variantInformation')}</h3>
                   <div className="space-y-4">

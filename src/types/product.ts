@@ -121,7 +121,6 @@ export type ProductDetailResponse = {
   createdAt: string;
   updatedAt: string;
 
-  // Related entities
   seller?: {
     id: string;
     shopName: string;
@@ -132,10 +131,8 @@ export type ProductDetailResponse = {
     slug?: string;
   };
 
-  // This field is needed for form population
   categoryId: string;
 
-  // Collections
   images: Array<{
     id?: string;
     url: string;
@@ -171,7 +168,6 @@ export type ProductDetailResponse = {
     }>;
   }>;
 
-  // Additional metadata
   hasVariants: boolean;
   variantCount: number;
   attributeCount: number;

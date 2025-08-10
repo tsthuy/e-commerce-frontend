@@ -7,7 +7,6 @@ import type { ConversationListParams, ConversationMetadata, CreateConversationPa
 import { firestore } from '~/libs/firebase.lib';
 
 export class ConversationService {
-  // Check if conversation exists
   static async checkConversationExists(customerId: string, sellerId: string, userType: 'customer' | 'seller'): Promise<boolean> {
     try {
       const conversationId = `${customerId}_${sellerId}`;
@@ -20,19 +19,15 @@ export class ConversationService {
       return false;
     }
   }
-
-  // Create new conversation
   static async createConversation(params: CreateConversationParams): Promise<string> {
     try {
       const { customerId, sellerId, customerName, sellerName, initialMessage } = params;
       const conversationId = `${customerId}_${sellerId}`;
       const now = Timestamp.now();
-
-      // Create conversation metadata for customer
       const customerConversationRef = doc(firestore, `allConversation/customer_${customerId}/conversations`, conversationId);
       await setDoc(customerConversationRef, {
         conversationId,
-        isSeen: true, // Customer created, so they've seen it
+        isSeen: true,
         lastMessage: initialMessage || '',
         receiverId: sellerId,
         type: 'seller',
@@ -41,12 +36,10 @@ export class ConversationService {
         receiverName: sellerName || 'Seller',
         receiverAvatar: ''
       } as ConversationMetadata);
-
-      // Create conversation metadata for seller
       const sellerConversationRef = doc(firestore, `allConversation/seller_${sellerId}/conversations`, conversationId);
       await setDoc(sellerConversationRef, {
         conversationId,
-        isSeen: false, // Seller hasn't seen it yet
+        isSeen: false,
         lastMessage: initialMessage || '',
         receiverId: customerId,
         type: 'customer',
@@ -56,7 +49,6 @@ export class ConversationService {
         receiverAvatar: ''
       } as ConversationMetadata);
 
-      // Create conversation document in messagesOfConversation
       const conversationDocRef = doc(firestore, 'messagesOfConversation', conversationId);
       await setDoc(conversationDocRef, {
         conversationId,
@@ -69,8 +61,6 @@ export class ConversationService {
         createdAt: now,
         updatedAt: now
       });
-
-      // Add initial message if provided
       if (initialMessage) {
         await this.sendMessage({
           conversationId,
@@ -87,20 +77,13 @@ export class ConversationService {
       throw error;
     }
   }
-
-  // Send message
   static async sendMessage(params: SendMessageParams): Promise<string> {
     try {
       const { conversationId, senderId, senderType, text, type, imageUrl, fileUrl, fileName } = params;
       const now = Timestamp.now();
-
-      // Extract customer and seller IDs from conversationId
       const [customerId, sellerId] = conversationId.split('_');
 
-      // Check if conversation exists for both participants, create if not
       await this.ensureConversationExists(conversationId, customerId, sellerId, senderType);
-
-      // Add message to messages subcollection
       const messagesRef = collection(firestore, `messagesOfConversation/${conversationId}/messages`);
       const messageDoc = await addDoc(messagesRef, {
         senderId,
@@ -112,11 +95,8 @@ export class ConversationService {
         ...(fileUrl && { fileUrl }),
         ...(fileName && { fileName })
       } as Omit<Message, 'id'>);
-
-      // Update conversation metadata for both participants
       const messagePreview = text || (type === 'image' ? '📷 Image' : '📎 File');
 
-      // Update sender's conversation
       const senderDocId = senderType === 'customer' ? `customer_${senderId}` : `seller_${senderId}`;
       const senderConversationRef = doc(firestore, `allConversation/${senderDocId}/conversations`, conversationId);
       await updateDoc(senderConversationRef, {
@@ -124,8 +104,6 @@ export class ConversationService {
         updatedAt: now,
         isSeen: true
       });
-
-      // Update receiver's conversation
       const receiverId = senderType === 'customer' ? sellerId : customerId;
       const receiverType = senderType === 'customer' ? 'seller' : 'customer';
       const receiverDocId = receiverType === 'customer' ? `customer_${receiverId}` : `seller_${receiverId}`;
@@ -147,13 +125,10 @@ export class ConversationService {
       throw error;
     }
   }
-
-  // Helper method to ensure conversation exists for both participants
   private static async ensureConversationExists(conversationId: string, customerId: string, sellerId: string, initiatorType: 'customer' | 'seller'): Promise<void> {
     try {
       const now = Timestamp.now();
 
-      // Check and create customer conversation if needed
       const customerDocRef = doc(firestore, `allConversation/customer_${customerId}/conversations`, conversationId);
       const customerDoc = await getDoc(customerDocRef);
       if (!customerDoc.exists()) {
@@ -162,15 +137,13 @@ export class ConversationService {
           isSeen: initiatorType === 'customer',
           lastMessage: '',
           receiverId: sellerId,
-          receiverName: 'Seller', // Will be updated when we get seller info
+          receiverName: 'Seller',
           receiverAvatar: '',
           type: 'seller',
           updatedAt: now,
           unseenCount: initiatorType === 'customer' ? 0 : 1
         } as ConversationMetadata);
       }
-
-      // Check and create seller conversation if needed
       const sellerDocRef = doc(firestore, `allConversation/seller_${sellerId}/conversations`, conversationId);
       const sellerDoc = await getDoc(sellerDocRef);
       if (!sellerDoc.exists()) {
@@ -179,7 +152,7 @@ export class ConversationService {
           isSeen: initiatorType === 'seller',
           lastMessage: '',
           receiverId: customerId,
-          receiverName: 'Customer', // Will be updated when we get customer info
+          receiverName: 'Customer',
           receiverAvatar: '',
           type: 'customer',
           updatedAt: now,
@@ -192,7 +165,6 @@ export class ConversationService {
     }
   }
 
-  // Get conversations list (real-time)
   static subscribeToConversations(params: ConversationListParams, callback: (conversations: ConversationMetadata[]) => void): () => void {
     try {
       const { userId, userType, limit: pageLimit = 20 } = params;
@@ -216,8 +188,6 @@ export class ConversationService {
       return () => {};
     }
   }
-
-  // Get messages list (real-time with pagination)
   static subscribeToMessages(params: MessagesListParams, callback: (messages: Message[], hasMore: boolean) => void, lastVisible?: QueryDocumentSnapshot<DocumentData>): () => void {
     try {
       const { conversationId, limit: pageLimit = 20 } = params;
@@ -238,11 +208,7 @@ export class ConversationService {
             ...doc.data()
           } as Message);
         });
-
-        // Reverse to show newest messages at bottom
         messages.reverse();
-
-        // Check if there are more messages
         const hasMore = snapshot.docs.length === pageLimit;
 
         callback(messages, hasMore);
@@ -253,7 +219,6 @@ export class ConversationService {
     }
   }
 
-  // Mark conversation as seen
   static async markConversationAsSeen(userId: string, conversationId: string, userType: 'customer' | 'seller'): Promise<void> {
     try {
       const docId = `${userType}_${userId}`;
@@ -267,8 +232,6 @@ export class ConversationService {
       throw error;
     }
   }
-
-  // Get conversation metadata
   static async getConversationMetadata(userId: string, conversationId: string, userType: 'customer' | 'seller'): Promise<ConversationMetadata | null> {
     try {
       const docId = `${userType}_${userId}`;
@@ -285,8 +248,6 @@ export class ConversationService {
       return null;
     }
   }
-
-  // Get older messages for pagination
   static async getOlderMessages(params: { conversationId: string; beforeMessageId?: string; limit?: number }): Promise<Message[]> {
     try {
       const { conversationId, beforeMessageId, limit: pageLimit = 30 } = params;
@@ -295,7 +256,6 @@ export class ConversationService {
       let q = query(messagesRef, orderBy('createdAt', 'desc'), limit(pageLimit));
 
       if (beforeMessageId) {
-        // Get the document reference for the beforeMessageId to use as cursor
         const beforeMessageDoc = doc(messagesRef, beforeMessageId);
         const beforeMessageSnap = await getDoc(beforeMessageDoc);
         if (beforeMessageSnap.exists()) {
@@ -313,7 +273,6 @@ export class ConversationService {
         } as Message);
       });
 
-      // Reverse to show in chronological order (oldest first)
       return messages.reverse();
     } catch (error) {
       console.error('Error getting older messages:', error);

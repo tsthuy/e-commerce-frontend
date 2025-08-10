@@ -140,6 +140,7 @@ export const UserActions = memo(() => {
 
 export const NavItems = memo(({ className, isMobile = false }: { className?: string; isMobile?: boolean }) => {
   const { pathname } = useLocation();
+  const { t } = useTranslation();
 
   return (
     <ul className={cn('flex flex-shrink-0 items-center gap-x-6', className)}>
@@ -154,7 +155,7 @@ export const NavItems = memo(({ className, isMobile = false }: { className?: str
                     '!text-custom-green underline underline-offset-4': href === PUBLIC_ROUTES.index.path() ? pathname === href : pathname.includes(href)
                   })}
                 >
-                  {label}
+                  {t(label)}
                 </Link>
               </SheetClose>
             ) : (
@@ -164,7 +165,7 @@ export const NavItems = memo(({ className, isMobile = false }: { className?: str
                   '!text-custom-green underline underline-offset-4': href === PUBLIC_ROUTES.index.path() ? pathname === href : pathname.includes(href)
                 })}
               >
-                {label}
+                {t(label)}
               </Link>
             )}
           </li>

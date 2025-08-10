@@ -37,8 +37,6 @@ export const OrderStatusDropdown = memo<OrderStatusDropdownProps>(({ currentStat
   const [transitions, setTransitions] = useState<OrderStatusTransition[]>([]);
 
   const currentStatusConfig = getStatusConfig(currentStatus);
-
-  // Fetch available transitions if not provided
   useEffect(() => {
     if (providedTransitions) {
       setTransitions(providedTransitions);
@@ -63,7 +61,6 @@ export const OrderStatusDropdown = memo<OrderStatusDropdownProps>(({ currentStat
     setIsOpen(false);
   };
 
-  // If no available transitions, just show current status
   if (!transitions || transitions.length === 0) {
     return <Badge color={currentStatusConfig.color as AnyType}>{currentStatusConfig.label}</Badge>;
   }

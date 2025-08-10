@@ -53,7 +53,6 @@ export const productApi = {
     return httpBase.get<ApiResponse<ProductDetailResponseType>>(API_URLS.product.detail(productId), config);
   },
 
-  // Keep old methods for backward compatibility
   getAllPaged({
     page = 0,
     size = 10,
@@ -108,7 +107,6 @@ export const productApi = {
     return httpBase.post<ProductPayload, ApiResponse<void>>(API_URLS.product.create, data, config);
   },
 
-  // Legacy detail method for backward compatibility
   detailLegacy({ productId, config }: ApiParams & { productId: string }): AxiosPromise<ApiResponse<ProductDetailResponseType>> {
     return httpBase.get(API_URLS.product.detail(productId), config);
   },
@@ -123,6 +121,19 @@ export const productApi = {
 
   semanticSearch({ data, config }: { data: { query: string; page?: number; size?: number }; config?: AxiosRequestConfig }): AxiosPromise<ApiResponse<ProductListResponse>> {
     return httpBase.get<ApiResponse<ProductListResponse>>('/api/products/semantic-search', {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
+  },
+
+  /**
+   * Get personalized product recommendations
+   */
+  recommendations({ data, config }: { data: { page?: number; size?: number }; config?: AxiosRequestConfig }): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>('/api/products/recommendations', {
       ...config,
       params: {
         ...data,
