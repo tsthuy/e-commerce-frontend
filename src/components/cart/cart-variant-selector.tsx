@@ -25,8 +25,6 @@ export const CartVariantSelector = ({ item, onVariantChange }: CartVariantSelect
     },
     [item.id, onVariantChange]
   );
-
-  // Hiển thị loading state
   if (isLoading) {
     return (
       <div className="space-y-2">
@@ -36,7 +34,6 @@ export const CartVariantSelector = ({ item, onVariantChange }: CartVariantSelect
     );
   }
 
-  // Nếu không có variants hoặc chỉ có 1 variant
   if (!product?.variants || product.variants.length <= 1) {
     return (
       <div className="space-y-2">
@@ -48,7 +45,6 @@ export const CartVariantSelector = ({ item, onVariantChange }: CartVariantSelect
 
   const currentVariant = product.variants.find((v: AnyType) => v.id === item.variantId);
 
-  // Nếu item không có variantId nhưng product có variants, có thể là do backend chưa assign variant
   const shouldShowSelector = product.variants.length > 1;
   const effectiveVariantId = item.variantId || (product.variants.length > 0 ? product.variants[0].id : '');
 
@@ -62,11 +58,9 @@ export const CartVariantSelector = ({ item, onVariantChange }: CartVariantSelect
           </SelectTrigger>
           <SelectContent>
             {product.variants.map((variant: AnyType) => {
-              // Tạo tên variant từ attributes
               const variantName = variant.attributes.map((attr: AnyType) => attr.attributeValueLabel).join(', ');
               const isOutOfStock = variant.stock <= 0;
 
-              // Get effective prices for comparison
               const productEffectivePrice = product.salePrice || product.price;
               const variantEffectivePrice = variant.salePrice || variant.price;
               const showVariantPrice = variantEffectivePrice !== productEffectivePrice;
@@ -91,7 +85,6 @@ export const CartVariantSelector = ({ item, onVariantChange }: CartVariantSelect
         </div>
       )}
 
-      {/* Hiển thị thông tin variant hiện tại */}
       {currentVariant && (
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>

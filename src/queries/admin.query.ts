@@ -36,8 +36,6 @@ export const adminQueries = createQueryKeys('admin', {
       return data.result;
     }
   }),
-
-  // Admin Products Queries
   getAllProducts: (params: AdminProductListParams) => ({
     queryKey: ['products', params],
     queryFn: async (): Promise<AdminProductListResponse> => {
@@ -54,7 +52,6 @@ export const adminQueries = createQueryKeys('admin', {
     }
   }),
 
-  // Admin Orders Queries
   getAllOrders: (params: AdminOrderListParams) => ({
     queryKey: ['orders', params],
     queryFn: async (): Promise<AdminOrderListResponse> => {

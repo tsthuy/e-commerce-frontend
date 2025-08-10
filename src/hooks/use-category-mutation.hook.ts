@@ -16,7 +16,7 @@ export function useCategoryCreate(): UseMutationResult<ApiResponse<CategoryRespo
     mutationFn: (data: CategoryRequest) => categoryApi.create({ data }).then((res) => res.data),
     onSuccess: () => {
       toast.success('Category created successfully!');
-      // Invalidate and refetch category list
+
       queryClient.invalidateQueries({ queryKey: queries.category.list._def });
     },
     onError: (error) => {
@@ -32,7 +32,7 @@ export function useCategoryUpdate(): UseMutationResult<ApiResponse<CategoryRespo
     mutationFn: ({ categoryId, data }: { categoryId: string; data: CategoryRequest }) => categoryApi.update({ categoryId, data }).then((res) => res.data),
     onSuccess: () => {
       toast.success('Category updated successfully!');
-      // Invalidate and refetch category list
+
       queryClient.invalidateQueries({ queryKey: queries.category.list._def });
     },
     onError: (error) => {
@@ -48,7 +48,7 @@ export function useCategoryDelete(): UseMutationResult<ApiResponse<void>, Error,
     mutationFn: (categoryId: string) => categoryApi.delete({ categoryId }).then((res) => res.data),
     onSuccess: () => {
       toast.success('Category deleted successfully!');
-      // Invalidate and refetch category list
+
       queryClient.invalidateQueries({ queryKey: queries.category.list._def });
     },
     onError: (error) => {

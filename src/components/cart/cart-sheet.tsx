@@ -111,22 +111,16 @@ export const CartSheet = ({ children }: CartSheetProps): JSX.Element => {
                     <Card key={item.id} className="overflow-hidden">
                       <CardContent className="p-4">
                         <div className="flex gap-4">
-                          {/* Ảnh sản phẩm */}
                           <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
                             <img alt={item.product.name} className="h-full w-full object-cover" src={item.variantImage || item.product.defaultImageUrl || DEFAULT_IMG_AVATAR} />
                           </div>
 
                           <div className="flex-1 space-y-3">
-                            {/* Tên sản phẩm */}
                             <div className="space-y-1">
                               <h4 className="line-clamp-2 font-medium leading-tight">{item.product.name}</h4>
                               <p className="text-sm text-muted-foreground">Người bán: {item.product.sellerName} </p>
                             </div>
-
-                            {/* Variant selector - cho phép đổi variant */}
                             <CartVariantSelector item={item} onVariantChange={handleVariantChange} />
-
-                            {/* Giá */}
                             <div className="flex items-center gap-2">
                               <span className="font-semibold text-primary">{formatPrice(item.price)}</span>
                               {item.product.salePrice && item.product.salePrice < item.product.price && (
@@ -134,7 +128,6 @@ export const CartSheet = ({ children }: CartSheetProps): JSX.Element => {
                               )}
                             </div>
 
-                            {/* Quantity controls và remove button */}
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-1">
                                 <Button
@@ -168,8 +161,6 @@ export const CartSheet = ({ children }: CartSheetProps): JSX.Element => {
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
-
-                            {/* Stock warning */}
                             {!item.variantAvailable && (
                               <div className="flex items-center gap-2 rounded-md bg-destructive/10 p-2">
                                 <X className="h-4 w-4 text-destructive" />
@@ -180,7 +171,6 @@ export const CartSheet = ({ children }: CartSheetProps): JSX.Element => {
                               </div>
                             )}
 
-                            {/* Subtotal */}
                             <div className="flex justify-between text-sm">
                               <span>{t('Common.subtotal')}:</span>
                               <span className="font-medium">{formatPrice(item.subtotal)}</span>

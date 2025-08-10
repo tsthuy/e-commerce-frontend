@@ -5,7 +5,6 @@ import type { ApiResponse, OrderListResponse, OrderPaginationParams, OrderRespon
 import { orderApi } from '~/services';
 
 export const orderQueries = createQueryKeys('order', {
-  // Customer order queries
   customerList: (params?: OrderPaginationParams) => ({
     queryKey: ['customer-list', params],
     queryFn: async (): Promise<ApiResponse<OrderListResponse>> => {
@@ -22,7 +21,6 @@ export const orderQueries = createQueryKeys('order', {
     }
   }),
 
-  // Seller order queries
   sellerList: (params?: OrderPaginationParams) => ({
     queryKey: ['seller-list', params],
     queryFn: async (): Promise<ApiResponse<OrderListResponse>> => {

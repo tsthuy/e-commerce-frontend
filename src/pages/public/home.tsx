@@ -17,7 +17,6 @@ export const HomePage = memo(() => {
         <Sponsor />
         <Contact />
       </Container>
-      {/* UI chat AI will be placed here with fixed position bottom right */}
     </Helmet>
   );
 });

@@ -15,6 +15,8 @@ import { SpinnerSquare } from '~/components/common';
 import { ProductCard } from '~/components/product/product-card';
 import { Button, Input } from '~/components/ui';
 
+import { PUBLIC_ROUTES } from '~/routes';
+
 import { useCategoryList } from '~/hooks/use-category.hook';
 import { usePublicSellerProducts } from '~/hooks/use-public-seller-products';
 import { usePublicSellerProfile } from '~/hooks/use-public-seller-profile';
@@ -96,15 +98,12 @@ export const SellerPreviewPage = memo(() => {
 
   return (
     <div className="mx-auto w-full max-w-[calc(1280px+4px*4*2)] px-4 py-8">
-      {/* Seller Info Header */}
       <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
         <div className="flex flex-col items-start gap-6 md:flex-row md:items-center">
-          {/* Shop Avatar */}
           <div className="flex-shrink-0">
             <img alt={seller.shopName} className="h-20 w-20 rounded-full border-4 border-primary/20 object-cover md:h-24 md:w-24" src={seller.shopAvatar?.url || DEFAULT_IMG_SAMPLE} />
           </div>
 
-          {/* Shop Info */}
           <div className="flex-1">
             <h1 className="mb-2 text-2xl font-bold text-gray-800 md:text-3xl">{seller.shopName}</h1>
 
@@ -115,7 +114,7 @@ export const SellerPreviewPage = memo(() => {
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
                   <span>
-                    {t('Joined')}{' '}
+                    {t('translation.Joined')}{' '}
                     {new Date(seller.createdAt).toLocaleDateString('vi-VN', {
                       year: 'numeric',
                       month: 'long',
@@ -127,31 +126,30 @@ export const SellerPreviewPage = memo(() => {
               <div className="flex items-center gap-1">
                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                 <span className="font-medium">{seller.averageRating ? seller.averageRating.toFixed(1) : '-'}</span>
-                <span className="text-gray-500">({seller.reviewCount || 0} reviews)</span>
+                <span className="text-gray-500">
+                  ({seller.reviewCount || 0} {''}
+                  {t('translation.Reviews')})
+                </span>
               </div>
             </div>
           </div>
-
-          {/* Chat Button */}
 
           {customerResponse && (
             <div className="flex-shrink-0">
               <Button className="flex items-center gap-2" onClick={handleChatWithSeller}>
                 <MessageCircle className="h-4 w-4" />
-                {t('Chat with seller')}
+                {t('translation.Chat with seller')}
               </Button>
             </div>
           )}
         </div>
-
-        {/* Shop Stats */}
         <div className="mt-6 grid grid-cols-2 gap-4 border-t border-gray-200 pt-6 md:grid-cols-3">
           <div className="text-center">
             <div className="mb-2 flex items-center justify-center">
               <Package className="h-5 w-5 text-primary" />
             </div>
             <div className="text-xl font-bold text-gray-800">{seller.totalProducts || 0}</div>
-            <div className="text-sm text-gray-600">{t('common:products')}</div>
+            <div className="text-sm text-gray-600">{t('Sidebar.products')}</div>
           </div>
 
           <div className="text-center">
@@ -159,7 +157,7 @@ export const SellerPreviewPage = memo(() => {
               <Star className="h-5 w-5 text-yellow-400" />
             </div>
             <div className="text-xl font-bold text-gray-800">{seller.averageRating ? seller.averageRating.toFixed(1) : '-'}</div>
-            <div className="text-sm text-gray-600">{t('Rating')}</div>
+            <div className="text-sm text-gray-600">{t('translation.Rating')}</div>
           </div>
 
           <div className="col-span-2 text-center md:col-span-1">
@@ -167,17 +165,17 @@ export const SellerPreviewPage = memo(() => {
               <Calendar className="h-5 w-5 text-primary" />
             </div>
             <div className="text-xl font-bold text-gray-800">{seller.createdAt ? new Date(seller.createdAt).getFullYear() : '-'}</div>
-            <div className="text-sm text-gray-600">{t('Year Joined')}</div>
+            <div className="text-sm text-gray-600">{t('translation.Year Joined')}</div>
           </div>
         </div>
       </div>
-      {/* Filters */}
+
       <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
         <form onSubmit={handleSearchSubmit}>
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
             <div className="flex-1">
               <div className="relative">
-                <Input className="w-full pl-10" placeholder={t('Search products...')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <Input className="w-full pl-10" placeholder={t('Navigation.searchProducts')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
               </div>
             </div>
@@ -187,7 +185,7 @@ export const SellerPreviewPage = memo(() => {
                 value={selectedCategoryId}
                 onChange={(e) => handleCategoryChange(e.target.value)}
               >
-                <option value="">{t('All Categories')}</option>
+                <option value="">{t('Admin.categories')}</option>
                 {categories.map((category: Category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
@@ -195,15 +193,15 @@ export const SellerPreviewPage = memo(() => {
                 ))}
               </select>
               <Button className="whitespace-nowrap" type="submit">
-                {t('common:search')}
+                {t('Common.search')}
               </Button>
             </div>
           </div>
         </form>
       </div>
-      {/* Products Grid */}
+
       <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
-        <h2 className="mb-4 text-xl font-bold text-gray-800">{t('Products')}</h2>
+        <h2 className="mb-4 text-xl font-bold text-gray-800">{t('Sidebar.Products')}</h2>
 
         {isLoadingProducts ? (
           <div className="flex h-64 items-center justify-center">
@@ -215,6 +213,7 @@ export const SellerPreviewPage = memo(() => {
               {products.map((product: ProductResponse) => (
                 <ProductCard
                   key={product.id}
+                  linkTo={PUBLIC_ROUTES.productDetail.path(product.id)}
                   product={{
                     id: product.id,
                     name: product.name,
@@ -234,7 +233,6 @@ export const SellerPreviewPage = memo(() => {
               ))}
             </div>
 
-            {/* Pagination */}
             {totalPages > 1 && (
               <div className="mt-6 flex justify-center">
                 <div className="flex gap-2">

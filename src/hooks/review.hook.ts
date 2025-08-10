@@ -44,21 +44,16 @@ export const useCreateReview = (): ReturnType<typeof useMutation<ProductReviewRe
     },
     onSuccess: (_data: ProductReviewResponse, variables: CreateReviewRequest) => {
       toast.success('Review submitted successfully!');
-
-      // Invalidate and refetch product reviews
       queryClient.invalidateQueries({
         queryKey: reviewQueries.getProductReviews._def
       });
 
-      // Specifically invalidate reviews for this product
       queryClient.invalidateQueries({
         queryKey: reviewQueries.getProductReviews({
           productId: variables.productId,
           data: { productId: variables.productId, page: 0, size: 10 }
         }).queryKey
       });
-
-      // Invalidate review existence check for this product/order
       queryClient.invalidateQueries({
         queryKey: reviewQueries.checkExists({
           data: {
@@ -68,7 +63,6 @@ export const useCreateReview = (): ReturnType<typeof useMutation<ProductReviewRe
         }).queryKey
       });
 
-      // Invalidate product details to update average rating
       queryClient.invalidateQueries({
         queryKey: ['products', 'detail', variables.productId]
       });

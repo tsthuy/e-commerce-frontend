@@ -8,7 +8,7 @@ import type { DataForm } from '~/types';
 
 import { profileApi } from '~/services';
 
-import { useCustomForm, useProfile } from '~/hooks';
+import { useCustomForm, useProfile, useTranslation } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
 
@@ -17,6 +17,7 @@ import { CustomCheckbox, CustomForm, CustomInput, CustomInputNumber, CustomSelec
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, ScrollArea } from '~/components/ui';
 
 export const CreateAddressForm = memo(() => {
+  const { t } = useTranslation();
   const { data: profile, refetch } = useProfile({});
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -39,31 +40,31 @@ export const CreateAddressForm = memo(() => {
     () =>
       z.object({
         country: z.string().min(1, {
-          message: validates.required.message('Country')
+          message: validates.required.message(t('Common.country'))
         }),
         city: z.string().min(1, {
-          message: validates.required.message('City')
+          message: validates.required.message(t('Common.city'))
         }),
         address: z.string().min(1, {
-          message: validates.required.message('Address')
+          message: validates.required.message(t('Common.address'))
         }),
         recipientPhone: z.string().min(1, {
-          message: validates.required.message('Phone')
+          message: validates.required.message(t('Common.recipientPhone'))
         }),
         zipCode: z.string().min(1, {
-          message: validates.required.message('Zip Code')
+          message: validates.required.message(t('Common.zipCode'))
         }),
         addressType:
           availableAddressTypes.length > 0
             ? z.enum(availableAddressTypes.map((type) => type.value) as [string, ...string[]], {
-                message: 'Please select a valid address type'
+                message: t('Common.pleaseSelectValidAddressType')
               })
             : z.enum(['HOME', 'WORK', 'OTHER'], {
-                message: 'Please select a valid address type'
+                message: t('Common.pleaseSelectValidAddressType')
               }),
         isDefault: z.boolean()
       }),
-    []
+    [availableAddressTypes, t]
   );
   const defaultValues = useMemo(
     () => ({
@@ -75,7 +76,7 @@ export const CreateAddressForm = memo(() => {
       addressType: defaultAddressType,
       isDefault: false
     }),
-    []
+    [profile?.phone, defaultAddressType]
   );
 
   const { form } = useCustomForm(schema, { defaultValues });
@@ -91,7 +92,7 @@ export const CreateAddressForm = memo(() => {
       const response = await profileApi.createAddress({ data: { address, recipientPhone, addressType, city, country, isDefault, zipCode } });
 
       if (response.status == 201) {
-        toast.success('Address saved successfully');
+        toast.success(t('Common.addressSavedSuccessfully'));
         form.reset();
         refetch();
         setOpen(false);
@@ -113,26 +114,26 @@ export const CreateAddressForm = memo(() => {
 
       <DialogContent className="max-h-[90vh] max-w-[400px] overflow-hidden rounded-md sm:max-w-[50%]">
         <DialogHeader>
-          <DialogTitle className="text-center text-xl uppercase">Add New Address</DialogTitle>
-          <DialogDescription className="text-center text-primary">Make it easier when you shopping!</DialogDescription>
+          <DialogTitle className="text-center text-xl uppercase">{t('Common.addNewAddressTitle')}</DialogTitle>
+          <DialogDescription className="text-center text-primary">{t('Common.addNewAddressDescription')}</DialogDescription>
         </DialogHeader>
 
         <div className="flex h-full max-h-[calc(90vh-180px)] flex-col">
           <ScrollArea className="flex-grow pr-4">
             <CustomForm className="flex flex-col space-y-4" provider={form} onSubmit={handleSaveAddress}>
-              <CustomInput disabled={isLoading} label="Country" name="country" startIcon={Flag} />
-              <CustomInput disabled={isLoading} label="City" name="city" startIcon={Building2} />
-              <CustomInput disabled={isLoading} label="Address" name="address" startIcon={MapPinHouse} />
-              <CustomInput disabled={isLoading} label="Recipient Phone" name="recipientPhone" startIcon={Phone} />
-              <CustomInputNumber disabled={isLoading} label="Zip Code" name="zipCode" startIcon={GlobeLock} />
-              <CustomSelect disabled={isLoading} label="Address Type" name="addressType" options={availableAddressTypes} placeholder="Select address type" />
+              <CustomInput disabled={isLoading} label={t('Common.country')} name="country" startIcon={Flag} />
+              <CustomInput disabled={isLoading} label={t('Common.city')} name="city" startIcon={Building2} />
+              <CustomInput disabled={isLoading} label={t('Common.address')} name="address" startIcon={MapPinHouse} />
+              <CustomInput disabled={isLoading} label={t('Common.recipientPhone')} name="recipientPhone" startIcon={Phone} />
+              <CustomInputNumber disabled={isLoading} label={t('Common.zipCode')} name="zipCode" startIcon={GlobeLock} />
+              <CustomSelect disabled={isLoading} label={t('Common.addressType')} name="addressType" options={availableAddressTypes} placeholder={t('Common.selectAddressType')} />
               <div className="flex items-center space-x-2">
-                <CustomCheckbox disabled={isLoading} label="Make this my default address" name="isDefault" />
+                <CustomCheckbox disabled={isLoading} label={t('Common.makeDefaultAddress')} name="isDefault" />
               </div>
 
               <DialogFooter className="pt-4">
                 <Button className="w-full hover:bg-custom-primary-bg-hover hover:text-black" disabled={isLoading} isLoading={isLoading} type="submit">
-                  Save Address
+                  {t('Common.saveAddress')}
                 </Button>
               </DialogFooter>
             </CustomForm>

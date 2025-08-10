@@ -16,14 +16,12 @@ interface ChatActions {
 }
 
 export const useChatStore = create<ChatState & ChatActions>((set) => ({
-  // State
   isOpen: false,
   messages: [],
   isLoading: false,
   sessionId: null,
   error: null,
 
-  // Actions
   toggleChat: () => set((state) => ({ isOpen: !state.isOpen })),
 
   closeChat: () => set({ isOpen: false }),

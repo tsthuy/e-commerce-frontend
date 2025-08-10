@@ -8,7 +8,7 @@ import { DEFAULT_IMG_AVATAR } from '~/constants';
 
 import type { ConversationMetadata, Message } from '~/types';
 
-import { useSellerProfile } from '~/hooks';
+import { useSellerProfile, useTranslation } from '~/hooks';
 
 import { formatRelativeTime } from '~/utils';
 
@@ -25,9 +25,10 @@ interface ConversationPageParams {
 }
 
 export const ConversationPage = memo(() => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { conversationId } = useParams<ConversationPageParams>();
-  // const { data: profileResponse } = useProfile({ enabled: true });
+
   const { uploadFiles } = useCloudinaryUpload();
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -40,8 +41,6 @@ export const ConversationPage = memo(() => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const virtuosoRef = useRef<React.ComponentRef<typeof Virtuoso>>(null);
-
-  // Determine user type from URL
   const userType = window.location.pathname.includes('/seller/') ? 'seller' : 'customer';
 
   const customerProfile = useProfile({ enabled: userType === 'customer' });
@@ -51,10 +50,7 @@ export const ConversationPage = memo(() => {
     return userType === 'seller' ? sellerProfile.data : customerProfile.data;
   }, [userType, customerProfile.data, sellerProfile.data]);
 
-  // Get receiver type (opposite of current user)
   const receiverType = userType === 'seller' ? 'customer' : 'seller';
-
-  // Get receiver info for better display
   const { data: receiverInfo } = useInfoUserForChat({
     id: conversationMeta?.receiverId || '',
     type: receiverType,
@@ -81,7 +77,6 @@ export const ConversationPage = memo(() => {
         if (olderMessages.length > 0) {
           setMessages((prev) => [...olderMessages, ...prev]);
 
-          // Maintain scroll position after adding older messages
           setTimeout(() => {
             if (virtuosoRef.current) {
               virtuosoRef.current.scrollToIndex({
@@ -169,19 +164,15 @@ export const ConversationPage = memo(() => {
       if (!profileResponse?.id) return;
 
       try {
-        // Subscribe to messages
         unsubscribeMessages = ConversationService.subscribeToMessages({ conversationId, limit: 16 }, (newMessages) => {
           setMessages(newMessages);
           setLoading(false);
         });
 
-        // Get conversation metadata
         const metadata = await ConversationService.getConversationMetadata(profileResponse.id, conversationId, userType as 'customer' | 'seller');
         if (metadata) {
           setConversationMeta(metadata);
         }
-
-        // Mark conversation as seen
         await ConversationService.markConversationAsSeen(profileResponse.id, conversationId, userType as 'customer' | 'seller');
       } catch (error) {
         console.error('Error initializing conversation:', error);
@@ -195,15 +186,11 @@ export const ConversationPage = memo(() => {
       unsubscribeMessages?.();
     };
   }, [conversationId, profileResponse?.id]);
-
-  // Scroll to bottom when new messages arrive
   useEffect(() => {
     if (messages.length > 0 && virtuosoRef.current) {
       virtuosoRef.current.scrollToIndex({ index: messages.length - 1, behavior: 'smooth' });
     }
   }, [messages.length]);
-
-  // Remove scrollToBottom effect as Virtuoso handles following output automatically
 
   const formatMessageTime = (timestamp: unknown): string => {
     if (!timestamp) return '';
@@ -212,13 +199,10 @@ export const ConversationPage = memo(() => {
       let date: Date;
 
       if (typeof timestamp === 'object' && timestamp !== null && 'toDate' in timestamp) {
-        // Firestore Timestamp
         date = (timestamp as { toDate: () => Date }).toDate();
       } else if (typeof timestamp === 'object' && timestamp !== null && 'seconds' in timestamp) {
-        // Firestore Timestamp object
         date = new Date((timestamp as { seconds: number }).seconds * 1000);
       } else if (typeof timestamp === 'string' || typeof timestamp === 'number') {
-        // ISO string or number
         date = new Date(timestamp);
       } else {
         return '';
@@ -233,13 +217,13 @@ export const ConversationPage = memo(() => {
   if (loading) {
     return (
       <Container>
-        <Helmet title="Loading conversation...">
-          <title>Loading conversation...</title>
+        <Helmet title={t('Conversation.loadingConversation')}>
+          <title>{t('Conversation.loadingConversation')}</title>
         </Helmet>
         <div className="flex h-96 items-center justify-center">
           <div className="text-center">
             <div className="mb-2 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            <p className="text-gray-600">Loading conversation...</p>
+            <p className="text-gray-600">{t('Conversation.loadingConversation')}</p>
           </div>
         </div>
       </Container>
@@ -248,12 +232,13 @@ export const ConversationPage = memo(() => {
 
   return (
     <Container>
-      <Helmet title={`Chat with ${conversationMeta?.receiverName || 'User'}`}>
-        <title>Chat with {conversationMeta?.receiverName || 'User'}</title>
+      <Helmet title={`${t('Conversation.chatWith')} ${conversationMeta?.receiverName || t('Conversation.user')}`}>
+        <title>
+          {t('Conversation.chatWith')} {conversationMeta?.receiverName || t('Conversation.user')}
+        </title>
       </Helmet>
 
       <div className="mx-auto max-w-4xl">
-        {/* Header */}
         <div className="mb-4 flex items-center gap-3 border-b pb-4">
           <Button size="sm" variant="ghost" onClick={() => history.goBack()}>
             <ArrowLeft className="h-4 w-4" />
@@ -272,15 +257,15 @@ export const ConversationPage = memo(() => {
               )}
             </Avatar>
             <div>
-              <h2 className="font-semibold text-gray-900">{receiverInfo?.name || conversationMeta?.receiverName || 'User'}</h2>
+              <h2 className="font-semibold text-gray-900">{receiverInfo?.name || conversationMeta?.receiverName || t('Conversation.user')}</h2>
             </div>
           </div>
         </div>
-        {/* Messages */}
+
         <div className="mb-4 h-[calc(100vh-250px)] overflow-hidden rounded-lg border bg-gray-50">
           {messages.length === 0 ? (
             <div className="flex h-full items-center justify-center text-gray-500">
-              <p>No messages yet. Start the conversation!</p>
+              <p>{t('Conversation.noMessagesYet')}</p>
             </div>
           ) : (
             <Virtuoso
@@ -295,7 +280,7 @@ export const ConversationPage = memo(() => {
                     <div className={`max-w-[70%] rounded-lg px-4 py-2 ${isMyMessage(message) ? 'bg-primary text-white' : 'bg-gray-100 text-gray-900'}`}>
                       {message.type === 'image' && message.imageUrl && (
                         <div className="mb-2">
-                          <img alt="Uploaded content" className="max-h-64 rounded object-cover" src={message.imageUrl} />
+                          <img alt={t('Conversation.uploadedContent')} className="max-h-64 rounded object-cover" src={message.imageUrl} />
                         </div>
                       )}
                       {message.text && <p className="whitespace-pre-wrap">{message.text}</p>}
@@ -308,7 +293,7 @@ export const ConversationPage = memo(() => {
             />
           )}
         </div>
-        {/* Input */}
+
         <div className="flex gap-2">
           <div className="flex gap-2">
             <Button disabled={uploading} size="sm" type="button" variant="ghost" onClick={() => fileInputRef.current?.click()}>
@@ -320,7 +305,7 @@ export const ConversationPage = memo(() => {
           <div className="flex flex-1 gap-2">
             <Textarea
               className="max-h-32 min-h-[40px] resize-none"
-              placeholder="Type your message..."
+              placeholder={t('Conversation.typeYourMessage')}
               rows={1}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}

@@ -166,7 +166,17 @@
     "logoutSuccess": "Đăng xuất thành công",
     "username": "Tên đăng nhập",
     "AdminActions": "Hành động",
-    "status": "Trạng Thái"
+    "status": "Trạng Thái",
+    "recipientPhone": "Số điện thoại người nhận",
+    "zipCode": "Mã bưu chính",
+    "addressType": "Loại địa chỉ",
+    "selectAddressType": "Chọn loại địa chỉ",
+    "makeDefaultAddress": "Đặt làm địa chỉ mặc định",
+    "saveAddress": "Lưu địa chỉ",
+    "addNewAddressTitle": "Thêm địa chỉ mới",
+    "addNewAddressDescription": "Giúp bạn mua sắm dễ dàng hơn!",
+    "addressSavedSuccessfully": "Lưu địa chỉ thành công",
+    "pleaseSelectValidAddressType": "Vui lòng chọn loại địa chỉ hợp lệ"
   },
   "Navigation": {
     "dashboard": "Quản lý Shop",
@@ -179,8 +189,11 @@
     "searchProducts": "Tìm kiếm sản phẩm"
   },
   "Product": {
+    "basicInfo": "Thông tin cơ bản",
     "allProducts": "Tất cả sản phẩm",
     "showingResults": "Hiển thị {{current}} trong tổng số {{total}} kết quả",
+    "youSave": "Bạn tiết kiệm",
+    "stock": "Trong kho",
     "categories": {
       "laptop": "Laptop",
       "smartphone": "Điện thoại thông minh",
@@ -246,6 +259,7 @@
     },
     "stockRemaining": "Còn lại",
     "outOfStock": "Hết hàng",
+    "available": "Có sẵn",
     "products": "sản phẩm",
     "priceMustBeGreaterThan0": "Giá phải lớn hơn 0",
     "stockMustBePositive": "Số lượng tồn kho phải từ 0 trở lên",
@@ -282,7 +296,28 @@
     "productRating": "Điểm đánh giá của sản phẩm",
     "productReviews": "Số lượng bình luận của sản phẩm",
     "variantDetails": "Chi tiết biến thể",
-    "product": "Sản Phẩm"
+    "product": "Sản Phẩm",
+    "variant": "Biến thể",
+    "price": "Giá",
+    "searchResults": "Kết quả tìm kiếm",
+    "semanticSearchActive": "Tìm kiếm AI đang hoạt động",
+    "searchSubtitle": "Kết quả tìm kiếm cho \"{{query}}\"",
+    "searchingWithAI": "Đang tìm kiếm bằng AI...",
+    "failedToLoad": "Không thể tải sản phẩm",
+    "noProducts": "Không tìm thấy sản phẩm nào",
+    "noCategoryProducts": "Không tìm thấy sản phẩm nào trong danh mục {{category}}",
+    "productCategory": "Doanh Mục",
+    "productStatus": "Trạng Thái",
+    "productDescription": "Mô tả",
+    "new": "Mới",
+    "off": "GIẢM"
+  },
+  "Reviews": {
+    "failedToLoadReviews": "Không thể tải đánh giá. Vui lòng thử lại.",
+    "noReviewsYet": "Chưa có đánh giá nào",
+    "beFirstToReview": "Hãy là người đầu tiên đánh giá sản phẩm này!",
+    "previous": "Trước",
+    "next": "Tiếp"
   },
   "Order": {
     "processing": "Đang xử lý",
@@ -321,7 +356,63 @@
     "totalOrdersCount": "{{count}} đơn hàng",
     "orderNotes": "Ghi chú",
     "images": "Image",
-    "searchOrdersPlaceholder": "Tìm kiếm bằng OrderId"
+    "searchOrdersPlaceholder": "Tìm kiếm bằng OrderId",
+    "confirmOrder": "Xác nhận đơn hàng",
+    "confirmOrderDescription": "Xác nhận đơn hàng này để tiến hành xử lý",
+    "cancelOrder": "Hủy đơn hàng",
+    "cancelOrderDescription": "Hủy đơn hàng này vĩnh viễn",
+    "startProcessing": "Bắt đầu xử lý",
+    "startProcessingDescription": "Bắt đầu xử lý đơn hàng này",
+    "shipOrder": "Giao hàng",
+    "shipOrderDescription": "Đánh dấu đơn hàng đã giao cho shipper",
+    "deliverOrder": "Giao thành công",
+    "deliverOrderDescription": "Đánh dấu đơn hàng đã giao cho khách hàng",
+    "completeOrder": "Hoàn thành đơn hàng",
+    "completeOrderDescription": "Đánh dấu đơn hàng đã hoàn thành",
+    "notAvailable": "Không có",
+    "searchOrdersLabel": "Tìm kiếm đơn hàng",
+    "searchOrdersHint": "Tìm kiếm theo mã đơn hàng, tên khách hàng hoặc email",
+    "exportExcel": "Xuất Excel",
+    "orderImage": "Đơn hàng"
+  },
+  "CustomerOrderDialog": {
+    "orderDetails": "Chi tiết đơn hàng",
+    "orderPlacedOn": "Đặt hàng vào",
+    "status": "Trạng thái",
+    "customer": "Khách hàng",
+    "seller": "Người bán",
+    "shippingAddress": "Địa chỉ giao hàng",
+    "items": "Sản phẩm",
+    "quantity": "SL",
+    "total": "Tổng cộng",
+    "orderTotal": "Tổng đơn hàng",
+    "subtotal": "Tạm tính",
+    "shippingFee": "Phí vận chuyển",
+    "tax": "Thuế",
+    "messageSeller": "Nhắn tin cho người bán",
+    "pending": "Chờ xử lý",
+    "confirmed": "Đã xác nhận",
+    "processing": "Đang xử lý",
+    "shipped": "Đã giao cho vận chuyển",
+    "delivered": "Đã giao hàng",
+    "completed": "Hoàn thành",
+    "cancelled": "Đã hủy",
+    "refunded": "Đã hoàn tiền"
+  },
+  "Conversation": {
+    "loadingConversation": "Đang tải cuộc trò chuyện...",
+    "chatWith": "Trò chuyện với",
+    "noMessagesYet": "Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!",
+    "typeYourMessage": "Nhập tin nhắn của bạn...",
+    "uploadedContent": "Nội dung đã tải lên",
+    "user": "Người dùng"
+  },
+  "Chat": {
+    "virtualAssistant": "Trợ lý ảo",
+    "closeChat": "Đóng chat",
+    "loadingChatHistory": "Đang tải lịch sử chat...",
+    "welcomeMessage": "Xin chào! Tôi là trợ lý ảo của cửa hàng. Tôi có thể giúp bạn tìm kiếm sản phẩm, so sánh giá cả và trả lời các câu hỏi về sản phẩm. Bạn cần hỗ trợ gì?",
+    "enterMessage": "Nhập tin nhắn của bạn..."
   },
   "Customer": {
     "myOrders": "Đơn hàng của tôi",
@@ -512,12 +603,16 @@
     "atLeastOneValidImageRequired": "Cần ít nhất một hình ảnh hợp lệ",
     "addProduct": "Thêm sản phẩm",
     "Category": {
-      "Image": "Image",
+      "Image": "Hình ảnh",
+      "NoImage": "Không có hình ảnh",
       "Name": "Tên",
       "Description": "Mô tả",
-      "Created": "Created At",
-      "Actions": "Actions",
-      "Delete": "Xóa"
+      "Created": "Ngày tạo",
+      "Actions": "Hành động",
+      "Delete": "Xóa",
+      "SearchCategories": "Tìm kiếm danh mục",
+      "ConfirmDelete": "Xác nhận xóa",
+      "DeleteConfirmMessage": "Bạn có chắc chắn muốn xóa danh mục \"{{name}}\"? Hành động này không thể hoàn tác."
     },
     "totalImages": "Tất cả ảnh của sản phẩm",
     "price": "Giá Bán",
@@ -583,10 +678,113 @@
     "Category": {
       "AddCategory": "Tạo Mới",
       "SearchByName": "Tìm kiếm bằng Name"
+    },
+    "dashboard": {
+      "title": "Bảng điều khiển Admin",
+      "subtitle": "Tổng quan hệ thống và thống kê",
+      "totalUsers": "Tổng người dùng",
+      "totalProducts": "Tổng sản phẩm",
+      "totalOrders": "Tổng đơn hàng",
+      "totalRevenue": "Tổng doanh thu",
+      "commissionEarned": "Hoa hồng kiếm được",
+      "activeSellers": "Người bán hoạt động",
+      "customers": "khách hàng",
+      "sellers": "người bán",
+      "activeProducts": "sản phẩm hoạt động",
+      "completed": "hoàn thành",
+      "cancelled": "đã hủy",
+      "avgOrder": "Đơn trung bình",
+      "successRate": "Tỷ lệ thành công",
+      "currentlyActive": "Hiện đang hoạt động",
+      "systemRevenueTrend": "Xu hướng doanh thu hệ thống",
+      "totalPlatformRevenue": "Tổng doanh thu nền tảng theo thời gian",
+      "ordersOverview": "Tổng quan đơn hàng",
+      "systemWideOrderCompletion": "Tỷ lệ hoàn thành đơn hàng toàn hệ thống",
+      "platformSuccessRate": "Tỷ lệ thành công nền tảng",
+      "ordersCompleted": "đơn hàng hoàn thành",
+      "averageOrderValue": "Giá trị đơn hàng trung bình",
+      "acrossAllCompletedOrders": "Trên tất cả đơn hàng đã hoàn thành",
+      "platformCommission": "Hoa hồng nền tảng",
+      "ofTotalRevenue": "của tổng doanh thu",
+      "of": "của",
+      "revenue": "Doanh thu",
+      "completedOrders": "Hoàn thành",
+      "cancelledOrders": "Đã hủy"
+    },
+    "products": {
+      "allProductsTitle": "Tất cả sản phẩm",
+      "allProductsSubtitle": "Quản lý và giám sát tất cả sản phẩm trong hệ thống",
+      "productName": "Tên sản phẩm",
+      "category": "Danh mục",
+      "seller": "Người bán",
+      "price": "Giá",
+      "stock": "Kho",
+      "status": "Trạng thái",
+      "created": "Được tạo",
+      "actions": "Hành động",
+      "searchProducts": "Tìm kiếm sản phẩm",
+      "searchByNameOrSku": "Tìm theo tên hoặc SKU...",
+      "published": "Đã xuất bản",
+      "deleteConfirmTitle": "Bạn có chắc chắn?",
+      "deleteConfirmDescription": "Điều này sẽ xóa vĩnh viễn sản phẩm. Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "deleteProduct": "Xóa sản phẩm",
+      "deleting": "Đang xóa...",
+      "sku": "SKU"
+    },
+    "customers": {
+      "allCustomersTitle": "Tất cả khách hàng",
+      "allCustomersSubtitle": "Xem và quản lý tài khoản khách hàng trên nền tảng",
+      "avatar": "Ảnh đại diện",
+      "fullName": "Họ và tên",
+      "phone": "Số điện thoại",
+      "accountType": "Loại tài khoản",
+      "totalOrders": "Tổng đơn hàng",
+      "totalSpent": "Tổng chi tiêu",
+      "joinedDate": "Ngày tham gia",
+      "actions": "Hành động",
+      "searchCustomers": "Tìm kiếm khách hàng",
+      "searchByNameEmailPhone": "Tìm theo tên, email, số điện thoại...",
+      "oauth": "OAuth",
+      "local": "Địa phương",
+      "deleteConfirmTitle": "Bạn có chắc chắn?",
+      "deleteConfirmDescription": "Điều này sẽ xóa vĩnh viễn tài khoản khách hàng của",
+      "deleteConfirmDescriptionSuffix": "Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "deleteCustomer": "Xóa khách hàng",
+      "deleting": "Đang xóa..."
+    },
+    "sellers": {
+      "sellersManagementTitle": "Quản lý người bán",
+      "sellersManagementSubtitle": "Quản lý và xem tất cả người bán trên nền tảng của bạn",
+      "avatar": "Ảnh đại diện",
+      "shopName": "Tên cửa hàng",
+      "phone": "Số điện thoại",
+      "accountType": "Loại tài khoản",
+      "totalProducts": "Tổng sản phẩm",
+      "totalOrders": "Tổng đơn hàng",
+      "availableAmount": "Số tiền khả dụng",
+      "joinedDate": "Ngày tham gia",
+      "actions": "Hành động",
+      "searchSellers": "Tìm kiếm người bán",
+      "searchByShopNameEmail": "Tìm theo tên cửa hàng, email...",
+      "oauth": "OAuth",
+      "local": "Địa phương",
+      "deleteConfirmTitle": "Bạn có chắc chắn?",
+      "deleteConfirmDescription": "Điều này sẽ xóa vĩnh viễn tài khoản người bán của",
+      "deleteConfirmDescriptionSuffix": "Hành động này không thể hoàn tác.",
+      "cancel": "Hủy",
+      "deleteSeller": "Xóa người bán",
+      "deleting": "Đang xóa..."
+    },
+    "orders": {
+      "allOrdersTitle": "Tất cả đơn hàng",
+      "allOrdersSubtitle": "Giám sát và quản lý tất cả đơn hàng trên nền tảng"
     }
   },
   "Category": {
-    "editCategory": "Chỉnh Sửa",
+    "allCategories": "Tất cả danh mục",
+    "editCategory": "Chỉnh sửa",
     "addNewCategory": "Thêm mới",
     "updateCategoryInformation": "Cập Nhật",
     "createNewCategory": "Tạo Mới",
@@ -600,5 +798,83 @@
     "selectImage": "Chọn Image",
     "createCategory": "Tạo Mới",
     "updateCategory": "Cập Nhật"
+  },
+  "Home": {
+    "recommendedForYou": "Đề xuất cho bạn",
+    "recommendedDescription": "Dựa trên hành vi mua sắm và sở thích của bạn",
+    "sectionProductForYou": "Sản phẩm dành cho bạn",
+    "homeAndElements": "Ngôi nhà và các yếu tố cần thiết để tạo ra những sản phẩm đẹp.",
+    "allRightsReserved": "Bảo lưu mọi quyền.",
+    "failedToLoadProducts": "Không thể tải sản phẩm"
+  },
+  "Footer": {
+    "company": "Công ty",
+    "aboutUs": "Về chúng tôi",
+    "careers": "Nghề nghiệp",
+    "press": "Báo chí",
+    "news": "Tin tức",
+    "support": "Hỗ trợ",
+    "contactUs": "Liên hệ chúng tôi",
+    "helpCenter": "Trung tâm trợ giúp",
+    "safety": "An toàn",
+    "communityGuidelines": "Hướng dẫn cộng đồng"
+  },
+  "FAQ": {
+    "title": "Câu hỏi thường gặp",
+    "questions": {
+      "returnPolicy": {
+        "question": "Chính sách đổi trả của bạn là gì?",
+        "answer": "Nếu bạn không hài lòng với giao dịch mua hàng, chúng tôi chấp nhận đổi trả trong vòng 30 ngày kể từ ngày giao hàng. Để khởi tạo đổi trả, vui lòng gửi email cho chúng tôi tại support@myecommercestore.com với mã đơn hàng và lý do đổi trả."
+      },
+      "trackOrder": {
+        "question": "Làm thế nào để theo dõi đơn hàng?",
+        "answer": "Bạn có thể theo dõi đơn hàng bằng cách nhấp vào liên kết theo dõi trong email xác nhận giao hàng, hoặc đăng nhập vào tài khoản trên website và xem chi tiết đơn hàng."
+      },
+      "customerSupport": {
+        "question": "Làm thế nào để liên hệ hỗ trợ khách hàng?",
+        "answer": "Bạn có thể liên hệ đội ngũ hỗ trợ khách hàng bằng cách gửi email tới support@myecommercestore.com, hoặc gọi số (555) 123-4567 trong giờ làm việc từ 9h sáng đến 5h chiều EST, thứ Hai đến thứ Sáu."
+      },
+      "changeOrder": {
+        "question": "Tôi có thể thay đổi hoặc hủy đơn hàng không?",
+        "answer": "Rất tiếc, một khi đơn hàng đã được đặt, chúng tôi không thể thực hiện thay đổi hoặc hủy bỏ. Nếu bạn không còn muốn các sản phẩm đã đặt, bạn có thể trả lại để được hoàn tiền trong vòng 30 ngày kể từ ngày giao hàng."
+      },
+      "internationalShipping": {
+        "question": "Bạn có cung cấp dịch vụ giao hàng quốc tế không?",
+        "answer": "Hiện tại, chúng tôi chỉ cung cấp dịch vụ giao hàng trong phạm vi Hoa Kỳ."
+      },
+      "paymentMethods": {
+        "question": "Bạn chấp nhận những phương thức thanh toán nào?",
+        "answer": "Chúng tôi chấp nhận visa, mastercard, paypal và cũng có hệ thống thanh toán khi nhận hàng (COD)."
+      }
+    }
+  },
+  "Sidebar": {
+    "home": "Trang chủ",
+    "bestSelling": "Bán chạy nhất",
+    "products": "Sản phẩm",
+    "faq": "Câu hỏi thường gặp",
+    "storybook": "Storybook",
+    "components": "Thành phần",
+    "buttons": "Nút bấm",
+    "inputAndTextarea": "Input và Textarea",
+    "select": "Select",
+    "checkboxRadioSwitch": "Checkbox, Radio và Switch",
+    "dialog": "Dialog",
+    "tooltip": "Tooltip",
+    "dropdownPopover": "Dropdown và Popover",
+    "avatarBadge": "Avatar và Badge",
+    "tab": "Tab"
+  },
+  "translation": {
+    "Year Joined": "Năm Tham Gia",
+    "Shop": {
+      "preview": {
+        "join": "Năm Tham Gia"
+      }
+    },
+    "Joined": "Đã tham gia vào",
+    "Reviews": "Đánh giá",
+    "Chat with seller": "Nhắn tin với người bán",
+    "Rating": "Đánh giá"
   }
 }

@@ -55,8 +55,6 @@ export const CategoryForm = memo<CategoryFormProps>(({ isOpen, onClose, category
   );
 
   const { form } = useCustomForm(schema, { defaultValues });
-
-  // Reset form when category changes or modal opens/closes
   useEffect(() => {
     if (isOpen) {
       if (category) {
@@ -78,7 +76,7 @@ export const CategoryForm = memo<CategoryFormProps>(({ isOpen, onClose, category
     const file = event.target.files?.[0];
     if (file) {
       setImageFile(file);
-      // Create preview URL
+
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
     }
@@ -96,8 +94,6 @@ export const CategoryForm = memo<CategoryFormProps>(({ isOpen, onClose, category
     try {
       const { name, slug, description } = values;
       let imageUrl = values.imageUrl;
-
-      // Upload new image if selected
       if (imageFile) {
         const uploadResult = await uploadFile(imageFile);
         imageUrl = uploadResult.secure_url;
@@ -118,7 +114,6 @@ export const CategoryForm = memo<CategoryFormProps>(({ isOpen, onClose, category
 
       onClose();
     } catch (error) {
-      // Error handling is done in the mutation hooks
       console.error('Failed to save category:', error);
     }
   };
@@ -138,7 +133,6 @@ export const CategoryForm = memo<CategoryFormProps>(({ isOpen, onClose, category
 
             <CustomInput disabled={isLoading} label={t('Category.description')} name="description" placeholder={t('Category.enterDescription')} startIcon={FileText} />
 
-            {/* Image Upload Section */}
             <div className="space-y-2">
               <label className="text-sm font-medium">{t('Category.categoryImage')}</label>
               <div className="rounded-lg border-2 border-dashed border-gray-300 p-4">

@@ -136,8 +136,6 @@ export const OrderDetailDialog = memo<OrderDetailDialogProps>(({ order, isOpen, 
                 </div>
               </div>
             </div>
-
-            {/* Order Items */}
             <div>
               <h3 className="mb-4 text-lg font-semibold">
                 {t('Product.products')} ({order.items?.length || 0})
@@ -176,8 +174,6 @@ export const OrderDetailDialog = memo<OrderDetailDialogProps>(({ order, isOpen, 
                 </div>
               </div>
             </div>
-
-            {/* Order Summary */}
             <div className="border-t pt-4">
               <div className="flex justify-end">
                 <div className="w-80 space-y-2">
@@ -201,7 +197,6 @@ export const OrderDetailDialog = memo<OrderDetailDialogProps>(({ order, isOpen, 
               </div>
             </div>
 
-            {/* Notes */}
             {order.notes && (
               <div>
                 <h3 className="mb-2 text-lg font-semibold">{t('Order.orderNotes')}</h3>

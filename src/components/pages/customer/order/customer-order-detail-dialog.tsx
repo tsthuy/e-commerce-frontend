@@ -8,6 +8,8 @@ import type { OrderResponse, OrderStatus } from '~/types';
 
 import { cn } from '~/libs';
 
+import { useTranslation } from '~/hooks';
+
 import { formatDate, formatPrice } from '~/utils';
 
 import { Badge, Button, Card, CardContent, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '~/components/ui';
@@ -23,6 +25,7 @@ interface CustomerOrderDetailDialogProps {
 }
 
 export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({ order, isOpen, onClose }) => {
+  const { t } = useTranslation();
   const { data: profileResponse } = useProfile({ enabled: true });
 
   if (!order) return null;
@@ -33,21 +36,19 @@ export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({
     const customerId = profileResponse.id;
     const sellerId = order.sellerId;
     const conversationId = `${customerId}_${sellerId}`;
-
-    // Navigate to conversation page
     window.location.href = `/user/messages/conversation/${conversationId}`;
   };
 
   const getStatusBadge = (status: OrderStatus): JSX.Element => {
     const statusConfig = {
-      PENDING: { label: 'Pending', color: 'warning' },
-      CONFIRMED: { label: 'Confirmed', color: 'info' },
-      PROCESSING: { label: 'Processing', color: 'info' },
-      SHIPPED: { label: 'Shipped', color: 'primary' },
-      DELIVERED: { label: 'Delivered', color: 'success' },
-      COMPLETED: { label: 'Completed', color: 'success' },
-      CANCELLED: { label: 'Cancelled', color: 'danger' },
-      REFUNDED: { label: 'Refunded', color: 'warning' }
+      PENDING: { label: t('CustomerOrderDialog.pending'), color: 'warning' },
+      CONFIRMED: { label: t('CustomerOrderDialog.confirmed'), color: 'info' },
+      PROCESSING: { label: t('CustomerOrderDialog.processing'), color: 'info' },
+      SHIPPED: { label: t('CustomerOrderDialog.shipped'), color: 'primary' },
+      DELIVERED: { label: t('CustomerOrderDialog.delivered'), color: 'success' },
+      COMPLETED: { label: t('CustomerOrderDialog.completed'), color: 'success' },
+      CANCELLED: { label: t('CustomerOrderDialog.cancelled'), color: 'danger' },
+      REFUNDED: { label: t('CustomerOrderDialog.refunded'), color: 'warning' }
     };
 
     const config = statusConfig[status] || { label: status, color: 'default' };
@@ -56,7 +57,6 @@ export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({
 
   const canReview = order.status === 'COMPLETED';
 
-  // Group items by product (to handle multiple variants of same product)
   const groupedItems = order.items.reduce(
     (acc, item) => {
       const existingGroup = acc.find((group) => group.productId === item.productId);
@@ -89,29 +89,31 @@ export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Order Details - #{order.orderNumber}</DialogTitle>
-          <DialogDescription>Order placed on {formatDate(order.createdAt)}</DialogDescription>
+          <DialogTitle>
+            {t('CustomerOrderDialog.orderDetails')} - #{order.orderNumber}
+          </DialogTitle>
+          <DialogDescription>
+            {t('CustomerOrderDialog.orderPlacedOn')} {formatDate(order.createdAt)}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Order Status */}
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Status</h3>
+            <h3 className="text-lg font-semibold">{t('CustomerOrderDialog.status')}</h3>
             {getStatusBadge(order.status)}
           </div>
 
-          {/* Customer & Seller Info */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Card>
               <CardContent className="p-4">
-                <h4 className="mb-2 font-semibold">Customer</h4>
+                <h4 className="mb-2 font-semibold">{t('CustomerOrderDialog.customer')}</h4>
                 <p className="text-sm">{order.customerName}</p>
                 <p className="text-sm text-gray-600">{order.customerEmail}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
-                <h4 className="mb-2 font-semibold">Seller</h4>
+                <h4 className="mb-2 font-semibold">{t('CustomerOrderDialog.seller')}</h4>
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm">{order.sellerShopName}</p>
@@ -124,27 +126,22 @@ export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({
               </CardContent>
             </Card>
           </div>
-
-          {/* Shipping Address */}
           <Card>
             <CardContent className="p-4">
-              <h4 className="mb-2 font-semibold">Shipping Address</h4>
+              <h4 className="mb-2 font-semibold">{t('CustomerOrderDialog.shippingAddress')}</h4>
               <p className="text-sm">
                 {order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.country}
               </p>
             </CardContent>
           </Card>
-
-          {/* Order Items - Grouped by Product */}
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Items</h3>
+            <h3 className="mb-4 text-lg font-semibold">{t('CustomerOrderDialog.items')}</h3>
             <div className="space-y-4">
               {groupedItems.map((group) => (
                 <Card key={group.productId}>
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
                       <div className="flex-1">
-                        {/* Show all variants for this product */}
                         <div className="mt-2 space-y-2">
                           {group.items.map((item) => (
                             <div key={item.id} className="flex items-center gap-4 text-sm text-gray-600">
@@ -160,27 +157,17 @@ export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({
                                 {item.variantName && <span className="font-medium">{item.variantName}</span>}
 
                                 <span className={cn(item.variantName != null && 'ml-2')}>
-                                  Qty: {item.quantity} × {formatPrice(item.unitPrice)} = {formatPrice(item.subtotal)}
+                                  {t('CustomerOrderDialog.quantity')}: {item.quantity} × {formatPrice(item.unitPrice)} = {formatPrice(item.subtotal)}
                                 </span>
                               </div>
                             </div>
                           ))}
                         </div>
+                        <div className="mt-2 font-semibold">
+                          {t('CustomerOrderDialog.total')}: {formatPrice(group.items.reduce((sum, item) => sum + item.subtotal, 0))}
+                        </div>
 
-                        {/* Total for this product */}
-                        <div className="mt-2 font-semibold">Total: {formatPrice(group.items.reduce((sum, item) => sum + item.subtotal, 0))}</div>
-
-                        {/* Review Section - Only if order is completed */}
-                        {canReview && (
-                          <ProductReviewSection
-                            orderId={order.id}
-                            productId={group.productId}
-                            productName={group.productName}
-                            onReviewSuccess={() => {
-                              // Optionally refresh data or show success message
-                            }}
-                          />
-                        )}
+                        {canReview && <ProductReviewSection orderId={order.id} productId={group.productId} productName={group.productName} onReviewSuccess={() => {}} />}
                       </div>
                     </div>
                   </CardContent>
@@ -189,42 +176,40 @@ export const CustomerOrderDetailDialog = memo<CustomerOrderDetailDialogProps>(({
             </div>
           </div>
 
-          {/* Order Summary */}
           <Card>
             <CardContent className="p-4">
-              <h4 className="mb-4 font-semibold">Order Summary</h4>
+              <h4 className="mb-4 font-semibold">{t('CustomerOrderDialog.orderTotal')}</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span>Subtotal:</span>
+                  <span>{t('CustomerOrderDialog.subtotal')}:</span>
                   <span>{formatPrice(order.subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Shipping:</span>
+                  <span>{t('CustomerOrderDialog.shippingFee')}:</span>
                   <span>{formatPrice(order.shippingFee)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Tax:</span>
+                  <span>{t('CustomerOrderDialog.tax')}:</span>
                   <span>{formatPrice(order.tax)}</span>
                 </div>
                 {order.discount > 0 && (
                   <div className="flex justify-between">
-                    <span>Discount:</span>
+                    <span>{t('Common.discount')}:</span>
                     <span>-{formatPrice(order.discount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between border-t pt-2 text-lg font-semibold">
-                  <span>Total:</span>
+                  <span>{t('CustomerOrderDialog.total')}:</span>
                   <span>{formatPrice(order.total)}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Notes */}
           {order.notes && (
             <Card>
               <CardContent className="p-4">
-                <h4 className="mb-2 font-semibold">Notes</h4>
+                <h4 className="mb-2 font-semibold">{t('Order.orderNotes')}</h4>
                 <p className="text-sm text-gray-600">{order.notes}</p>
               </CardContent>
             </Card>

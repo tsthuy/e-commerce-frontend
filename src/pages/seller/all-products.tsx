@@ -35,7 +35,6 @@ export const AllProducts = memo(() => {
           <p className="text-muted-foreground">{t('Seller.manageInventory')}</p>
         </div>
 
-        {/* Products Table with all features */}
         <ProductsTable onCreate={handleCreate} onEdit={handleEdit} onView={handleView} />
       </Container>
     </Helmet>

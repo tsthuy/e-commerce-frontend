@@ -5,6 +5,8 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Too
 
 import { SEO_AUTHOR } from '~/constants';
 
+import { useTranslation } from '~/hooks';
+
 import { AdminPeriodSelector } from '~/components/admin/admin-period-selector';
 import { Helmet } from '~/components/common';
 import { DashboardCard } from '~/components/dashboard/dashboard-card';
@@ -21,9 +23,9 @@ const formatCurrency = (value: number): string => {
 };
 
 export const AdminDashboard = memo(() => {
+  const { t } = useTranslation();
   const [selectedPeriod, setSelectedPeriod] = useState<AdminPeriodType>('3days');
 
-  // Determine chart type based on selected period
   const getChartType = (period: AdminPeriodType): AdminChartType => {
     switch (period) {
       case 'today':
@@ -33,13 +35,12 @@ export const AdminDashboard = memo(() => {
       case '1month':
         return 'weekly';
       case '1quarter':
-        return '2weekly'; // Bi-weekly for 3 months
+        return '2weekly';
       case '6months':
         return 'monthly';
       case '1year':
         return 'monthly';
       case 'all':
-        // If current year > 2025 + 1 year, use yearly, otherwise monthly
         const currentYear = new Date().getFullYear();
         return currentYear > 2026 ? 'yearly' : 'monthly';
       default:
@@ -58,50 +59,50 @@ export const AdminDashboard = memo(() => {
   const statsCards = useMemo(
     () => [
       {
-        title: 'Total Users',
+        title: t('Admin.dashboard.totalUsers'),
         value: dashboardStats?.totalUsers || 0,
         icon: <UsersIcon className="h-4 w-4" color="blue" />,
-        subtitle: `${dashboardStats?.totalCustomers || 0} customers, ${dashboardStats?.totalSellers || 0} sellers`
+        subtitle: `${dashboardStats?.totalCustomers || 0} ${t('Admin.dashboard.customers')}, ${dashboardStats?.totalSellers || 0} ${t('Admin.dashboard.sellers')}`
       },
       {
-        title: 'Total Products',
+        title: t('Admin.dashboard.totalProducts'),
         value: dashboardStats?.totalProducts || 0,
         icon: <PackageIcon className="h-4 w-4" color="orange" />,
-        subtitle: `${dashboardStats?.activeProducts || 0} active products`
+        subtitle: `${dashboardStats?.activeProducts || 0} ${t('Admin.dashboard.activeProducts')}`
       },
       {
-        title: 'Total Orders',
+        title: t('Admin.dashboard.totalOrders'),
         value: dashboardStats?.totalOrders || 0,
         icon: <ShoppingCartIcon className="h-4 w-4" color="green" />,
-        subtitle: `${dashboardStats?.completedOrders || 0} completed, ${dashboardStats?.cancelledOrders || 0} cancelled`
+        subtitle: `${dashboardStats?.completedOrders || 0} ${t('Admin.dashboard.completed')}, ${dashboardStats?.cancelledOrders || 0} ${t('Admin.dashboard.cancelled')}`
       },
       {
-        title: 'Total Revenue',
+        title: t('Admin.dashboard.totalRevenue'),
         value: formatCurrency(dashboardStats?.totalRevenue || 0),
         icon: <DollarSignIcon className="h-4 w-4" color="purple" />,
-        subtitle: `Avg order: ${formatCurrency(dashboardStats?.avgOrderValue || 0)}`
+        subtitle: `${t('Admin.dashboard.avgOrder')}: ${formatCurrency(dashboardStats?.avgOrderValue || 0)}`
       },
       {
-        title: 'Commission Earned',
+        title: t('Admin.dashboard.commissionEarned'),
         value: formatCurrency(dashboardStats?.totalCommissionEarned || 0),
         icon: <TrendingUpIcon className="h-4 w-4" color="teal" />,
-        subtitle: `Success rate: ${dashboardStats?.orderSuccessRate?.toFixed(1) || 0}%`
+        subtitle: `${t('Admin.dashboard.successRate')}: ${dashboardStats?.orderSuccessRate?.toFixed(1) || 0}%`
       },
       {
-        title: 'Active Sellers',
+        title: t('Admin.dashboard.activeSellers'),
         value: dashboardStats?.activeSellers || 0,
         icon: <BarChart3Icon className="h-4 w-4" color="indigo" />,
-        subtitle: 'Currently active'
+        subtitle: t('Admin.dashboard.currentlyActive')
       }
     ],
-    [dashboardStats]
+    [dashboardStats, t]
   );
 
   if (statsLoading) {
     return (
       <div className="space-y-6 p-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold">{t('Admin.dashboard.title')}</h1>
           <div className="h-10 w-[140px] animate-pulse rounded bg-gray-200" />
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -121,28 +122,24 @@ export const AdminDashboard = memo(() => {
   return (
     <Helmet title={`Admin Dashboard - ${SEO_AUTHOR}`}>
       <div className="space-y-6 p-6">
-        {/* Header with Period Selector */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-            <p className="mt-1 text-sm text-gray-600">System overview and statistics</p>
+            <h1 className="text-3xl font-bold text-gray-900">{t('Admin.dashboard.title')}</h1>
+            <p className="mt-1 text-sm text-gray-600">{t('Admin.dashboard.subtitle')}</p>
           </div>
           <AdminPeriodSelector value={selectedPeriod} onChange={setSelectedPeriod} />
         </div>
-
-        {/* Stats Grid */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {statsCards.map((card) => (
             <DashboardCard key={card.title} icon={card.icon} subtitle={card.subtitle} title={card.title} value={card.value} />
           ))}
         </div>
 
-        {/* Charts Section */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card className="p-6">
             <CardHeader className="px-0 pt-0">
-              <CardTitle className="text-lg">System Revenue Trend</CardTitle>
-              <CardDescription>Total platform revenue over time</CardDescription>
+              <CardTitle className="text-lg">{t('Admin.dashboard.systemRevenueTrend')}</CardTitle>
+              <CardDescription>{t('Admin.dashboard.totalPlatformRevenue')}</CardDescription>
             </CardHeader>
             <CardContent className="px-0">
               {chartLoading ? (
@@ -153,7 +150,7 @@ export const AdminDashboard = memo(() => {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="label" />
                     <YAxis />
-                    <Tooltip formatter={(value) => [formatCurrency(Number(value)), 'Revenue']} />
+                    <Tooltip formatter={(value) => [formatCurrency(Number(value)), t('Admin.dashboard.revenue')]} />
                     <Line dataKey="revenue" stroke="#3B82F6" strokeWidth={2} type="monotone" />
                   </LineChart>
                 </ResponsiveContainer>
@@ -163,8 +160,8 @@ export const AdminDashboard = memo(() => {
 
           <Card className="p-6">
             <CardHeader className="px-0 pt-0">
-              <CardTitle className="text-lg">Orders Overview</CardTitle>
-              <CardDescription>System-wide order completion rates</CardDescription>
+              <CardTitle className="text-lg">{t('Admin.dashboard.ordersOverview')}</CardTitle>
+              <CardDescription>{t('Admin.dashboard.systemWideOrderCompletion')}</CardDescription>
             </CardHeader>
             <CardContent className="px-0">
               {chartLoading ? (
@@ -176,8 +173,8 @@ export const AdminDashboard = memo(() => {
                     <XAxis dataKey="label" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="completedOrders" fill="#10B981" name="Completed" />
-                    <Bar dataKey="cancelledOrders" fill="#EF4444" name="Cancelled" />
+                    <Bar dataKey="completedOrders" fill="#10B981" name={t('Admin.dashboard.completedOrders')} />
+                    <Bar dataKey="cancelledOrders" fill="#EF4444" name={t('Admin.dashboard.cancelledOrders')} />
                   </BarChart>
                 </ResponsiveContainer>
               )}
@@ -185,18 +182,17 @@ export const AdminDashboard = memo(() => {
           </Card>
         </div>
 
-        {/* Additional System Metrics */}
         {dashboardStats && (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <DashboardCard
-              subtitle={`${dashboardStats.completedOrders} of ${dashboardStats.totalOrders} orders completed`}
-              title="Platform Success Rate"
+              subtitle={`${dashboardStats.completedOrders} ${t('Admin.dashboard.of')} ${dashboardStats.totalOrders} ${t('Admin.dashboard.ordersCompleted')}`}
+              title={t('Admin.dashboard.platformSuccessRate')}
               value={`${dashboardStats.orderSuccessRate?.toFixed(1) || 0}%`}
             />
-            <DashboardCard subtitle="Across all completed orders" title="Average Order Value" value={formatCurrency(dashboardStats.avgOrderValue)} />
+            <DashboardCard subtitle={t('Admin.dashboard.acrossAllCompletedOrders')} title={t('Admin.dashboard.averageOrderValue')} value={formatCurrency(dashboardStats.avgOrderValue)} />
             <DashboardCard
-              subtitle={`${((dashboardStats.totalCommissionEarned / dashboardStats.totalRevenue) * 100).toFixed(1)}% of total revenue`}
-              title="Platform Commission"
+              subtitle={`${((dashboardStats.totalCommissionEarned / dashboardStats.totalRevenue) * 100).toFixed(1)}% ${t('Admin.dashboard.ofTotalRevenue')}`}
+              title={t('Admin.dashboard.platformCommission')}
               value={formatCurrency(dashboardStats.totalCommissionEarned)}
             />
           </div>

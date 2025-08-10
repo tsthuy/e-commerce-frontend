@@ -16,7 +16,6 @@ export const CheckoutCancelPage = memo(() => {
 
   useEffect(() => {
     if (orderId) {
-      // Call API to cancel the Stripe order
       httpBase.put(`/api/stripe/cancel-order/${orderId}`).catch((error) => {
         console.error('Error cancelling order:', error);
       });

@@ -8,8 +8,8 @@ export interface ConversationMetadata {
   type: 'customer' | 'seller';
   updatedAt: Timestamp;
   unseenCount: number;
-  receiverName?: string; // For display purposes
-  receiverAvatar?: string; // For display purposes
+  receiverName?: string;
+  receiverAvatar?: string;
 }
 
 export interface Message {
@@ -19,10 +19,10 @@ export interface Message {
   text: string;
   type: 'text' | 'image' | 'file';
   createdAt: Timestamp;
-  senderName?: string; // For display purposes
-  imageUrl?: string; // For image type messages
-  fileUrl?: string; // For file type messages
-  fileName?: string; // For file type messages
+  senderName?: string;
+  imageUrl?: string;
+  fileUrl?: string;
+  fileName?: string;
 }
 
 export interface ConversationDetail {

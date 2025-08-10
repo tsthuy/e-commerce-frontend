@@ -21,7 +21,7 @@ export const BestSellingPage = memo(() => {
 
   const searchParams = new URLSearchParams(location.search);
   const currentPage = parseInt(searchParams.get('page') || '0', 10);
-  const pageSize = 8; // 8 items per page (2 rows x 4 items)
+  const pageSize = 8;
 
   const queryParams: ProductPaginationParams = {
     page: currentPage,
@@ -76,7 +76,6 @@ export const BestSellingPage = memo(() => {
   return (
     <Helmet titleEntire={t('BestSelling.title')}>
       <Container className="py-8">
-        {/* Header */}
         <div className="mb-8 text-center">
           <div className="mx-auto w-full max-w-[calc(1280px+4px*4*2)] px-4 py-8">
             <div className="flex items-center justify-center">
@@ -87,8 +86,6 @@ export const BestSellingPage = memo(() => {
             </div>
           </div>
         </div>
-
-        {/* Products Count */}
         {totalElements > 0 && (
           <div className="mb-6 text-center">
             <p className="text-sm text-gray-500">
@@ -99,11 +96,8 @@ export const BestSellingPage = memo(() => {
             </p>
           </div>
         )}
-
-        {/* Products Grid */}
         {simpleProducts.length > 0 ? (
           <div className="mx-auto w-full max-w-[calc(1280px+4px*4*2)] px-4">
-            {/* Grid with exactly 8 items (2 rows x 4 columns) */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4">
               {simpleProducts.map((product) => (
                 <div key={product.id} className="w-full">
@@ -111,8 +105,6 @@ export const BestSellingPage = memo(() => {
                 </div>
               ))}
             </div>
-
-            {/* Pagination */}
             {totalPages > 1 && (
               <div className="mt-8 flex justify-end">
                 <Pagination>
@@ -130,11 +122,9 @@ export const BestSellingPage = memo(() => {
                       />
                     </PaginationItem>
 
-                    {/* Page numbers */}
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       let pageNum = i;
 
-                      // Calculate which pages to show
                       if (totalPages > 5) {
                         if (currentPage <= 2) {
                           pageNum = i;
@@ -161,7 +151,6 @@ export const BestSellingPage = memo(() => {
                       );
                     })}
 
-                    {/* Ellipsis if needed */}
                     {totalPages > 5 && currentPage < totalPages - 3 && (
                       <PaginationItem>
                         <PaginationEllipsis />

@@ -72,10 +72,7 @@ export function useProductSemanticSearchDebounced({
 }): UseQueryResult<ProductListResponse> & { isDebouncing: boolean } {
   const [isDebouncing, setIsDebouncing] = useState(false);
 
-  // Debounce query với 5 giây
-  const debouncedQuery = useDebounce(query, 5000);
-
-  // Track debouncing state
+  const debouncedQuery = useDebounce(query, 2000);
   useEffect(() => {
     if (query !== debouncedQuery && query.trim() !== '') {
       setIsDebouncing(true);
@@ -100,4 +97,34 @@ export function useProductSemanticSearchDebounced({
     ...queryResponse,
     isDebouncing
   };
+}
+
+/**
+ * Hook for getting personalized product recommendations
+ */
+export function useRecommendProductForCustomer({
+  page = 0,
+  size = 8,
+  enabled = true,
+  retry = false
+}: {
+  page?: number;
+  size?: number;
+  enabled?: boolean;
+  retry?: boolean;
+} = {}): UseQueryResult<ProductListResponse> {
+  const queryResponse = useQuery({
+    ...productQueries.recommendations({
+      data: {
+        page,
+        size
+      }
+    }),
+    retry,
+    enabled,
+    staleTime: 0,
+    gcTime: 0
+  });
+
+  return queryResponse;
 }

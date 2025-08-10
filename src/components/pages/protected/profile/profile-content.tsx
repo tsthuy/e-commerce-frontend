@@ -152,7 +152,6 @@ export const ProfileContent = memo(() => {
                 )}
 
                 {isEditing && (
-                  // eslint-disable-next-line jsx-a11y/label-has-associated-control
                   <label
                     className="absolute bottom-0 right-0 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-white shadow-md hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                     htmlFor="avatar"

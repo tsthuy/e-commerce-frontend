@@ -17,7 +17,6 @@ export function useCreateOrderMutation(): UseMutationResult<ApiResponse<OrderRes
   return useMutation({
     mutationFn: (data: CreateOrderRequest) => orderApi.createOrder(data).then((res) => res.data),
     onSuccess: () => {
-      // Invalidate both cart and order queries
       queryClient.invalidateQueries({ queryKey: queries.cart.list._def });
       queryClient.invalidateQueries({ queryKey: queries.order.customerList._def });
       toast.success('Đặt hàng thành công!');

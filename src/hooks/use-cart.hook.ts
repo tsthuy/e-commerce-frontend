@@ -14,7 +14,6 @@ export function useCartList({ enabled = true, retry = false }: { enabled?: boole
     retry,
     enabled,
     select: (data) => {
-      // Xử lý data trả về từ API
       if (!data.result) {
         return {
           ...data,

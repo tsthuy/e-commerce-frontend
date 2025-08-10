@@ -21,8 +21,6 @@ const formatCurrency = (value: number): string => {
 export const SellerDashboard = memo(() => {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('7days');
   const { t } = useTranslation();
-
-  // Determine chart type based on selected period
   const getChartType = (period: PeriodType): ChartType => {
     switch (period) {
       case 'today':
@@ -32,13 +30,12 @@ export const SellerDashboard = memo(() => {
       case '1month':
         return 'weekly';
       case '1quarter':
-        return '2weekly'; // Bi-weekly for 3 months
+        return '2weekly';
       case '6months':
         return 'monthly';
       case '1year':
         return 'monthly';
       case 'all':
-        // If current year > 2025 + 1 year, use yearly, otherwise monthly
         const currentYear = new Date().getFullYear();
         return currentYear > 2026 ? 'yearly' : 'monthly';
       default:
@@ -53,7 +50,6 @@ export const SellerDashboard = memo(() => {
     data: { period: selectedPeriod, type: getChartType(selectedPeriod) }
   });
 
-  // Extract stats from response
   const stats = statsData?.result;
   const chart = chartData?.result;
 

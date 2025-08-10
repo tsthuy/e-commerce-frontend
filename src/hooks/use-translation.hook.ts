@@ -1,5 +1,7 @@
 import { useTranslation as useI18nTranslation } from 'react-i18next';
 
+const LANGUAGE_STORAGE_KEY = 'preferred-language';
+
 export const useTranslation = (): {
   t: (key: string, options?: Record<string, unknown>) => string;
   i18n: {
@@ -16,6 +18,7 @@ export const useTranslation = (): {
   const { t, i18n } = useI18nTranslation();
 
   const changeLanguage = (lng: string): void => {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, lng);
     i18n.changeLanguage(lng);
   };
 

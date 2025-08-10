@@ -40,8 +40,6 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
     setIsDeleteDialogOpen(false);
     setCategoryToDelete(null);
   };
-
-  // Define table columns
   const columns: ColumnDef<CategoryResponse>[] = useMemo(
     () => [
       {
@@ -121,8 +119,6 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
     ],
     [onEdit, deleteMutation, t]
   );
-
-  // Filter fields for search and filtering
   const filterFields = useMemo(
     () => [
       {
@@ -134,7 +130,6 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
     [t]
   );
 
-  // Initialize table with empty data first to get state
   const { table } = useDataTable({
     data: [],
     columns,
@@ -145,13 +140,10 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
       columnPinning: { right: ['actions'] }
     }
   });
-
-  // Get current table state for API call
   const pagination = table.getState().pagination;
   const sorting = table.getState().sorting;
   const columnFilters = table.getState().columnFilters;
 
-  // Build query parameters from table state
   const queryParams = useMemo(() => {
     const searchFilter = columnFilters.find((filter) => filter.id === 'name');
     const sortConfig = sorting[0];
@@ -172,8 +164,6 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
 
     return params;
   }, [pagination, sorting, columnFilters]);
-
-  // Fetch data with dynamic parameters
   const { data: categoriesResponse, isLoading } = useCategoryList({
     data: queryParams
   });
@@ -181,7 +171,6 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
   const categories = categoriesResponse?.result?.content || [];
   const pageCount = categoriesResponse?.result?.totalPages || 0;
 
-  // Update table options with fetched data
   table.options.data = categories;
   table.options.pageCount = pageCount;
 
@@ -193,7 +182,6 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
       deleteMutation.mutate(id);
     });
 
-    // Clear selection after delete
     table.resetRowSelection();
   };
 
@@ -215,7 +203,6 @@ export const CategoriesTable = memo<CategoriesTableProps>(({ onEdit, onCreate })
         </DataTableToolbar>
       </DataTable>
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

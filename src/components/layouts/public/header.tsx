@@ -74,7 +74,6 @@ export const HeaderPublicLayout = memo(() => {
         <div className="hidden flex-grow items-center gap-x-6 md:flex">
           <SearchBar />
         </div>
-        {/* <div className="flex-grow"></div> */}
         <div className="flex flex-shrink-0 items-center justify-end gap-x-5">
           <Link to={isAuthenticated() && hasRole('SELLER') ? `${SELLER_ROUTES.dashboard.path()}` : `${AUTH_ROUTES.sellerSignup.path()}`}>
             <Button className="min-w-[120px]" color="primary" size="sm" variant="default">
@@ -97,7 +96,6 @@ export const SearchBar = memo(() => {
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  // ⏳ Trigger search khi user ngưng gõ 500ms
   useEffect(() => {
     const handleSearch = async (value: string): Promise<void> => {
       const params = new URLSearchParams();

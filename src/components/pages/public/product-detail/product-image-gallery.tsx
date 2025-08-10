@@ -26,12 +26,9 @@ interface ProductImageGalleryProps {
 
 export const ProductImageGallery = memo<ProductImageGalleryProps>(({ allImages, currentMainImage, onImageSelect }) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
-
-  // Find the index of current main image for lightbox
   const currentImageIndex = allImages.findIndex((img) => img.url === currentMainImage);
   const displayIndex = currentImageIndex >= 0 ? currentImageIndex : 0;
 
-  // Prepare slides for lightbox (all images)
   const lightboxSlides = useMemo(() => {
     return allImages.map((image) => ({
       src: image.url,
@@ -72,13 +69,10 @@ export const ProductImageGallery = memo<ProductImageGalleryProps>(({ allImages, 
 
   return (
     <div className="space-y-4">
-      {/* Main Image */}
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
         <button className="h-full w-full cursor-zoom-in focus:outline-none" type="button" onClick={handleMainImageClick}>
           <img alt={currentImage.alt} className="h-full w-full object-contain p-4 transition-transform duration-300 hover:scale-105" src={currentImage.url} />
         </button>
-
-        {/* Navigation arrows for main image */}
         {allImages.length > 1 && (
           <>
             <Button className="absolute left-2 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full bg-white/80 p-0 hover:bg-white" size="sm" variant="secondary" onClick={handlePrevious}>
@@ -89,16 +83,12 @@ export const ProductImageGallery = memo<ProductImageGalleryProps>(({ allImages, 
             </Button>
           </>
         )}
-
-        {/* Image source indicator */}
         <div className="absolute bottom-2 left-2">
           <span className={`rounded px-2 py-1 text-xs font-medium text-white ${currentImage.source === 'variant' ? 'bg-blue-500' : 'bg-gray-500'}`}>
             {currentImage.source === 'variant' ? 'Variant' : 'Product'}
           </span>
         </div>
       </div>
-
-      {/* Thumbnail Grid */}
       {allImages.length > 1 && (
         <div className="grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-6">
           {allImages.map((image, index) => (
@@ -111,15 +101,12 @@ export const ProductImageGallery = memo<ProductImageGalleryProps>(({ allImages, 
               onClick={() => handleThumbnailClick(image.url)}
             >
               <img alt={image.alt} className="h-full w-full object-cover" src={image.url} />
-
-              {/* Indicator for variant images */}
               {image.source === 'variant' && <div className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-blue-500"></div>}
             </button>
           ))}
         </div>
       )}
 
-      {/* Lightbox */}
       <Lightbox
         carousel={{ finite: allImages.length <= 1 }}
         close={() => setLightboxOpen(false)}
@@ -130,7 +117,6 @@ export const ProductImageGallery = memo<ProductImageGalleryProps>(({ allImages, 
         styles={{ container: { backgroundColor: 'rgba(0, 0, 0, 0.9)' } }}
         on={{
           view: ({ index: lightboxIndex }) => {
-            // When user navigates in lightbox, update main image
             if (allImages[lightboxIndex]) {
               onImageSelect(allImages[lightboxIndex].url);
             }
