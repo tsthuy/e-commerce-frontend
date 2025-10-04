@@ -5,8 +5,6 @@ import type { Table } from '@tanstack/react-table';
 import { debounce } from 'lodash';
 import { useHistory } from 'react-router-dom';
 
-import type { DataTableFilterField } from '~/types';
-
 import { cn } from '~/libs';
 
 import { useCustomForm } from '~/hooks';
@@ -16,6 +14,8 @@ import { CustomForm, CustomInputSearch, CustomSelectSearch } from '~/components/
 import { Button } from '../button';
 
 import { DataTableFacetedFilter } from './';
+
+import type { DataTableFilterField } from '~/types/table';
 
 interface DataTableToolbarProps<TData> extends HTMLAttributes<HTMLDivElement> {
   table: Table<TData>;
@@ -28,7 +28,6 @@ export function DataTableToolbar<TData>({ table, filterFields = [], children, cl
 
   const isFiltered = table.getState().columnFilters.length > 1;
 
-  // Memoize computation of searchableColumns and filterableColumns
   const { searchableColumns, filterableColumns, filterSearchableColumns } = useMemo(() => {
     return {
       searchableColumns: filterFields.filter((field) => !field.options && !field.autocomplete),

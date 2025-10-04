@@ -1,5 +1,6 @@
 import { memo, useEffect, useMemo, useState } from 'react';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, CheckCircle2, Copy, DollarSign, Eye, EyeOff, FileText, Image, Layers, PackageCheck, Plus, Save, Tag, Trash2 } from 'lucide-react';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -9,7 +10,9 @@ import { CLOUDINARY_FOLDERS } from '~/constants';
 
 import type { AttributeValue, DataForm, ProductAttribute, ProductImage, ProductPayload, ProductVariant, VariantAttributeValue } from '~/types';
 
-import { useCategoryList, useCloudinaryUpload, useProductDetail, useProductUpdate } from '~/hooks';
+import { queries } from '~/queries';
+
+import { useCategoryList, useCloudinaryUpload, useProductDetail, useProductUpdate, useTranslation } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
 
@@ -18,9 +21,13 @@ import { UploadProgress } from '~/components/common/cloudinary';
 import { CustomForm, CustomInput, CustomInputImage, CustomInputTextarea, CustomSelect, CustomSwitch } from '~/components/form';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, Card } from '~/components/ui';
 
+import { SELLER_ROUTES } from '~/routes';
+
 export const ProductEditForm = memo(() => {
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
+
+  const { t } = useTranslation();
 
   const [attributes, setAttributes] = useState<ProductAttribute[]>([]);
   const [variants, setVariants] = useState<ProductVariant[]>([]);
@@ -30,7 +37,7 @@ export const ProductEditForm = memo(() => {
   const [existingImages, setExistingImages] = useState<ProductImage[]>([]);
 
   const { data: productDetail, isLoading: isLoadingDetail } = useProductDetail({
-    productId: id,
+    data: { productId: id },
     enabled: !!id
   });
 
@@ -46,9 +53,10 @@ export const ProductEditForm = memo(() => {
 
   const categories = categoriesResponse?.result?.content || [];
 
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     if (productDetail) {
-      // Load existing images
       if (productDetail.images) {
         setExistingImages(
           productDetail.images.map((img) => ({
@@ -182,20 +190,15 @@ export const ProductEditForm = memo(() => {
       variants: variants
     };
   }, [productDetail, attributes, variants]);
-
-  // Add new attribute với auto focus
   const handleAddAttribute = (): void => {
     setAttributes([...attributes, { name: '', values: [{ label: '', value: '' }] }]);
   };
 
-  // Remove attribute và auto regenerate variants
   const handleRemoveAttribute = (index: number): void => {
     const newAttributes = attributes.filter((_, i) => i !== index);
     setAttributes(newAttributes);
     setTimeout(() => autoGenerateVariants(), 100);
   };
-
-  // Update attribute name và auto regenerate variants
   const handleAttributeNameChange = (index: number, name: string): void => {
     const newAttributes = [...attributes];
     newAttributes[index].name = name;
@@ -205,14 +208,11 @@ export const ProductEditForm = memo(() => {
     }
   };
 
-  // Add value to attribute với auto focus và auto regenerate
   const handleAddAttributeValue = (attrIndex: number): void => {
     const newAttributes = [...attributes];
     newAttributes[attrIndex].values.push({ label: '', value: '' });
     setAttributes(newAttributes);
   };
-
-  // Auto add new value khi user nhấn Enter
   const handleAttributeValueKeyDown = (attrIndex: number, valueIndex: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -230,8 +230,6 @@ export const ProductEditForm = memo(() => {
       }
     }
   };
-
-  // Remove value from attribute và auto regenerate
   const handleRemoveAttributeValue = (attrIndex: number, valueIndex: number): void => {
     const newAttributes = [...attributes];
     newAttributes[attrIndex].values.splice(valueIndex, 1);
@@ -239,7 +237,6 @@ export const ProductEditForm = memo(() => {
     setTimeout(() => autoGenerateVariants(), 100);
   };
 
-  // Update attribute value và auto regenerate variants
   const handleAttributeValueChange = (attrIndex: number, valueIndex: number, field: keyof AttributeValue, value: string): void => {
     const newAttributes = [...attributes];
     newAttributes[attrIndex].values[valueIndex][field] = value;
@@ -250,7 +247,6 @@ export const ProductEditForm = memo(() => {
     }
   };
 
-  // Auto generate variants khi attributes thay đổi
   const autoGenerateVariants = (): void => {
     const validAttributes = attributes.filter((attr) => attr.name.trim() !== '' && attr.values.length > 0 && attr.values.every((v) => v.label.trim() !== ''));
 
@@ -301,8 +297,6 @@ export const ProductEditForm = memo(() => {
 
     setVariants(newVariants);
   };
-
-  // Handle variant field updates
   const handleVariantUpdate = (variantIndex: number, field: string, value: string | number): void => {
     const newVariants = [...variants];
 
@@ -326,7 +320,6 @@ export const ProductEditForm = memo(() => {
     setVariants(newVariants);
   };
 
-  // Bulk update all variants pricing
   const handleBulkUpdatePrice = (): void => {
     const price = parseFloat(bulkEditPrice);
     if (isNaN(price) || price <= 0) {
@@ -343,24 +336,17 @@ export const ProductEditForm = memo(() => {
     setBulkEditPrice('');
     toast.success(`Updated pricing for ${variants.length} variants`);
   };
-
-  // Handle delete basic product image
   const handleDeleteImage = async (imageIndex: number): Promise<void> => {
     const imageToDelete = existingImages[imageIndex];
     if (!imageToDelete) return;
 
     try {
       const wasDefault = imageToDelete.isDefault;
-
-      // Delete image from Cloudinary if it has a publicId
       if (imageToDelete.publicId) {
         await deleteUploadedImage(imageToDelete.publicId);
       }
-
-      // Remove image from existingImages
       const newImages = existingImages.filter((_, index) => index !== imageIndex);
 
-      // If deleted image was default and there are other images, set a new default
       if (wasDefault && newImages.length > 0) {
         newImages[0].isDefault = true;
       }
@@ -372,8 +358,6 @@ export const ProductEditForm = memo(() => {
       console.error(error);
     }
   };
-
-  // Handle set default image for basic product
   const handleSetDefaultImage = (imageIndex: number): void => {
     const newImages = existingImages.map((img, index) => ({
       ...img,
@@ -384,7 +368,6 @@ export const ProductEditForm = memo(() => {
     toast.success('Default image updated');
   };
 
-  // Handle delete variant image
   const handleDeleteVariantImage = async (variantIndex: number, imageIndex: number): Promise<void> => {
     const newVariants = [...variants];
     const image = newVariants[variantIndex].images?.[imageIndex];
@@ -393,17 +376,13 @@ export const ProductEditForm = memo(() => {
 
     try {
       const isDefault = image.isDefault;
-
-      // Delete image from Cloudinary if it has a publicId
       if (image.publicId) {
         await deleteUploadedImage(image.publicId);
       }
 
-      // Remove image from variant
       if (newVariants[variantIndex].images) {
         newVariants[variantIndex].images.splice(imageIndex, 1);
 
-        // If deleted image was default and there are other images, set a new default
         if (isDefault && newVariants[variantIndex].images.length > 0) {
           newVariants[variantIndex].images[0].isDefault = true;
         }
@@ -416,26 +395,19 @@ export const ProductEditForm = memo(() => {
       console.error(error);
     }
   };
-
-  // Handle set default image for variant
   const handleSetVariantDefaultImage = (variantIndex: number, imageIndex: number): void => {
     const newVariants = [...variants];
 
     if (!newVariants[variantIndex].images || !newVariants[variantIndex].images.length) return;
-
-    // Reset all images to non-default
     newVariants[variantIndex].images.forEach((img) => {
       img.isDefault = false;
     });
-
-    // Set the selected image as default
     newVariants[variantIndex].images[imageIndex].isDefault = true;
 
     setVariants(newVariants);
     toast.success('Default image updated');
   };
 
-  // Copy variant data to clipboard
   const handleCopyVariant = (variant: ProductVariant): void => {
     const variantData = {
       sku: variant.sku,
@@ -455,8 +427,6 @@ export const ProductEditForm = memo(() => {
       })
       .catch(() => toast.error('Failed to copy variant data'));
   };
-
-  // Generate variants khi user click button
   const generateVariants = (): void => {
     const validAttributes = attributes.filter((attr) => attr.name.trim() !== '' && attr.values.length > 0 && attr.values.every((v) => v.label.trim() !== ''));
 
@@ -469,7 +439,6 @@ export const ProductEditForm = memo(() => {
     toast.success(`Generated ${variants.length} variants successfully!`);
   };
 
-  // Validate variant data
   const validateVariant = (variant: ProductVariant): string[] => {
     const errors: string[] = [];
 
@@ -500,8 +469,6 @@ export const ProductEditForm = memo(() => {
 
     return errors;
   };
-
-  // Handle variant image upload
   const handleVariantImageUpload = async (variantIndex: number, files: File[]): Promise<void> => {
     if (files.length === 0) return;
 
@@ -536,17 +503,13 @@ export const ProductEditForm = memo(() => {
       toast.error('Failed to upload variant image(s)');
     }
   };
-
-  // Handle form submission
   const handleSubmit = async (values: DataForm<typeof schema>): Promise<void> => {
     if (isLoading || isUploading) return;
 
     setIsLoading(true);
     try {
-      // Upload main product images first
       const uploadedImages: ProductImage[] = [];
 
-      // Keep existing images
       if (existingImages && existingImages.length > 0) {
         uploadedImages.push(
           ...existingImages.map((img) => ({
@@ -557,7 +520,6 @@ export const ProductEditForm = memo(() => {
         );
       }
 
-      // Upload new images
       if (values.images && values.images.length > 0) {
         for (const file of values.images) {
           // eslint-disable-next-line no-await-in-loop
@@ -569,8 +531,6 @@ export const ProductEditForm = memo(() => {
           });
         }
       }
-
-      // Validate và prepare attributes/variants
       const validAttributes = attributes.filter((attr) => attr.name.trim() !== '' && attr.values.length > 0 && attr.values.every((v) => v.label.trim() !== ''));
       const validVariants = variants.filter((variant) => variant.attributeValues.length > 0 && variant.sku.trim() !== '');
 
@@ -597,8 +557,6 @@ export const ProductEditForm = memo(() => {
           return;
         }
       }
-
-      // Prepare payload
       const payload: ProductPayload = {
         name: values.name,
         sku: values.sku,
@@ -608,8 +566,8 @@ export const ProductEditForm = memo(() => {
         costPrice: values.costPrice || undefined,
         stock: values.stock,
         categoryId: values.categoryId,
-        status: values.status,
-        isPublished: values.isPublished,
+        status: 'ACTIVE',
+        isPublished: true,
         images: uploadedImages.map((img) => ({
           url: img.url,
           publicId: img.publicId,
@@ -617,7 +575,6 @@ export const ProductEditForm = memo(() => {
         }))
       };
 
-      // Include attributes và variants khi có data
       if (validAttributes.length > 0) {
         payload.attributes = validAttributes.map((attr) => ({
           name: attr.name,
@@ -626,8 +583,6 @@ export const ProductEditForm = memo(() => {
             value: val.value || val.label.toLowerCase().replace(/\s+/g, '_')
           }))
         }));
-
-        // Validate and filter variant data
         const validatedVariants = validVariants.filter((variant) => {
           const hasValidAttributes = variant.attributeValues.every(
             (attrVal) => attrVal.attributeName && attrVal.attributeValueLabel && attrVal.attributeName.trim() !== '' && attrVal.attributeValueLabel.trim() !== ''
@@ -662,17 +617,20 @@ export const ProductEditForm = memo(() => {
               isDefault: img.isDefault
             })) || []
         }));
+      } else {
+        payload.attributes = [];
+        payload.variants = [];
       }
 
       await updateMutation.mutateAsync({ productId: id, data: payload });
       toast.success('Product updated successfully');
 
-      // Navigate back to products list after delay
-      setTimeout(() => history.push('/seller/products'), 1000);
+      history.push(SELLER_ROUTES.allProducts.path());
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {
       setIsLoading(false);
+      queryClient.invalidateQueries({ queryKey: queries.product.sellerList._def });
     }
   };
 
@@ -699,7 +657,7 @@ export const ProductEditForm = memo(() => {
           <h1 className="mb-6 text-2xl font-bold">Edit Product</h1>
           <div className="py-12 text-center">
             <p className="text-muted-foreground">Product not found</p>
-            <Button className="mt-4" onClick={() => history.push('/seller/products')}>
+            <Button className="mt-4" onClick={() => history.push(SELLER_ROUTES.allProducts.path())}>
               Back to Products
             </Button>
           </div>
@@ -715,7 +673,6 @@ export const ProductEditForm = memo(() => {
 
         <CustomForm key={productDetail.id} options={{ defaultValues }} schema={schema} onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-6">
-            {/* Basic Info Section */}
             <div className="lg:col-span-2">
               <Card className="mb-6 p-6">
                 <h2 className="mb-4 flex items-center text-xl font-semibold">
@@ -765,6 +722,7 @@ export const ProductEditForm = memo(() => {
 
                   <CustomSelect
                     isRequired
+                    className="hidden"
                     disabled={isLoading}
                     label="Status"
                     name="status"
@@ -775,7 +733,7 @@ export const ProductEditForm = memo(() => {
                     ]}
                   />
 
-                  <div className="flex items-center pt-8">
+                  <div className="hidden items-center pt-8">
                     <CustomSwitch disabled={isLoading} label="Published" name="isPublished" />
                   </div>
                 </div>
@@ -790,8 +748,6 @@ export const ProductEditForm = memo(() => {
                 <CustomInputImage multiple disabled={isLoading} label="Product Images" name="images" />
 
                 <UploadProgress isUploading={isUploading} mode="multiple" progress={progress} />
-
-                {/* Display existing images */}
                 {existingImages && existingImages.length > 0 && (
                   <div className="mt-4">
                     <h3 className="mb-2 font-medium">Current Images:</h3>
@@ -800,7 +756,6 @@ export const ProductEditForm = memo(() => {
                         <div key={img.publicId || idx} className="relative h-24 w-24 overflow-hidden rounded-md border">
                           <img alt={`Product ${idx + 1}`} className="h-full w-full object-cover" src={img.url} />
 
-                          {/* Overlay with action buttons */}
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity hover:bg-black/40 hover:opacity-100">
                             <div className="flex gap-1">
                               <Button className="h-6 w-6" size="icon" type="button" variant="destructive" onClick={() => handleDeleteImage(idx)}>
@@ -813,7 +768,6 @@ export const ProductEditForm = memo(() => {
                             </div>
                           </div>
 
-                          {/* Default indicator */}
                           {img.isDefault && <div className="absolute bottom-0 left-0 right-0 bg-green-500 py-0.5 text-center text-xs text-white">Default</div>}
                         </div>
                       ))}
@@ -822,14 +776,12 @@ export const ProductEditForm = memo(() => {
                 )}
               </Card>
             </div>
-
-            {/* Right Column - Attributes and Variants */}
             <div>
               <Card className="mt-6 p-6">
                 <div className="w-full">
                   <div className="mt-4">
                     <div className="mb-4 flex items-center justify-between">
-                      <h3 className="font-medium">Product Attributes</h3>
+                      <h3 className="font-medium">{t('Product.productAttributes')}</h3>
                       <div className="text-sm text-muted-foreground">{attributes.length > 0 && `${attributes.length} attribute(s) • Auto-generates ${variants.length} variant(s)`}</div>
                     </div>
 
@@ -931,8 +883,6 @@ export const ProductEditForm = memo(() => {
                         </div>
                       )}
                     </div>
-
-                    {/* Bulk Actions */}
                     {variants.length > 1 && (
                       <div className="mb-4 rounded-lg border border-dashed bg-muted/50 p-4">
                         <h4 className="mb-3 text-sm font-medium">Bulk Actions</h4>
@@ -955,7 +905,6 @@ export const ProductEditForm = memo(() => {
                       </div>
                     )}
 
-                    {/* Variant Overview Table */}
                     {showVariantOverview && variants.length > 0 && (
                       <div className="mb-4 overflow-x-auto rounded-lg border">
                         <table className="w-full text-sm">
@@ -1036,7 +985,6 @@ export const ProductEditForm = memo(() => {
                               </AccordionTrigger>
 
                               <AccordionContent>
-                                {/* Show validation errors */}
                                 {errors.length > 0 && (
                                   <div className="mb-4 rounded-md border border-red-200 bg-red-50 p-3">
                                     <div className="mb-2 flex items-center gap-2">
@@ -1130,8 +1078,6 @@ export const ProductEditForm = memo(() => {
                                       {(!variant.images || variant.images.length === 0) && <span className="text-xs text-red-500">(At least 1 required)</span>}
                                       {variant.images && variant.images.length > 0 && <span className="text-xs text-green-600">({variant.images.length} uploaded)</span>}
                                     </div>
-
-                                    {/* Direct file input for variants */}
                                     <div className="relative">
                                       <input
                                         multiple
@@ -1143,7 +1089,7 @@ export const ProductEditForm = memo(() => {
                                           const files = e.target.files;
                                           if (files && files.length > 0) {
                                             handleVariantImageUpload(index, Array.from(files));
-                                            // Reset input after upload
+
                                             e.target.value = '';
                                           }
                                         }}
@@ -1157,7 +1103,6 @@ export const ProductEditForm = memo(() => {
                                           <div key={imgIndex} className="relative h-16 w-16 overflow-hidden rounded-md border">
                                             <img alt={`Variant ${imgIndex + 1}`} className="h-full w-full object-cover" src={img.url} />
 
-                                            {/* Overlay with action buttons */}
                                             <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity hover:bg-black/40 hover:opacity-100">
                                               <div className="flex gap-1">
                                                 <Button className="h-5 w-5" size="icon" type="button" variant="destructive" onClick={() => handleDeleteVariantImage(index, imgIndex)}>
@@ -1175,8 +1120,6 @@ export const ProductEditForm = memo(() => {
                                                 </Button>
                                               </div>
                                             </div>
-
-                                            {/* Default indicator */}
                                             {img.isDefault && <div className="absolute bottom-0 left-0 right-0 bg-green-500 py-0.5 text-center text-xs text-white">Default</div>}
                                           </div>
                                         ))}
@@ -1189,7 +1132,6 @@ export const ProductEditForm = memo(() => {
                                       </div>
                                     )}
 
-                                    {/* Action buttons for each variant */}
                                     <div className="mt-4 flex items-center gap-2">
                                       <Button size="sm" type="button" variant="outline" onClick={() => handleCopyVariant(variant)}>
                                         <Copy className="mr-1 h-3 w-3" />
@@ -1226,7 +1168,7 @@ export const ProductEditForm = memo(() => {
                     Update Product
                   </Button>
 
-                  <Button className="w-full" type="button" variant="outline" onClick={() => history.push('/seller/products')}>
+                  <Button className="w-full" type="button" variant="outline" onClick={() => history.push(SELLER_ROUTES.allProducts.path())}>
                     Cancel
                   </Button>
                 </div>

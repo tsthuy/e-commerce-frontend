@@ -9,7 +9,9 @@ import { CLOUDINARY_FOLDERS } from '~/constants';
 
 import type { AttributeValue, DataForm, ProductAttribute, ProductImage, ProductPayload, ProductVariant, VariantAttributeValue } from '~/types';
 
-import { useCategoryList, useCloudinaryUpload, useProductCreate, useProductDetail, useProductUpdate } from '~/hooks';
+import { cn } from '~/libs';
+
+import { useCategoryList, useCloudinaryUpload, useProductCreate, useProductDetail, useProductUpdate, useTranslation } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
 
@@ -22,22 +24,40 @@ export const ProductForm = memo(() => {
   const { id } = useParams<{ id?: string }>();
   const history = useHistory();
   const isEditMode = !!id;
+  const { t } = useTranslation();
 
   const [attributes, setAttributes] = useState<ProductAttribute[]>([]);
   const [variants, setVariants] = useState<ProductVariant[]>([]);
   const [showVariantOverview, setShowVariantOverview] = useState<boolean>(false);
   const [bulkEditPrice, setBulkEditPrice] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [formKey, setFormKey] = useState<number>(0); // Key để force re-render form
+  const [formKey, setFormKey] = useState<number>(0);
 
-  // Hooks for API operations
+  useEffect(() => {
+    if (!isEditMode && attributes.length === 0) {
+      const defaultAttribute: ProductAttribute = {
+        name: t('Seller.defaultConditionAttribute'),
+        values: [
+          { label: t('Seller.conditionExcellent'), value: '99_percent' },
+          { label: t('Seller.conditionGood'), value: '70_percent' }
+        ]
+      };
+      setAttributes([defaultAttribute]);
+    }
+  }, [isEditMode, t]);
+
+  useEffect(() => {
+    if (!isEditMode && attributes.length === 1 && attributes[0].name === t('Seller.defaultConditionAttribute') && variants.length === 0) {
+      setTimeout(() => autoGenerateVariants(), 100);
+    }
+  }, [attributes, isEditMode, t]);
   const { data: productDetail, isLoading: isLoadingDetail } = useProductDetail({
-    productId: id || '',
-    enabled: isEditMode
+    data: { productId: id! },
+    enabled: isEditMode && !!id
   });
 
   const { data: categoriesResponse } = useCategoryList({
-    data: { page: 0, size: 100 } // Get all categories for dropdown
+    data: { page: 0, size: 100 }
   });
 
   const createMutation = useProductCreate();
@@ -48,11 +68,8 @@ export const ProductForm = memo(() => {
   });
 
   const categories = categoriesResponse?.result?.content || [];
-
-  // Load product data for editing
   useEffect(() => {
     if (isEditMode && productDetail) {
-      // Convert ProductDetailResponse to form format
       const productData = productDetail;
 
       if (productData.attributes) {
@@ -82,8 +99,6 @@ export const ProductForm = memo(() => {
           }))
         );
       }
-
-      // Force re-render form với key mới
       setFormKey((prev) => prev + 1);
     }
   }, [isEditMode, productDetail]);
@@ -91,40 +106,40 @@ export const ProductForm = memo(() => {
   const schema = useMemo(
     () =>
       z.object({
-        name: z.string().min(1, validates.required.message('Product name')),
-        sku: z.string().min(1, validates.required.message('SKU')),
-        description: z.string().min(1, validates.required.message('Description')),
-        price: z.coerce.number().min(0.01, 'Price must be greater than 0'),
+        name: z.string().min(1, validates.required.message(t('Seller.productName'))),
+        sku: z.string().min(1, validates.required.message(t('Seller.sku'))),
+        description: z.string().min(1, validates.required.message(t('Common.description'))),
+        price: z.coerce.number().min(0.01, t('Product.priceMustBeGreaterThan0')),
         salePrice: z.coerce.number().min(0).optional().or(z.literal('')),
         costPrice: z.coerce.number().min(0).optional().or(z.literal('')),
-        stock: z.coerce.number().min(0, 'Stock quantity is required and must be 0 or positive').int(),
-        categoryId: z.string().min(1, validates.required.message('Category')),
+        stock: z.coerce.number().min(0, t('Product.stockMustBePositive')).int(),
+        categoryId: z.string().min(1, validates.required.message(t('Seller.category'))),
         status: z.enum(['ACTIVE', 'INACTIVE', 'DRAFT']),
         isPublished: z.boolean(),
         images: z.array(z.instanceof(File)).optional(),
-        // Attributes và variants là optional vì không phải product nào cũng có
+
         attributes: z
           .array(
             z.object({
-              name: z.string().min(1, 'Attribute name is required'),
+              name: z.string().min(1, t('Product.attributeNameRequired') || 'Attribute name is required'),
               values: z
                 .array(
                   z.object({
-                    label: z.string().min(1, 'Value label is required'),
+                    label: z.string().min(1, t('Product.valueLabelRequired') || 'Value label is required'),
                     value: z.string().optional()
                   })
                 )
-                .min(1, 'At least one value is required')
+                .min(1, t('Product.atLeastOneValueRequired') || 'At least one value is required')
             })
           )
           .optional(),
         variants: z
           .array(
             z.object({
-              sku: z.string().min(1, 'Variant SKU is required'),
-              price: z.coerce.number().min(0.01, 'Variant price must be greater than 0'),
+              sku: z.string().min(1, t('Product.variantSkuRequired')),
+              price: z.coerce.number().min(0.01, t('Product.variantPriceMustBeGreaterThan0')),
               salePrice: z.coerce.number().min(0).optional().or(z.literal('')),
-              stock: z.coerce.number().min(0, 'Stock quantity is required and must be 0 or positive').int(),
+              stock: z.coerce.number().min(0, t('Product.stockMustBePositive')).int(),
               attributeValues: z.array(
                 z.object({
                   attributeName: z.string(),
@@ -144,7 +159,7 @@ export const ProductForm = memo(() => {
           )
           .optional()
       }),
-    []
+    [t]
   );
 
   const defaultValues = useMemo(() => {
@@ -165,8 +180,6 @@ export const ProductForm = memo(() => {
         variants: variants
       };
     }
-
-    // Default values for create mode
     return {
       name: '',
       sku: '',
@@ -184,118 +197,66 @@ export const ProductForm = memo(() => {
     };
   }, [isEditMode, productDetail, attributes, variants]);
 
-  // Load categories
-  //   useEffect(() => {
-  //     const fetchCategories = async () => {
-  //       try {
-  //         const response = await categoryApi.getCategories();
-  //         setCategories(response.data);
-  //       } catch (error) {
-  //         toast.error('Failed to load categories');
-  //       }
-  //     };
-
-  //     fetchCategories();
-  //   }, []);
-
-  // Load product details in edit mode
-  //   useEffect(() => {
-  //     if (isEditMode && id) {
-  //       const fetchProduct = async () => {
-  //         setIsLoading(true);
-  //         try {
-  //           const response = await productApi.getProduct(id);
-  //           setProduct(response.data);
-  //           setAttributes(response.data.attributes || []);
-  //           setVariants(response.data.variants || []);
-  //         } catch (error) {
-  //           toast.error('Failed to load product details');
-  //         } finally {
-  //           setIsLoading(false);
-  //         }
-  //       };
-
-  //       fetchProduct();
-  //     }
-  //   }, [isEditMode, id]);
-
-  // Add new attribute với auto focus
   const handleAddAttribute = (): void => {
     setAttributes([...attributes, { name: '', values: [{ label: '', value: '' }] }]);
   };
-
-  // Remove attribute và auto regenerate variants
   const handleRemoveAttribute = (index: number): void => {
     const newAttributes = attributes.filter((_, i) => i !== index);
     setAttributes(newAttributes);
-    // Auto regenerate variants sau khi xóa attribute
+
     setTimeout(() => autoGenerateVariants(), 100);
   };
-
-  // Update attribute name và auto regenerate variants
   const handleAttributeNameChange = (index: number, name: string): void => {
     const newAttributes = [...attributes];
     newAttributes[index].name = name;
     setAttributes(newAttributes);
-    // Auto regenerate variants nếu name không empty
+
     if (name.trim() !== '') {
       setTimeout(() => autoGenerateVariants(), 100);
     }
   };
-
-  // Add value to attribute với auto focus và auto regenerate
   const handleAddAttributeValue = (attrIndex: number): void => {
     const newAttributes = [...attributes];
     newAttributes[attrIndex].values.push({ label: '', value: '' });
     setAttributes(newAttributes);
   };
 
-  // Auto add new value khi user nhấn Enter
   const handleAttributeValueKeyDown = (attrIndex: number, valueIndex: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter') {
       e.preventDefault();
       const currentValue = attributes[attrIndex].values[valueIndex].label.trim();
-
-      // Nếu value hiện tại không empty và là value cuối cùng, tự động thêm value mới
       if (currentValue !== '' && valueIndex === attributes[attrIndex].values.length - 1) {
         handleAddAttributeValue(attrIndex);
-        // Focus vào input mới được tạo
+
         setTimeout(() => {
           const nextInput = document.querySelector(`input[data-attr="${attrIndex}"][data-value="${valueIndex + 1}"]`) as HTMLInputElement;
           nextInput?.focus();
         }, 100);
       } else {
-        // Nếu không phải value cuối, chuyển focus sang value tiếp theo
         const nextInput = document.querySelector(`input[data-attr="${attrIndex}"][data-value="${valueIndex + 1}"]`) as HTMLInputElement;
         nextInput?.focus();
       }
     }
   };
 
-  // Remove value from attribute và auto regenerate
   const handleRemoveAttributeValue = (attrIndex: number, valueIndex: number): void => {
     const newAttributes = [...attributes];
     newAttributes[attrIndex].values.splice(valueIndex, 1);
     setAttributes(newAttributes);
-    // Auto regenerate variants sau khi xóa value
+
     setTimeout(() => autoGenerateVariants(), 100);
   };
 
-  // Update attribute value và auto regenerate variants
   const handleAttributeValueChange = (attrIndex: number, valueIndex: number, field: keyof AttributeValue, value: string): void => {
     const newAttributes = [...attributes];
     newAttributes[attrIndex].values[valueIndex][field] = value;
     setAttributes(newAttributes);
-
-    // Auto regenerate variants nếu label không empty
     if (field === 'label' && value.trim() !== '') {
-      setTimeout(() => autoGenerateVariants(), 300); // Debounce 300ms
+      setTimeout(() => autoGenerateVariants(), 300);
     }
   };
 
-  // Auto generate variants khi attributes thay đổi
   const autoGenerateVariants = (): void => {
-    // Filter out attributes with empty names or no values
     const validAttributes = attributes.filter((attr) => attr.name.trim() !== '' && attr.values.length > 0 && attr.values.every((v) => v.label.trim() !== ''));
 
     if (validAttributes.length === 0) {
@@ -303,7 +264,6 @@ export const ProductForm = memo(() => {
       return;
     }
 
-    // Generate all combinations of attribute values
     const generateCombinations = (attrs: ProductAttribute[], currentIndex: number, currentCombination: VariantAttributeValue[] = []): VariantAttributeValue[][] => {
       if (currentIndex >= attrs.length) {
         return [currentCombination];
@@ -321,22 +281,16 @@ export const ProductForm = memo(() => {
     };
 
     const combinations = generateCombinations(validAttributes, 0);
-
-    // Create variant SKUs based on product SKU and attribute values
     const baseSku = defaultValues.sku;
 
     const newVariants = combinations.map((combination) => {
-      // Generate SKU suffix from attribute values (e.g., "RED-L-COTTON")
       const skuSuffix = combination.map((attr) => attr.attributeValueLabel.toUpperCase().replace(/\s+/g, '').substring(0, 3)).join('-');
 
-      // Check if this variant already exists
       const existingVariant = variants.find(
         (v) =>
           v.attributeValues.length === combination.length &&
           v.attributeValues.every((attr) => combination.some((c) => c.attributeName === attr.attributeName && c.attributeValueLabel === attr.attributeValueLabel))
       );
-
-      // If variant exists, keep its data, otherwise create new
       return (
         existingVariant || {
           sku: `${baseSku}-${skuSuffix}`,
@@ -344,7 +298,7 @@ export const ProductForm = memo(() => {
           salePrice: typeof defaultValues.salePrice === 'number' ? defaultValues.salePrice : undefined,
           stock: Math.floor(defaultValues.stock / combinations.length) || 0,
           attributeValues: combination,
-          images: [] // Ensure images array is always initialized
+          images: []
         }
       );
     });
@@ -352,7 +306,6 @@ export const ProductForm = memo(() => {
     setVariants(newVariants);
   };
 
-  // Handle variant field updates với validation
   const handleVariantUpdate = (variantIndex: number, field: string, value: string | number): void => {
     const newVariants = [...variants];
 
@@ -376,7 +329,6 @@ export const ProductForm = memo(() => {
     setVariants(newVariants);
   };
 
-  // Bulk update all variants pricing
   const handleBulkUpdatePrice = (): void => {
     const price = parseFloat(bulkEditPrice);
     if (isNaN(price) || price <= 0) {
@@ -391,10 +343,8 @@ export const ProductForm = memo(() => {
 
     setVariants(newVariants);
     setBulkEditPrice('');
-    toast.success(`Updated pricing for ${variants.length} variants`);
+    toast.success(t('Seller.bulkPriceUpdated', { count: variants.length }));
   };
-
-  // Copy variant data to clipboard
   const handleCopyVariant = (variant: ProductVariant): void => {
     const variantData = {
       sku: variant.sku,
@@ -410,61 +360,52 @@ export const ProductForm = memo(() => {
     navigator.clipboard
       .writeText(JSON.stringify(variantData, null, 2))
       .then(() => {
-        // console.log('Variant data:', variantData); // Debug log - can uncomment for debugging
-        toast.success('Variant data copied to clipboard');
+        toast.success(t('Seller.variantDataCopied'));
       })
-      .catch(() => toast.error('Failed to copy variant data'));
+      .catch(() => toast.error(t('Seller.failedToCopyVariant')));
   };
-
-  // Generate variants khi user click button
   const generateVariants = (): void => {
-    // Filter out attributes with empty names or no values
     const validAttributes = attributes.filter((attr) => attr.name.trim() !== '' && attr.values.length > 0 && attr.values.every((v) => v.label.trim() !== ''));
 
     if (validAttributes.length === 0) {
-      toast.error('Add at least one attribute with values to generate variants');
+      toast.error(t('Seller.addAttributeValueToGenerate'));
       return;
     }
 
     autoGenerateVariants();
-    toast.success(`Generated ${variants.length} variants successfully!`);
+    toast.success(t('Seller.generateVariantsSuccess', { count: variants.length }));
   };
 
-  // Validate variant data
   const validateVariant = (variant: ProductVariant): string[] => {
     const errors: string[] = [];
 
     if (!variant.sku || variant.sku.trim() === '') {
-      errors.push('SKU is required');
+      errors.push(t('Product.variantSkuRequired'));
     }
 
     if (!variant.price || variant.price <= 0) {
-      errors.push('Price must be greater than 0');
+      errors.push(t('Product.variantPriceMustBeGreaterThan0'));
     }
 
     if (variant.salePrice && variant.salePrice >= variant.price) {
-      errors.push('Sale price must be less than regular price');
+      errors.push(t('Product.salePriceMustBeLessThanRegularPrice'));
     }
 
     if (variant.stock === undefined || variant.stock < 0) {
-      errors.push('Stock quantity is required and cannot be negative');
+      errors.push(t('Product.stockMustBePositive'));
     }
-
-    // Check images more carefully
     if (!variant.images || variant.images.length === 0) {
-      errors.push('At least one image is required');
+      errors.push(t('Seller.atLeastOneImageRequired'));
     } else {
-      // Check if images have valid URLs
       const validImages = variant.images.filter((img) => img.url && img.url.trim() !== '');
       if (validImages.length === 0) {
-        errors.push('At least one valid image is required');
+        errors.push(t('Seller.atLeastOneValidImageRequired'));
       }
     }
 
     return errors;
   };
 
-  // Handle variant image upload
   const handleVariantImageUpload = async (variantIndex: number, files: File[]): Promise<void> => {
     if (files.length === 0) return;
 
@@ -481,16 +422,11 @@ export const ProductForm = memo(() => {
       }));
 
       const newVariants = [...variants];
-
-      // Ensure images array exists
       if (!newVariants[variantIndex].images) {
         newVariants[variantIndex].images = [];
       }
-
-      // Add new images to existing ones
       newVariants[variantIndex].images!.push(...newImages);
 
-      // Set first image as default if no default exists
       if (newVariants[variantIndex].images!.length > 0 && !newVariants[variantIndex].images!.some((img) => img.isDefault)) {
         newVariants[variantIndex].images![0].isDefault = true;
       }
@@ -502,28 +438,34 @@ export const ProductForm = memo(() => {
       toast.error('Failed to upload variant image(s)');
     }
   };
+  const handleSetDefaultVariantImage = (variantIndex: number, imageIndex: number): void => {
+    const newVariants = [...variants];
+    if (newVariants[variantIndex].images) {
+      newVariants[variantIndex].images!.forEach((img) => {
+        img.isDefault = false;
+      });
+      newVariants[variantIndex].images![imageIndex].isDefault = true;
+    }
 
-  // Handle form submission với format đúng cho backend
+    setVariants(newVariants);
+    toast.success('Default image updated');
+  };
+
   const handleSubmit = async (values: DataForm<typeof schema>): Promise<void> => {
     if (isLoading || isUploading) return;
 
     setIsLoading(true);
     try {
-      // Upload main product images first
       const uploadedImages: ProductImage[] = [];
 
-      // Validate và prepare attributes/variants
       const validAttributes = attributes.filter((attr) => attr.name.trim() !== '' && attr.values.length > 0 && attr.values.every((v) => v.label.trim() !== ''));
       const validVariants = variants.filter((variant) => variant.attributeValues.length > 0 && variant.sku.trim() !== '');
-
-      // Validate logic: nếu có attributes thì phải có variants
       if (validAttributes.length > 0 && validVariants.length === 0) {
-        toast.error('Please generate variants for your attributes or remove attributes');
+        toast.error(t('Seller.generateVariantsOrRemoveAttributes'));
         setIsLoading(false);
         return;
       }
 
-      // Validate: tất cả variants phải có đầy đủ thông tin và ảnh
       if (validVariants.length > 0) {
         const variantErrors: string[] = [];
 
@@ -541,8 +483,6 @@ export const ProductForm = memo(() => {
           return;
         }
       }
-
-      // Keep existing images if updating
       if (productDetail?.images) {
         uploadedImages.push(
           ...productDetail.images.map((img) => ({
@@ -552,8 +492,6 @@ export const ProductForm = memo(() => {
           }))
         );
       }
-
-      // Upload new images
       if (values.images && values.images.length > 0) {
         for (const file of values.images) {
           // eslint-disable-next-line no-await-in-loop
@@ -561,12 +499,10 @@ export const ProductForm = memo(() => {
           uploadedImages.push({
             url: response.secure_url,
             publicId: response.public_id,
-            isDefault: uploadedImages.length === 0 // First image is default
+            isDefault: uploadedImages.length === 0
           });
         }
       }
-
-      // Prepare payload theo format của backend
 
       const payload: ProductPayload = {
         name: values.name,
@@ -577,16 +513,14 @@ export const ProductForm = memo(() => {
         costPrice: values.costPrice || undefined,
         stock: values.stock,
         categoryId: values.categoryId,
-        status: values.status,
-        isPublished: values.isPublished,
+        status: 'ACTIVE',
+        isPublished: true,
         images: uploadedImages.map((img) => ({
           url: img.url,
           publicId: img.publicId,
           isDefault: img.isDefault
         }))
       };
-
-      // Chỉ include attributes và variants khi có data
       if (validAttributes.length > 0) {
         payload.attributes = validAttributes.map((attr) => ({
           name: attr.name,
@@ -613,17 +547,15 @@ export const ProductForm = memo(() => {
             })) || []
         }));
       }
-
-      // Call API using mutations
       if (isEditMode && id) {
         await updateMutation.mutateAsync({ productId: id, data: payload });
         toast.success('Product updated successfully');
-        // Navigate back to products list after delay
+
         setTimeout(() => history.push('/seller/all-products'), 1000);
       } else {
         await createMutation.mutateAsync(payload);
         toast.success('Product created successfully');
-        // Navigate back to products list after delay
+
         setTimeout(() => history.push('/seller/all-products'), 1000);
       }
     } catch (error) {
@@ -638,7 +570,6 @@ export const ProductForm = memo(() => {
       <div className="p-6">
         <h1 className="mb-6 text-2xl font-bold">{isEditMode ? 'Edit Product' : 'Create Product'}</h1>
 
-        {/* Show loading when fetching product details */}
         {isEditMode && isLoadingDetail ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
@@ -649,27 +580,26 @@ export const ProductForm = memo(() => {
         ) : (
           <CustomForm key={formKey} options={{ defaultValues }} schema={schema} onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-6">
-              {/* Basic Info Section - Left Column */}
               <div className="lg:col-span-2">
                 <Card className="mb-6 p-6">
                   <h2 className="mb-4 flex items-center text-xl font-semibold">
                     <FileText className="mr-2 h-5 w-5" />
-                    Basic Information
+                    {t('Product.basicInfo')}
                   </h2>
 
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="md:col-span-2">
-                      <CustomInput isRequired disabled={isLoading} label="Product Name" name="name" placeholder="Enter product name" />
+                      <CustomInput isRequired disabled={isLoading} label={t('Seller.productName')} name="name" placeholder={t('Seller.enterProductName')} />
                     </div>
 
-                    <CustomInput isRequired disabled={isLoading} label="SKU" name="sku" placeholder="E.g., TS-MEN-001" />
+                    <CustomInput isRequired disabled={isLoading} label={t('Seller.sku')} name="sku" placeholder={t('Seller.skuPlaceholder')} />
 
                     <CustomSelect
                       isRequired
                       disabled={isLoading}
-                      label="Category"
+                      label={t('Seller.category')}
                       name="categoryId"
-                      placeholder="Select category"
+                      placeholder={t('Seller.selectCategory')}
                       options={categories.map((cat) => ({
                         label: cat.name,
                         value: cat.id
@@ -677,7 +607,7 @@ export const ProductForm = memo(() => {
                     />
 
                     <div className="md:col-span-2">
-                      <CustomInputTextarea isRequired disabled={isLoading} label="Description" name="description" placeholder="Describe your product" rows={4} />
+                      <CustomInputTextarea isRequired disabled={isLoading} label={t('Common.description')} name="description" placeholder={t('Seller.describeProduct')} rows={4} />
                     </div>
                   </div>
                 </Card>
@@ -685,32 +615,33 @@ export const ProductForm = memo(() => {
                 <Card className="mb-6 p-6">
                   <h2 className="mb-4 flex items-center text-xl font-semibold">
                     <DollarSign className="mr-2 h-5 w-5" />
-                    Pricing & Inventory
+                    {t('Seller.pricingInventory')}
                   </h2>
 
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                    <CustomInput isRequired disabled={isLoading} label="Price" name="price" placeholder="0.00" startIcon={DollarSign} type="number" />
+                    <CustomInput isRequired disabled={isLoading} label={t('Seller.price')} name="price" placeholder="0.00" startIcon={DollarSign} type="number" />
 
-                    <CustomInput disabled={isLoading} label="Sale Price" name="salePrice" placeholder="0.00" startIcon={DollarSign} type="number" />
+                    <CustomInput disabled={isLoading} label={t('Seller.salePrice')} name="salePrice" placeholder="0.00" startIcon={DollarSign} type="number" />
 
-                    <CustomInput disabled={isLoading} label="Cost Price" name="costPrice" placeholder="0.00" startIcon={DollarSign} type="number" />
+                    <CustomInput disabled={isLoading} label={t('Seller.costPrice')} name="costPrice" placeholder="0.00" startIcon={DollarSign} type="number" />
 
-                    <CustomInput isRequired disabled={isLoading} label="Stock Quantity" name="stock" placeholder="0" startIcon={PackageCheck} type="number" />
+                    <CustomInput isRequired disabled={isLoading} label={t('Seller.stockQuantity')} name="stock" placeholder="0" startIcon={PackageCheck} type="number" />
 
                     <CustomSelect
                       isRequired
+                      className="hidden"
                       disabled={isLoading}
-                      label="Status"
+                      label={t('Seller.status')}
                       name="status"
                       options={[
-                        { label: 'Active', value: 'ACTIVE' },
-                        { label: 'Inactive', value: 'INACTIVE' },
-                        { label: 'Draft', value: 'DRAFT' }
+                        { label: t('Common.active'), value: 'ACTIVE' },
+                        { label: t('Common.inactive'), value: 'INACTIVE' },
+                        { label: t('Common.draft'), value: 'DRAFT' }
                       ]}
                     />
 
-                    <div className="flex items-center pt-8">
-                      <CustomSwitch disabled={isLoading} label="Published" name="isPublished" />
+                    <div className="hidden items-center pt-8">
+                      <CustomSwitch disabled={isLoading} label={t('Seller.published')} name="isPublished" />
                     </div>
                   </div>
                 </Card>
@@ -718,14 +649,13 @@ export const ProductForm = memo(() => {
                 <Card className="mb-6 p-6">
                   <h2 className="mb-4 flex items-center text-xl font-semibold">
                     <Image className="mr-2 h-5 w-5" />
-                    Product Images
+                    {t('Seller.productImages')}
                   </h2>
 
-                  <CustomInputImage multiple disabled={isLoading} label="Product Images" name="images" />
+                  <CustomInputImage multiple disabled={isLoading} label={t('Seller.productImages')} name="images" />
 
                   <UploadProgress isUploading={isUploading} mode="multiple" progress={progress} />
 
-                  {/* Display existing images in edit mode */}
                   {productDetail?.images && productDetail.images.length > 0 && (
                     <div className="mt-4">
                       <h3 className="mb-2 font-medium">Current Images:</h3>
@@ -742,22 +672,34 @@ export const ProductForm = memo(() => {
                 </Card>
               </div>
 
-              {/* Right Column - Attributes and Variants */}
               <div>
                 <Card className="mt-6 p-6">
                   <div className="w-full">
                     <div className="mt-4">
                       <div className="mb-4 flex items-center justify-between">
-                        <h3 className="font-medium">Product Attributes</h3>
+                        <h3 className="font-medium">{t('Product.productAttributes')}</h3>
                         <div className="text-sm text-muted-foreground">{attributes.length > 0 && `${attributes.length} attribute(s) • Auto-generates ${variants.length} variant(s)`}</div>
                       </div>
+                      {!isEditMode && attributes.length > 0 && attributes[0].name === 'Tình trạng' && (
+                        <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3">
+                          <div className="flex items-start gap-2">
+                            <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-500">
+                              <span className="text-xs font-bold text-white">!</span>
+                            </div>
+                            <div className="text-sm">
+                              <p className="font-medium text-blue-800">{t('Seller.autoGeneratedCondition')}</p>
+                              <p className="text-blue-700">{t('Seller.conditionAttributeHelp')}</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
                       {attributes.map((attr, index) => (
                         <div key={index} className="mb-4 rounded-lg border border-border bg-card p-4">
                           <div className="mb-3 flex items-center gap-2">
                             <input
                               className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                              placeholder="Attribute name (e.g., Color, Size, Material)"
+                              placeholder={t('Seller.attributeNamePlaceholder')}
                               type="text"
                               value={attr.name}
                               onChange={(e) => handleAttributeNameChange(index, e.target.value)}
@@ -785,7 +727,7 @@ export const ProductForm = memo(() => {
                                     className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                     data-attr={index}
                                     data-value={valIndex}
-                                    placeholder="Label (e.g., Red, Large, Cotton)"
+                                    placeholder={t('Seller.valueLabelPlaceholder')}
                                     type="text"
                                     value={val.label}
                                     onChange={(e) => handleAttributeValueChange(index, valIndex, 'label', e.target.value)}
@@ -794,7 +736,7 @@ export const ProductForm = memo(() => {
 
                                   <input
                                     className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                                    placeholder="Value (e.g., #FF0000, XL, cotton)"
+                                    placeholder={t('Seller.valueCodePlaceholder')}
                                     type="text"
                                     value={val.value}
                                     onChange={(e) => handleAttributeValueChange(index, valIndex, 'value', e.target.value)}
@@ -818,19 +760,19 @@ export const ProductForm = memo(() => {
                       <div className="space-y-2">
                         <Button className="w-full" type="button" variant="outline" onClick={handleAddAttribute}>
                           <Plus className="mr-2 h-4 w-4" />
-                          Add Attribute
+                          {t('Seller.addAttribute')}
                         </Button>
 
                         {attributes.length > 0 && (
                           <div className="rounded-lg border border-dashed bg-muted/50 p-4 text-center">
                             <div className="mb-2 text-sm text-muted-foreground">
-                              Variants will be auto-generated when you add attribute values.
+                              {t('Seller.variantsWillAutoGenerate')}
                               <br />
                               Press <kbd className="rounded bg-muted px-1 py-0.5 text-xs">Enter</kbd> to quickly add values.
                             </div>
                             <Button size="sm" type="button" onClick={generateVariants}>
                               <Layers className="mr-2 h-3 w-3" />
-                              Regenerate Variants ({variants.length})
+                              {t('Seller.generateVariants')} ({variants.length})
                             </Button>
                           </div>
                         )}
@@ -847,43 +789,19 @@ export const ProductForm = memo(() => {
                               {showVariantOverview ? <EyeOff className="mr-1 h-3 w-3" /> : <Eye className="mr-1 h-3 w-3" />}
                               {showVariantOverview ? 'Hide Overview' : 'Show Overview'}
                             </Button>
-
-                            <Button
-                              size="sm"
-                              type="button"
-                              variant="ghost"
-                              onClick={() => {
-                                // const debugInfo = variants.map((v, i) => ({
-                                //   index: i,
-                                //   sku: v.sku,
-                                //   price: v.price,
-                                //   stock: v.stock,
-                                //   images: v.images?.length || 0,
-                                //   imageUrls: v.images?.map((img) => img.url.substring(0, 50) + '...') || [],
-                                //   hasValidImages: v.images && v.images.length > 0,
-                                //   errors: validateVariant(v)
-                                // }));
-                                // eslint-disable-next-line no-console
-                                // console.log('Variant Debug Info:', debugInfo);
-                                toast.success(`Debug info available. ${variants.length} variants found.`);
-                              }}
-                            >
-                              Debug
-                            </Button>
                           </div>
                         )}
                       </div>
 
-                      {/* Bulk Actions */}
                       {variants.length > 1 && (
                         <div className="mb-4 rounded-lg border border-dashed bg-muted/50 p-4">
-                          <h4 className="mb-3 text-sm font-medium">Bulk Actions</h4>
+                          <h4 className="mb-3 text-sm font-medium">{t('Seller.bulkEdit')}</h4>
                           <div className="flex items-center gap-2">
                             <div className="relative flex-1">
                               <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                               <input
                                 className="w-full rounded-md border border-input bg-background py-2 pl-10 pr-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                                placeholder="Update all variant prices"
+                                placeholder={t('Seller.bulkEditPricePlaceholder')}
                                 step="0.01"
                                 type="number"
                                 value={bulkEditPrice}
@@ -891,13 +809,12 @@ export const ProductForm = memo(() => {
                               />
                             </div>
                             <Button size="sm" type="button" onClick={handleBulkUpdatePrice}>
-                              Update All
+                              {t('Seller.applyToAll')}
                             </Button>
                           </div>
                         </div>
                       )}
 
-                      {/* Variant Overview Table */}
                       {showVariantOverview && variants.length > 0 && (
                         <div className="mb-4 overflow-x-auto rounded-lg border">
                           <table className="w-full text-sm">
@@ -978,7 +895,6 @@ export const ProductForm = memo(() => {
                                 </AccordionTrigger>
 
                                 <AccordionContent>
-                                  {/* Show validation errors */}
                                   {errors.length > 0 && (
                                     <div className="mb-4 rounded-md border border-red-200 bg-red-50 p-3">
                                       <div className="mb-2 flex items-center gap-2">
@@ -997,12 +913,12 @@ export const ProductForm = memo(() => {
                                     <div className="grid grid-cols-1 gap-3">
                                       <div>
                                         <label className="mb-2 block text-sm font-medium" htmlFor={`variant-sku-${index}`}>
-                                          SKU *
+                                          {t('Seller.variantSku')} *
                                         </label>
                                         <input
                                           className={`w-full rounded-md border ${!variant.sku ? 'border-red-300 bg-red-50' : 'border-input bg-background'} px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`}
                                           id={`variant-sku-${index}`}
-                                          placeholder="Enter variant SKU"
+                                          placeholder={t('Seller.variantSkuPlaceholder')}
                                           type="text"
                                           value={variant.sku || ''}
                                           onChange={(e) => handleVariantUpdate(index, 'sku', e.target.value)}
@@ -1012,7 +928,7 @@ export const ProductForm = memo(() => {
                                       <div className="grid grid-cols-2 gap-3">
                                         <div>
                                           <label className="mb-2 block text-sm font-medium" htmlFor={`variant-price-${index}`}>
-                                            Price *
+                                            {t('Seller.variantPrice')} *
                                           </label>
                                           <div className="relative">
                                             <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -1030,7 +946,7 @@ export const ProductForm = memo(() => {
 
                                         <div>
                                           <label className="mb-2 block text-sm font-medium" htmlFor={`variant-sale-price-${index}`}>
-                                            Sale Price (Optional)
+                                            {t('Seller.variantSalePrice')} ({t('Common.optional')})
                                           </label>
                                           <div className="relative">
                                             <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -1049,7 +965,7 @@ export const ProductForm = memo(() => {
 
                                       <div>
                                         <label className="mb-2 block text-sm font-medium" htmlFor={`variant-stock-${index}`}>
-                                          Stock Quantity *
+                                          {t('Seller.variantStock')} *
                                         </label>
                                         <div className="relative">
                                           <PackageCheck className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -1057,7 +973,7 @@ export const ProductForm = memo(() => {
                                             className={`w-full rounded-md border ${variant.stock === undefined || variant.stock < 0 ? 'border-red-300 bg-red-50' : 'border-input bg-background'} py-2 pl-10 pr-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`}
                                             id={`variant-stock-${index}`}
                                             min="0"
-                                            placeholder="0"
+                                            placeholder={t('Seller.variantStockPlaceholder')}
                                             type="number"
                                             value={variant.stock !== undefined ? variant.stock : ''}
                                             onChange={(e) => handleVariantUpdate(index, 'stock', e.target.value)}
@@ -1068,12 +984,10 @@ export const ProductForm = memo(() => {
 
                                     <div>
                                       <div className="mb-3 flex items-center gap-2 text-sm font-medium">
-                                        <span>Variant Images *</span>
+                                        <span>{t('Seller.variantImages')} *</span>
                                         {(!variant.images || variant.images.length === 0) && <span className="text-xs text-red-500">(At least 1 required)</span>}
                                         {variant.images && variant.images.length > 0 && <span className="text-xs text-green-600">({variant.images.length} uploaded)</span>}
                                       </div>
-
-                                      {/* Direct file input instead of CustomInputImage for variants */}
                                       <div className="relative">
                                         <input
                                           multiple
@@ -1085,35 +999,56 @@ export const ProductForm = memo(() => {
                                             const files = e.target.files;
                                             if (files && files.length > 0) {
                                               handleVariantImageUpload(index, Array.from(files));
-                                              // Reset input after upload
+
                                               e.target.value = '';
                                             }
                                           }}
                                         />
-                                        <p className="mt-1 text-xs text-muted-foreground">Upload JPG, PNG, or WebP images</p>
+                                        <p className="mt-1 text-xs text-muted-foreground">Upload JPG, PNG, or WebP images. Click on image to set as default.</p>
                                       </div>
 
                                       {variant.images && variant.images.length > 0 ? (
                                         <div className="mt-3 flex flex-wrap gap-2">
                                           {variant.images.map((img, imgIndex) => (
-                                            <div key={imgIndex} className="relative h-16 w-16 overflow-hidden rounded-md border">
+                                            <div
+                                              key={imgIndex}
+                                              title={img.isDefault ? 'Default image (click another to change)' : 'Click to set as default'}
+                                              className={`group relative h-20 w-20 cursor-pointer overflow-hidden rounded-md border-2 transition-all hover:border-blue-300 ${
+                                                img.isDefault ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'
+                                              }`}
+                                              onClick={() => handleSetDefaultVariantImage(index, imgIndex)}
+                                            >
                                               <img alt={`Variant ${imgIndex + 1}`} className="h-full w-full object-cover" src={img.url} />
                                               <Button
-                                                className="absolute right-0 top-0 h-5 w-5 rounded-full p-0"
                                                 size="icon"
                                                 type="button"
                                                 variant="destructive"
-                                                onClick={() => {
+                                                className={cn(
+                                                  'absolute -right-[54px] -top-[80px] h-6 w-6 rounded-full bg-red-500 p-0 opacity-70 shadow-md hover:bg-red-600 hover:opacity-100 group-hover:opacity-100',
+                                                  img.isDefault && 'hidden'
+                                                )}
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
                                                   const newVariants = [...variants];
                                                   if (img.publicId) {
                                                     deleteUploadedImage(img.publicId);
                                                   }
                                                   newVariants[index].images?.splice(imgIndex, 1);
+
+                                                  if (img.isDefault && newVariants[index].images && newVariants[index].images!.length > 0) {
+                                                    newVariants[index].images![0].isDefault = true;
+                                                  }
+
                                                   setVariants(newVariants);
+                                                  toast.success('Image removed successfully');
                                                 }}
                                               >
-                                                <Trash2 className="h-3 w-3" />
+                                                <Trash2 className="h-3 w-3 text-white" />
                                               </Button>
+
+                                              {img.isDefault && (
+                                                <div className="absolute bottom-0 left-0 right-0 bg-blue-500 bg-opacity-90 px-1 py-0.5 text-center text-xs font-medium text-white">Default</div>
+                                              )}
                                             </div>
                                           ))}
                                         </div>
@@ -1125,7 +1060,6 @@ export const ProductForm = memo(() => {
                                         </div>
                                       )}
 
-                                      {/* Action buttons for each variant */}
                                       <div className="mt-4 flex items-center gap-2">
                                         <Button size="sm" type="button" variant="outline" onClick={() => handleCopyVariant(variant)}>
                                           <Copy className="mr-1 h-3 w-3" />
@@ -1142,8 +1076,8 @@ export const ProductForm = memo(() => {
                       ) : (
                         <div className="rounded-md border border-dashed p-6 text-center">
                           <Layers className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
-                          <p>No variants yet.</p>
-                          <p className="mt-1 text-sm text-muted-foreground">Add attributes and generate variants first.</p>
+                          <p>{t('Seller.noVariantsYet')}</p>
+                          <p className="mt-1 text-sm text-muted-foreground">{t('Seller.addAttributesFirst')}</p>
                         </div>
                       )}
                     </div>

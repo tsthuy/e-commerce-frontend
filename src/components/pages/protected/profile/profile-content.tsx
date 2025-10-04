@@ -10,15 +10,16 @@ import type { DataForm, UpdateProfileRequest } from '~/types';
 
 import { profileApi } from '~/services';
 
-import { useCloudinaryUpload, useProfile } from '~/hooks';
+import { useCloudinaryUpload, useProfile, useTranslation } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
 
 import { Button } from '~/components/common';
-import { CustomForm, CustomInput, CustomInputPassword } from '~/components/form';
+import { CustomForm, CustomInput } from '~/components/form';
 import { Avatar, AvatarFallback, AvatarImage, Card, CardContent } from '~/components/ui';
 
 export const ProfileContent = memo(() => {
+  const { t } = useTranslation();
   const { data: profile, refetch } = useProfile({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -39,29 +40,25 @@ export const ProfileContent = memo(() => {
   const schema = useMemo(
     () =>
       z.object({
-        fullName: z.string().min(1, { message: validates.required.message('Full Name') }),
+        fullName: z.string().min(1, { message: validates.required.message(t('Common.fullName')) }),
         email: z
           .string()
           .min(1, {
-            message: validates.required.message('Email')
+            message: validates.required.message(t('Common.email'))
           })
           .refine((value) => validates.email.pattern.test(value), validates.email.message),
         phone: z.string().min(1, {
-          message: validates.required.message('Phone Number')
-        }),
-        password: z.string().min(1, {
-          message: validates.required.message('Password is required for any update')
+          message: validates.required.message(t('Common.phoneNumber'))
         })
       }),
-    []
+    [t]
   );
 
   const defaultValues = useMemo(
     () => ({
       fullName: profile?.fullName || '',
       email: profile?.email || '',
-      phone: profile?.phone || '',
-      password: ''
+      phone: profile?.phone || ''
     }),
     [profile]
   );
@@ -85,11 +82,9 @@ export const ProfileContent = memo(() => {
     try {
       setIsLoading(true);
 
-      const { fullName, password, phone } = values;
+      const { fullName, phone } = values;
 
-      const updatedFields: UpdateProfileRequest = {
-        password
-      };
+      const updatedFields: UpdateProfileRequest = {};
 
       if (fullName !== profile?.fullName) {
         updatedFields.fullName = fullName;
@@ -113,10 +108,10 @@ export const ProfileContent = memo(() => {
         }
       }
 
-      const hasChanges = Object.keys(updatedFields).length > 1 || updatedFields.avatarPublicId;
+      const hasChanges = Object.keys(updatedFields).length > 0 || updatedFields.avatarPublicId;
 
       if (!hasChanges) {
-        toast.info('No changes detected');
+        toast.info(t('Common.noChangesDetected'));
         return;
       }
 
@@ -124,10 +119,10 @@ export const ProfileContent = memo(() => {
 
       if (response.status == 200) {
         await refetch();
-        toast.success('Profile updated successfully');
+        toast.success(t('Common.profileUpdatedSuccessfully'));
       }
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Failed to update profile'));
+      toast.error(getErrorMessage(error, t('Common.failedToUpdateProfile')));
       if (newAvatarId) deleteUploadedImage(newAvatarId);
     } finally {
       setAvatarPreview(null);
@@ -138,7 +133,7 @@ export const ProfileContent = memo(() => {
   };
 
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-full w-full p-6">
       <Card className="w-full border-none shadow-none">
         <CardContent className="flex flex-col gap-8 p-0">
           <CustomForm options={{ defaultValues }} schema={schema} onSubmit={handleUpdateProfile}>
@@ -157,7 +152,6 @@ export const ProfileContent = memo(() => {
                 )}
 
                 {isEditing && (
-                  // eslint-disable-next-line jsx-a11y/label-has-associated-control
                   <label
                     className="absolute bottom-0 right-0 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary text-white shadow-md hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                     htmlFor="avatar"
@@ -175,24 +169,22 @@ export const ProfileContent = memo(() => {
 
             <div className="mb-4 flex justify-end">
               <Button disabled={isLoading || isUploading} type="button" variant="outline" onClick={() => setIsEditing(!isEditing)}>
-                {isEditing ? 'Cancel' : 'Edit Profile'}
+                {isEditing ? t('Common.cancel') : t('Common.editProfile')}
               </Button>
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <CustomInput disabled={!isEditing || isLoading || isUploading} label="Full Name" name="fullName" placeholder="Your full name" />
+              <CustomInput disabled={!isEditing || isLoading || isUploading} label={t('Common.fullName')} name="fullName" placeholder={t('Common.yourFullName')} />
 
-              <CustomInput disabled label="Email Address" name="email" placeholder="Your email" />
+              <CustomInput disabled label={t('Common.emailAddress')} name="email" placeholder={t('Common.yourEmail')} />
 
-              <CustomInput disabled={!isEditing || isLoading || isUploading} label="Phone Number" name="phone" placeholder="Your phone number" />
-
-              {isEditing && <CustomInputPassword disabled={isLoading || isUploading} label="Password (required to update)" name="password" placeholder="Enter your password" />}
+              <CustomInput disabled={!isEditing || isLoading || isUploading} label={t('Common.phoneNumber')} name="phone" placeholder={t('Common.yourPhoneNumber')} />
             </div>
 
             {isEditing && (
               <div className="mt-6 flex justify-center">
                 <Button disabled={isLoading || isUploading} isLoading={isLoading || isUploading} type="submit">
-                  Update Profile
+                  {t('Common.updateProfile')}
                 </Button>
               </div>
             )}

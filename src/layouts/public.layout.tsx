@@ -9,16 +9,17 @@ import { COOKIE_KEYS } from '~/constants';
 
 import { authApi } from '~/services';
 
-import { useProfile } from '~/hooks';
+import { useProfile, useTranslation } from '~/hooks';
 
 import { getErrorMessage } from '~/utils';
 
-import { LoadingScreen } from '~/components/common';
+import { ChatWindow, LoadingScreen } from '~/components/common';
 import { FooterPublicLayout, HeaderPublicLayout, MainPublicLayout, TopHeaderPublicLayout, WrapperPublicLayout } from '~/components/layouts/public';
 
 import { AUTH_ROUTES, OTHER_ROUTES, PUBLIC_ROUTES } from '~/routes';
 
 export const PublicLayout = memo(() => {
+  const { t } = useTranslation();
   const location = useLocation();
 
   const isHiddenHeader = useMemo(() => [OTHER_ROUTES[404].path()].includes(location.pathname), [location]);
@@ -41,7 +42,7 @@ export const PublicLayout = memo(() => {
     try {
       await authApi.logout({ data: { directUri: AUTH_ROUTES.login.path() } });
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Something went wrong! Please try again.'));
+      toast.error(getErrorMessage(error, t('Common.somethingWentWrong')));
     }
   };
 
@@ -76,6 +77,8 @@ export const PublicLayout = memo(() => {
             <Redirect to={OTHER_ROUTES[404].path()} />
           </Switch>
         </AnimatePresence>
+
+        <ChatWindow />
       </MainPublicLayout>
       {!isHiddenFooter && <FooterPublicLayout />}
     </WrapperPublicLayout>

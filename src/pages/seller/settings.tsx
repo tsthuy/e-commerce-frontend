@@ -1,14 +1,16 @@
 import { memo } from 'react';
 
-import { Container, Helmet } from '~/components/common';
+import { useTranslation } from '~/hooks';
+
+import { Helmet } from '~/components/common';
+import { SellerSettingsContent } from '~/components/pages/seller/settings/seller-settings-content';
 
 export const SellerSettings = memo(() => {
+  const { t } = useTranslation();
+
   return (
-    <Helmet title="Settings">
-      <Container className="px-6 py-8">
-        <h1 className="mb-6 text-2xl font-bold">Settings</h1>
-        <p>Shop settings will appear here</p>
-      </Container>
+    <Helmet title={t('Seller.settings')}>
+      <SellerSettingsContent />
     </Helmet>
   );
 });

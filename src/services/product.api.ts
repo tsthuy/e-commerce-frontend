@@ -1,15 +1,58 @@
-import type { AxiosPromise } from 'axios';
+import type { AxiosPromise, AxiosRequestConfig } from 'axios';
 
 import { API_URLS } from '~/constants';
 
-import type { ProductListResponse, ProductPayload } from '~/types';
+import type { ProductDetailParams, ProductDetailResponseType, ProductListResponse, ProductPaginationParams, ProductPayload } from '~/types';
 
 import type { ApiParams, ApiResponse } from './../types';
-import type { ProductDetailResponse } from './../types/product.d';
 
 import { httpBase } from '~/services/config.service';
 
 export const productApi = {
+  list({ data, config }: ApiParams<ProductPaginationParams>): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>(API_URLS.product.getAllPaged, {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
+  },
+
+  sellerList({ data, config }: ApiParams<ProductPaginationParams>): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>(API_URLS.product.getSellerPaged, {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
+  },
+
+  publicSellerList({ sellerId, data, config }: ApiParams<ProductPaginationParams> & { sellerId: string }): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>(API_URLS.product.getPublicSellerPaged(sellerId), {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
+  },
+
+  adminList({ data, config }: ApiParams<ProductPaginationParams>): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>(API_URLS.admin.allProducts, {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
+  },
+
+  detail({ data: { productId }, config }: ApiParams<ProductDetailParams>): AxiosPromise<ApiResponse<ProductDetailResponseType>> {
+    return httpBase.get<ApiResponse<ProductDetailResponseType>>(API_URLS.product.detail(productId), config);
+  },
+
   getAllPaged({
     page = 0,
     size = 10,
@@ -64,7 +107,7 @@ export const productApi = {
     return httpBase.post<ProductPayload, ApiResponse<void>>(API_URLS.product.create, data, config);
   },
 
-  detail({ productId, config }: ApiParams & { productId: string }): AxiosPromise<ApiResponse<ProductDetailResponse>> {
+  detailLegacy({ productId, config }: ApiParams & { productId: string }): AxiosPromise<ApiResponse<ProductDetailResponseType>> {
     return httpBase.get(API_URLS.product.detail(productId), config);
   },
 
@@ -74,5 +117,28 @@ export const productApi = {
 
   delete({ productId, config }: ApiParams & { productId: string }): AxiosPromise<ApiResponse<void>> {
     return httpBase.delete(API_URLS.product.delete(productId), config);
+  },
+
+  semanticSearch({ data, config }: { data: { query: string; page?: number; size?: number }; config?: AxiosRequestConfig }): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>('/api/products/semantic-search', {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
+  },
+
+  /**
+   * Get personalized product recommendations
+   */
+  recommendations({ data, config }: { data: { page?: number; size?: number }; config?: AxiosRequestConfig }): AxiosPromise<ApiResponse<ProductListResponse>> {
+    return httpBase.get<ApiResponse<ProductListResponse>>('/api/products/recommendations', {
+      ...config,
+      params: {
+        ...data,
+        ...(config?.params || {})
+      }
+    });
   }
 };

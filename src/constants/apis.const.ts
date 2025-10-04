@@ -16,7 +16,9 @@ export const API_URLS = {
     signupAsSeller: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/signup`,
     login: {
       email: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login/customer`,
-      social: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login-social`
+      seller: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login/seller`,
+      social: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/login-social`,
+      google: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/google/authenticate`
     },
     logout: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/logout`,
     refreshToken: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/refresh-token`,
@@ -27,6 +29,36 @@ export const API_URLS = {
     updateProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/update`,
     createAddress: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/address`,
     deleteAddress: (addressId: string): string => `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}/profile/address/${addressId}`
+  },
+  userInfo: {
+    getUserInfo: `${API_PREFIX_GENERAL}/user-info`
+  },
+  seller: {
+    getProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/profile`,
+    updateProfile: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/profile`,
+    getPublicProfile: (sellerId: string): string => `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/public/${sellerId}/profile`
+  },
+  dashboard: {
+    stats: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/dashboard/stats`,
+    chart: `${API_PREFIX_GENERAL}${API_PREFIX_AUTH}${API_PREFIX_SELLER}/dashboard/chart`
+  },
+  admin: {
+    login: '/admin/login',
+    profile: '/admin/profile',
+    dashboardStats: '/admin/dashboard/stats',
+    dashboardChart: '/admin/dashboard/chart',
+    allProducts: '/admin/products',
+    allOrders: '/admin/orders',
+    allCustomers: '/admin/customers',
+    allSellers: '/api/admin/sellers',
+    productDetail: (id: string): string => `/admin/products/${id}`,
+    deleteProduct: (id: string): string => `/admin/products/${id}`,
+    orderDetail: (id: string): string => `/admin/orders/${id}`,
+    customerDetail: (id: string): string => `/admin/customers/${id}`,
+    deleteCustomer: (id: string): string => `/admin/customers/${id}`,
+    sellerDetail: (id: string): string => `/admin/sellers/${id}`,
+    deleteSeller: (id: string): string => `/api/admin/sellers/${id}`,
+    updateOrderStatus: (id: string): string => `/admin/orders/${id}/status`
   },
   category: {
     getAll: '/api/categories',
@@ -40,6 +72,7 @@ export const API_URLS = {
     getAll: '/api/products',
     getAllPaged: '/api/products/paged',
     getSellerPaged: '/api/products/seller/paged',
+    getPublicSellerPaged: (sellerId: string): string => `/api/products/seller/${sellerId}/paged`,
     create: '/api/products',
     update: (id: string): string => `/api/products/${id}`,
     delete: (id: string): string => `/api/products/${id}`,
@@ -58,16 +91,44 @@ export const API_URLS = {
     removeItem: (productId: string): string => `/api/v1/wishlist/items/${productId}`,
     check: (productId: string): string => `/api/v1/wishlist/check?productId=${productId}`,
     clear: '/api/v1/wishlist/clear'
+  },
+  order: {
+    list: '/api/orders',
+    create: '/api/orders',
+    detail: (orderId: string): string => `/api/orders/${orderId}`,
+    cancel: (orderId: string): string => `/api/orders/${orderId}/cancel`,
+
+    sellerList: '/api/orders/seller',
+    sellerDetail: (orderId: string): string => `/api/orders/seller/${orderId}`,
+    updateStatus: (orderId: string): string => `/api/orders/seller/${orderId}/status`,
+    statusTransitions: (orderId: string): string => `/api/orders/seller/${orderId}/status-transitions`
+  },
+  review: {
+    create: '/api/v1/protected/reviews',
+    getProductReviews: (productId: string): string => `/api/v1/general/products/${productId}/reviews`,
+    checkExists: '/api/v1/protected/reviews/check'
+  },
+  chat: {
+    sendMessage: '/api/chat/message',
+    getMessages: '/api/chat/messages',
+    getHistory: (sessionId: string): string => `/api/chat/history/${sessionId}`,
+    clearHistory: (sessionId: string): string => `/api/chat/history/${sessionId}`,
+    health: '/api/chat/health'
   }
 };
 
 export const API_ENDPOINTS = {
-  // Sao chép từ API_URLS cho tương thích
   AUTH: API_URLS.auth,
   PROFILE: API_URLS.profile,
+  USER_INFO: API_URLS.userInfo,
   CATEGORY: API_URLS.category,
   PRODUCT: API_URLS.product,
   CART: API_URLS.cart,
   WISHLIST: API_URLS.wishlist,
-  GENERAL: API_URLS.general
+  ORDER: API_URLS.order,
+  REVIEW: API_URLS.review,
+  CHAT: API_URLS.chat,
+  GENERAL: API_URLS.general,
+  DASHBOARD: API_URLS.dashboard,
+  ADMIN: API_URLS.admin
 };

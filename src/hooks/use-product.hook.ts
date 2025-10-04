@@ -1,65 +1,130 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { useEffect, useState } from 'react';
+
+import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 
-import { QUERY_KEYS } from '~/constants';
+import type { UseQueryParams } from '~/types';
 
-import { productApi } from '~/services/product.api';
+import { useDebounce } from '~/hooks/use-debounce.hook';
+import { productQueries } from '~/queries/product.query';
+import type { ProductDetailParams, ProductDetailResponseType, ProductListResponse, ProductPaginationParams } from '~/types/product';
 
-interface UseProductListParams {
-  data: {
-    page?: number;
-    size?: number;
-    sortBy?: string;
-    sortDirection?: 'asc' | 'desc';
-    search?: string;
-  };
+export function useProductList({ data, enabled = true, retry = false }: UseQueryParams<ProductPaginationParams>): UseQueryResult<ProductListResponse> {
+  const queryResponse = useQuery({
+    ...productQueries.list({ data }),
+    retry,
+    enabled
+  });
+  return queryResponse;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const useProductList = ({ data }: UseProductListParams) => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.product.list, data],
-    queryFn: () => productApi.getAllPaged(data),
-    select: (response) => response.data,
-    staleTime: 30000, // 30 seconds
-    gcTime: 300000 // 5 minutes
+export function useSellerProductList({ data, enabled = true, retry = false }: UseQueryParams<ProductPaginationParams>): UseQueryResult<ProductListResponse> {
+  const queryResponse = useQuery({
+    ...productQueries.sellerList({ data }),
+    retry,
+    enabled
   });
-};
-
-interface UseSellerProductListParams {
-  data: {
-    page?: number;
-    size?: number;
-    sortBy?: string;
-    sortDirection?: 'asc' | 'desc';
-    search?: string;
-  };
+  return queryResponse;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const useSellerProductList = ({ data }: UseSellerProductListParams) => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.product.sellerList, data],
-    queryFn: () => productApi.getSellerPaged(data),
-    select: (response) => response.data,
-    staleTime: 30000, // 30 seconds
-    gcTime: 300000 // 5 minutes
+export function useAdminProductList({ data, enabled = true, retry = false }: UseQueryParams<ProductPaginationParams>): UseQueryResult<ProductListResponse> {
+  const queryResponse = useQuery({
+    ...productQueries.adminList({ data }),
+    retry,
+    enabled
   });
-};
+  return queryResponse;
+}
 
-interface UseProductDetailParams {
-  productId: string;
+export function useProductDetail({ data, enabled = true, retry = false }: UseQueryParams<ProductDetailParams>): UseQueryResult<ProductDetailResponseType> {
+  const queryResponse = useQuery({
+    ...productQueries.detail({ data }),
+    retry,
+    enabled
+  });
+  return queryResponse;
+}
+
+export function useProductSemanticSearch({ data, enabled = true, retry = false }: UseQueryParams<{ query: string; page?: number; size?: number }>): UseQueryResult<ProductListResponse> {
+  const queryResponse = useQuery({
+    ...productQueries.semanticSearch({ data }),
+    retry,
+    enabled
+  });
+  return queryResponse;
+}
+
+/**
+ * Debounced semantic search hook - chờ 5 giây sau khi user ngừng gõ
+ */
+export function useProductSemanticSearchDebounced({
+  query,
+  page = 0,
+  size = 8,
+  enabled = true,
+  retry = false
+}: {
+  query: string;
+  page?: number;
+  size?: number;
   enabled?: boolean;
+  retry?: boolean;
+}): UseQueryResult<ProductListResponse> & { isDebouncing: boolean } {
+  const [isDebouncing, setIsDebouncing] = useState(false);
+
+  const debouncedQuery = useDebounce(query, 2000);
+  useEffect(() => {
+    if (query !== debouncedQuery && query.trim() !== '') {
+      setIsDebouncing(true);
+    } else {
+      setIsDebouncing(false);
+    }
+  }, [query, debouncedQuery]);
+
+  const queryResponse = useQuery({
+    ...productQueries.semanticSearch({
+      data: {
+        query: debouncedQuery,
+        page,
+        size
+      }
+    }),
+    retry,
+    enabled: enabled && !!debouncedQuery && debouncedQuery.trim() !== ''
+  });
+
+  return {
+    ...queryResponse,
+    isDebouncing
+  };
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export const useProductDetail = ({ productId, enabled = true }: UseProductDetailParams) => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.product.detail, productId],
-    queryFn: () => productApi.detail({ productId }),
-    select: (response) => response.data.result,
-    enabled: enabled && !!productId,
-    staleTime: 30000, // 30 seconds
-    gcTime: 300000 // 5 minutes
+/**
+ * Hook for getting personalized product recommendations
+ */
+export function useRecommendProductForCustomer({
+  page = 0,
+  size = 8,
+  enabled = true,
+  retry = false
+}: {
+  page?: number;
+  size?: number;
+  enabled?: boolean;
+  retry?: boolean;
+} = {}): UseQueryResult<ProductListResponse> {
+  const queryResponse = useQuery({
+    ...productQueries.recommendations({
+      data: {
+        page,
+        size
+      }
+    }),
+    retry,
+    enabled,
+    staleTime: 0,
+    gcTime: 0
   });
-};
+
+  return queryResponse;
+}

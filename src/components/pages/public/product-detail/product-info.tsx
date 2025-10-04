@@ -1,14 +1,19 @@
 import { memo } from 'react';
 
-import { Heart, Minus, Plus, Share2, Star } from 'lucide-react';
+import { Heart, MessageCircle, Minus, Plus, Share2, Star } from 'lucide-react';
+import { useHistory } from 'react-router-dom';
 
 import type { ProductDetailResponse } from '~/types';
+
+import { useTranslation } from '~/hooks';
 
 import { Button } from '~/components/common';
 import { Badge } from '~/components/ui';
 import { Input } from '~/components/ui/input';
 
 import { useAddToCart } from '~/hooks/use-cart-mutation.hook';
+import { useProfile } from '~/hooks/use-profile.hook';
+import { useStableBehaviorTracking } from '~/hooks/use-stable-behavior-tracking.hook';
 import { useToggleWishlistMutation } from '~/hooks/use-wishlist-mutation.hook';
 import { useWishlistList } from '~/hooks/use-wishlist.hook';
 import { calculateDiscountPercentage, formatPrice } from '~/utils/product.util';
@@ -41,18 +46,19 @@ interface ProductInfoProps {
 export const ProductInfo = memo<ProductInfoProps>(({ product, selectedVariant, quantity, onQuantityChange }) => {
   const addToCart = useAddToCart();
   const toggleWishlist = useToggleWishlistMutation();
+  const { trackBehavior } = useStableBehaviorTracking();
   const { data: wishlistResponse } = useWishlistList();
+  const { data: profileResponse } = useProfile({ enabled: true });
 
-  // Check if product is in wishlist
+  const { push } = useHistory();
+
+  const { t } = useTranslation();
   const isInWishlist = wishlistResponse?.result?.items?.some((item) => item.product.id === product.id) ?? false;
 
-  // Calculate price and discount
   const currentPrice = selectedVariant?.salePrice || selectedVariant?.price || product.salePrice || product.price;
   const originalPrice = selectedVariant?.price || product.price;
   const hasDiscount = Boolean((selectedVariant?.salePrice && selectedVariant.salePrice < selectedVariant.price) || (product.salePrice && product.salePrice < product.price));
   const discountPercentage = hasDiscount ? calculateDiscountPercentage(originalPrice, currentPrice) : 0;
-
-  // Calculate stock
   const currentStock = selectedVariant?.stock || product.stock;
 
   const handleAddToCart = (): void => {
@@ -61,17 +67,38 @@ export const ProductInfo = memo<ProductInfoProps>(({ product, selectedVariant, q
       variantId: selectedVariant?.id,
       quantity
     });
+    trackBehavior({
+      productId: product.id,
+      actionType: 'ADD_TO_CART'
+    });
   };
 
   const handleToggleWishlist = (): void => {
     toggleWishlist.mutate({ productId: product.id });
+
+    if (!isInWishlist) {
+      trackBehavior({
+        productId: product.id,
+        actionType: 'ADD_TO_WISHLIST'
+      });
+    }
+  };
+
+  const handleMessageSeller = (): void => {
+    if (!product.seller?.shopName || !profileResponse?.id) return;
+
+    const customerId = profileResponse.id;
+
+    const sellerId = product.seller?.id;
+    const conversationId = `${customerId}_${sellerId}`;
+
+    push(`/user/messages/conversation/${conversationId}`);
   };
 
   const handleQuantityChange = (newQuantity: number): void => {
     onQuantityChange(Math.min(Math.max(1, newQuantity), currentStock));
   };
 
-  // Render stars for rating
   const renderStars = (rating: number): JSX.Element[] => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -89,70 +116,81 @@ export const ProductInfo = memo<ProductInfoProps>(({ product, selectedVariant, q
     return stars;
   };
 
+  const handleViewSellerProfile = (): void => {
+    if (!product.seller?.id) return;
+    push(`/shop/preview/${product.seller.id}`);
+  };
+
   return (
     <div className="space-y-6">
-      {/* Product Title */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">{product.name}</h1>
         <p className="mt-2 text-sm text-gray-500">SKU: {selectedVariant?.sku || product.sku}</p>
       </div>
 
-      {/* Rating and Reviews */}
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1">
           <div className="flex">{renderStars(product.averageRating || 0)}</div>
-          <span className="text-sm text-gray-600">({product.reviewCount || 0} reviews)</span>
+          <span className="text-sm text-gray-600">
+            ({product.reviewCount || 0} {t('Product.reviews')})
+          </span>
         </div>
-
-        {/* Status badges */}
         <div className="flex gap-2">
-          {product.isNew && <Badge className="bg-blue-500 hover:bg-blue-600">New</Badge>}
-          {hasDiscount && <Badge className="bg-red-500 hover:bg-red-600">-{discountPercentage}% OFF</Badge>}
+          {product.isNew && <Badge className="bg-blue-500 hover:bg-blue-600">{t('Product.new')}</Badge>}
+          {hasDiscount && (
+            <Badge className="bg-red-500 hover:bg-red-600">
+              -{discountPercentage}% {t('Product.off')}
+            </Badge>
+          )}
         </div>
       </div>
 
-      {/* Price */}
       <div className="space-y-2">
         <div className="flex items-center gap-3">
           <span className="text-3xl font-bold text-primary">{formatPrice(currentPrice)}</span>
           {hasDiscount && <span className="text-xl text-gray-500 line-through">{formatPrice(originalPrice)}</span>}
         </div>
-        {hasDiscount && <p className="text-sm text-green-600">You save {formatPrice(originalPrice - currentPrice)}</p>}
+        {hasDiscount && (
+          <p className="text-sm text-green-600">
+            {t('Product.youSave')} {formatPrice(originalPrice - currentPrice)}
+          </p>
+        )}
       </div>
-
-      {/* Stock Status */}
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium">Stock:</span>
-        <span className={`text-sm font-medium ${currentStock > 0 ? 'text-green-600' : 'text-red-600'}`}>{currentStock > 0 ? `${currentStock} available` : 'Out of stock'}</span>
+        <span className="text-sm font-medium">{t('Product.stock')}:</span>
+        <span className={`text-sm font-medium ${currentStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {currentStock > 0 ? `${currentStock} ${t('Product.available')}` : t('Product.outOfStock')}
+        </span>
       </div>
-
-      {/* Description */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-900">Description</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{t('Product.description')}</h3>
         <p className="mt-2 text-gray-600">{product.description}</p>
       </div>
-
-      {/* Category and Seller */}
       <div className="space-y-3">
         {product.category && (
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-gray-700">Category:</span>
+            <span className="text-sm font-medium text-gray-700">{t('Product.category')}:</span>
             <Badge variant="outline">{product.category.name}</Badge>
           </div>
         )}
 
         {product.seller && (
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-700">Sold by:</span>
-            <span className="text-sm font-medium text-gray-900">{product.seller.shopName}</span>
+            <span className="text-sm font-medium text-gray-700">{t('Product.soldBy')}:</span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-900 hover:cursor-pointer" onClick={handleViewSellerProfile}>
+                {product.seller.shopName}
+              </span>
+              <Button className="h-8 w-8 p-0 text-gray-500 hover:text-primary" size="sm" variant="ghost" onClick={handleMessageSeller}>
+                <MessageCircle className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         )}
       </div>
-
-      {/* Quantity Selector */}
       {!product.hasVariants && (
         <div className="space-y-2">
-          <span className="text-sm font-medium text-gray-700">Quantity:</span>
+          <span className="text-sm font-medium text-gray-700">{t('Product.quantity')}:</span>
           <div className="flex items-center gap-3">
             <Button disabled={quantity <= 1} size="sm" variant="outline" onClick={() => handleQuantityChange(quantity - 1)}>
               <Minus className="h-4 w-4" />
@@ -165,10 +203,9 @@ export const ProductInfo = memo<ProductInfoProps>(({ product, selectedVariant, q
         </div>
       )}
 
-      {/* Action Buttons */}
       <div className="flex gap-3">
         <Button className="flex-1" disabled={currentStock === 0 || addToCart.isPending} size="lg" onClick={handleAddToCart}>
-          {addToCart.isPending ? 'Adding...' : 'Add to Cart'}
+          {addToCart.isPending ? t('Product.adding') : t('Product.addToCart')}
         </Button>
         <Button disabled={toggleWishlist.isPending} size="lg" variant="outline" onClick={handleToggleWishlist}>
           <Heart className={`h-4 w-4 ${isInWishlist ? 'fill-red-500 text-red-500' : ''}`} />

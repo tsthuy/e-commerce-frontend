@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { BadgeDollarSign, Calendar, FolderOpen, LayoutGrid, MessageCircle, Package, PlusCircle, RefreshCcw, Settings, ShoppingBag, Tag } from 'lucide-react';
+import { LayoutGrid, MessageCircle, Package, PlusCircle, Settings, ShoppingBag } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { cn } from '~/libs';
@@ -28,41 +28,18 @@ const sidebarItems = [
     route: SELLER_ROUTES.createProduct.path(),
     icon: PlusCircle
   },
-  {
-    name: 'All Events',
-    route: SELLER_ROUTES.allEvents.path(),
-    icon: Calendar
-  },
-  {
-    name: 'Create Event',
-    route: SELLER_ROUTES.createEvent.path(),
-    icon: PlusCircle
-  },
-  {
-    name: 'Withdraw Money',
-    route: SELLER_ROUTES.withdrawMoney.path(),
-    icon: BadgeDollarSign
-  },
+
   {
     name: 'Shop Inbox',
     route: SELLER_ROUTES.shopInbox.path(),
     icon: MessageCircle
   },
-  {
-    name: 'Discount Codes',
-    route: SELLER_ROUTES.discountCodes.path(),
-    icon: Tag
-  },
-  {
-    name: 'Refunds',
-    route: SELLER_ROUTES.refunds.path(),
-    icon: RefreshCcw
-  },
-  {
-    name: 'Categories',
-    route: SELLER_ROUTES.categories.path(),
-    icon: FolderOpen
-  },
+  // {
+  //   name: 'Discount Codes',
+  //   route: SELLER_ROUTES.discountCodes.path(),
+  //   icon: Tag
+  // },
+
   {
     name: 'Settings',
     route: SELLER_ROUTES.settings.path(),
@@ -74,7 +51,7 @@ export const SellerSideBar = memo(() => {
   const location = useLocation();
 
   return (
-    <div className="flex h-full w-64 flex-col border-r bg-background p-4">
+    <div className="fixed left-0 top-[var(--header-public)] z-20 flex h-[calc(100vh-var(--header-public))] w-64 flex-col border-r bg-background p-4">
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-foreground">Seller Dashboard</h2>
       </div>

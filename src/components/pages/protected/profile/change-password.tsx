@@ -7,7 +7,7 @@ import type { DataForm } from '~/types';
 
 import { authApi } from '~/services';
 
-import { useCustomForm } from '~/hooks';
+import { useCustomForm, useTranslation } from '~/hooks';
 
 import { getErrorMessage, validates } from '~/utils';
 
@@ -15,19 +15,21 @@ import { Button } from '~/components/common';
 import { CustomForm, CustomInputPassword } from '~/components/form';
 
 export const ChangePassword = memo(() => {
+  const { t } = useTranslation();
+
   const schema = z
     .object({
-      password: z.string().min(1, { message: validates.required.message('Current password') }),
-      newPassword: z.string().min(8, { message: 'Password must be at least 8 characters' }),
+      password: z.string().min(1, { message: validates.required.message(t('Common.currentPassword')) }),
+      newPassword: z.string().min(8, { message: t('Common.passwordMustBeAtLeast8') }),
 
-      confirmPassword: z.string().min(1, { message: validates.required.message('Confirm password') })
+      confirmPassword: z.string().min(1, { message: validates.required.message(t('Common.confirmPassword')) })
     })
     .refine((data) => data.newPassword === data.confirmPassword, {
       message: validates.password.match,
       path: ['confirmPassword']
     })
     .refine((data) => data.password !== data.newPassword, {
-      message: 'New password must be different from current password',
+      message: t('Common.newPasswordMustBeDifferent'),
       path: ['newPassword']
     });
   const defaultValues = useMemo(
@@ -50,7 +52,7 @@ export const ChangePassword = memo(() => {
       const { password, newPassword } = values;
       const response = await authApi.changePassword({ data: { password, newPassword } });
 
-      if (response.status == 200) toast.success('Password updated successfully!!!');
+      if (response.status == 200) toast.success(t('Common.passwordUpdatedSuccessfully'));
       form.reset();
     } catch (error) {
       toast.error(getErrorMessage(error));
@@ -59,15 +61,15 @@ export const ChangePassword = memo(() => {
     }
   };
   return (
-    <div className="w-full">
-      <h2 className="text-center text-xl font-bold">Change password</h2>
+    <div className="w-full p-6">
+      <h2 className="text-center text-xl font-bold">{t('Common.changePassword')}</h2>
       <CustomForm className="flex flex-col gap-4" provider={form} onSubmit={handleChangePassword}>
-        <CustomInputPassword disabled={isLoading} label="Enter your old password" name="password" placeholder="********" />
-        <CustomInputPassword disabled={isLoading} label="Enter your new password" name="newPassword" placeholder="********" />
-        <CustomInputPassword disabled={isLoading} label="Enter your confirm password" name="confirmPassword" placeholder="********" />
+        <CustomInputPassword disabled={isLoading} label={t('Common.enterOldPassword')} name="password" placeholder="********" />
+        <CustomInputPassword disabled={isLoading} label={t('Common.enterNewPassword')} name="newPassword" placeholder="********" />
+        <CustomInputPassword disabled={isLoading} label={t('Common.enterConfirmPassword')} name="confirmPassword" placeholder="********" />
 
         <Button className="items-end" disabled={isLoading} isLoading={isLoading} type="submit">
-          Update
+          {t('Common.update')}
         </Button>
       </CustomForm>
     </div>

@@ -6,7 +6,7 @@ export const SEO_AUTHOR = 'ShopO';
 export const SEO_KEYWORD = 'ShopO';
 export const SEO_TYPE = 'website';
 export const SEO_FAVICON = '/favicon.ico';
-export const SEO_QUOTE = ' Your Destination for Modern Tech and Information Solutions';
+export const SEO_QUOTE = '"Wear the Past, Own the Style"';
 export const SEO_GUARANTEES = [
   {
     icon: ShoppingCart,
@@ -92,7 +92,7 @@ export const SEO_CATEGORY = [
   }
 ];
 export const SEO_SECTION_HEADINGS = {
-  BEST_DEALS: 'Best Deals',
+  BEST_DEALS: 'Product For You',
   POPULAR_EVENTS: 'Popular Events',
   FEATURED_PRODUCTS: 'Featured Products',
   SPONSOR: 'Our Trusted Partners'
@@ -102,6 +102,7 @@ export const LOGO = '/images/logo/logo.svg';
 export const BG = '/images/bg.avif';
 export const DEFAULT_IMG_BANNER = '/images/common/banner.svg';
 export const DEFAULT_IMG_AVATAR = '/images/common/no-avatar.webp';
+export const DEFAULT_ADMIN_AVATAR = '/admin.png';
 export const DEFAULT_IMG_SAMPLE = '/images/sample.jpg';
 export const DEFAULT_IMG_EMPTY = '/gifs/empty.gif';
 export const DEFAULT_IMG_SEARCHING = '/gifs/searching.gif';
@@ -113,58 +114,79 @@ export const MAX_PRICE_VALUE = 1000000;
 
 export const FAQ_DATA = [
   {
-    question: 'What is your return policy?',
-    answer:
-      "If you're not satisfied with your purchase, we accept returns within 30 days of delivery. To initiate a return, please email us at support@myecommercestore.com with your order number and a brief explanation of why you're returning the item."
+    questionKey: 'FAQ.questions.returnPolicy.question',
+    answerKey: 'FAQ.questions.returnPolicy.answer'
   },
   {
-    question: 'How do I track my order?',
-    answer: 'You can track your order by clicking the tracking link in your shipping confirmation email, or by logging into your account on our website and viewing the order details.'
+    questionKey: 'FAQ.questions.trackOrder.question',
+    answerKey: 'FAQ.questions.trackOrder.answer'
   },
   {
-    question: 'How do I contact customer support?',
-    answer: 'You can contact our customer support team by emailing us at support@myecommercestore.com, or by calling us at (555) 123-4567 between the hours of 9am and 5pm EST, Monday through Friday.'
+    questionKey: 'FAQ.questions.customerSupport.question',
+    answerKey: 'FAQ.questions.customerSupport.answer'
   },
   {
-    question: 'Can I change or cancel my order?',
-    answer:
-      "Unfortunately, once an order has been placed, we are not able to make changes or cancellations. If you no longer want the items you've ordered, you can return them for a refund within 30 days of delivery."
+    questionKey: 'FAQ.questions.changeOrder.question',
+    answerKey: 'FAQ.questions.changeOrder.answer'
   },
   {
-    question: 'Do you offer international shipping?',
-    answer: 'Currently, we only offer shipping within the United States.'
+    questionKey: 'FAQ.questions.internationalShipping.question',
+    answerKey: 'FAQ.questions.internationalShipping.answer'
   },
   {
-    question: 'What payment methods do you accept?',
-    answer: 'We accept visa, mastercard, paypal payment method also we have cash on delivery system.'
+    questionKey: 'FAQ.questions.paymentMethods.question',
+    answerKey: 'FAQ.questions.paymentMethods.answer'
   }
 ] as const;
 
 export const SPONSORS = [
   {
     id: 1,
-    name: 'Apple',
-    logoUrl: '/images/sponsor/apple.png'
+    name: 'Nike',
+    logoUrl: '/images/sponsor/nike.jpg',
+    translationKey: 'nike'
   },
   {
     id: 2,
-    name: 'Dell',
-    logoUrl: '/images/sponsor/dell.png'
+    name: 'Adidas',
+    logoUrl: '/images/sponsor/adidas.webp',
+    translationKey: 'adidas'
   },
   {
     id: 3,
-    name: 'LQ',
-    logoUrl: '/images/sponsor/LG.png'
+    name: 'Gucci',
+    logoUrl: '/images/sponsor/gucci.avif',
+    translationKey: 'gucci'
   },
   {
     id: 4,
-    name: 'Microsoft',
-    logoUrl: '/images/sponsor/microsoft.png'
+    name: 'Louis Vuitton',
+    logoUrl: '/images/sponsor/louis-vuitton.jpg',
+    translationKey: 'louisVuitton'
   },
   {
     id: 5,
-    name: 'Amazon',
-    logoUrl: '/images/sponsor/amazon.jpg'
+    name: 'Chanel',
+    logoUrl: '/images/sponsor/chanel.png',
+    translationKey: 'chanel'
+  },
+  {
+    id: 6,
+    name: 'Prada',
+    logoUrl: '/images/sponsor/prada.png',
+    translationKey: 'prada'
+  },
+  {
+    id: 7,
+    name: 'Jordan',
+    logoUrl: '/images/sponsor/jordan.png',
+    translationKey: 'jordan'
+  },
+  {
+    id: 8,
+    name: 'Supreme',
+    logoUrl: '/images/sponsor/supreme.png',
+    translationKey: 'supremeNy'
   }
 ] as const;
 

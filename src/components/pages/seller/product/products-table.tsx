@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import { Edit, Eye, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import type { ProductResponse } from '~/types';
 
@@ -17,9 +18,8 @@ interface ProductsTableProps {
 }
 
 export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreate }) => {
+  const { t } = useTranslation();
   const deleteMutation = useProductDelete();
-
-  // Define table columns
   const columns: ColumnDef<ProductResponse>[] = useMemo(
     () => [
       {
@@ -27,13 +27,18 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
         header: ({ table }) => (
           <input checked={table.getIsAllPageRowsSelected()} className="rounded border border-gray-300" type="checkbox" onChange={(e) => table.toggleAllPageRowsSelected(e.target.checked)} />
         ),
-        cell: ({ row }) => <input checked={row.getIsSelected()} className="rounded border border-gray-300" type="checkbox" onChange={(e) => row.toggleSelected(e.target.checked)} />,
+        cell: ({ row }) => (
+          <div className="flex items-center gap-4">
+            <input checked={row.getIsSelected()} className="rounded border border-gray-300" type="checkbox" onChange={(e) => row.toggleSelected(e.target.checked)} />
+            <img alt={row.getValue('name')} className="h-14 w-14 rounded-md object-cover" src={row.original.defaultImageUrl} />
+          </div>
+        ),
         enableSorting: false,
         enableHiding: false
       },
       {
         accessorKey: 'name',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Product Name" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Seller.productName')} />,
         cell: ({ row }) => (
           <div>
             <div className="font-medium">{row.getValue('name')}</div>
@@ -45,14 +50,14 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
       },
       {
         accessorKey: 'categoryName',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Seller.category')} />,
         cell: ({ row }) => <div className="text-sm">{row.getValue('categoryName') || '-'}</div>,
         enableSorting: false,
         enableHiding: true
       },
       {
         accessorKey: 'price',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Price" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Seller.price')} />,
         cell: ({ row }): JSX.Element => {
           const price = row.getValue('price') as number;
           const salePrice = row.original.salePrice;
@@ -74,7 +79,7 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
       },
       {
         accessorKey: 'stock',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Stock" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Seller.stockQuantity')} />,
         cell: ({ row }): JSX.Element => {
           const stock = row.getValue('stock') as number;
           return <div className={`text-sm ${stock <= 0 ? 'text-red-600' : stock < 10 ? 'text-yellow-600' : 'text-green-600'}`}>{stock}</div>;
@@ -84,7 +89,7 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
       },
       {
         accessorKey: 'status',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Seller.status')} />,
         cell: ({ row }): JSX.Element => {
           const status = row.getValue('status') as string;
           const isPublished = row.original.isPublished;
@@ -106,7 +111,7 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
       },
       {
         accessorKey: 'createdAt',
-        header: ({ column }) => <DataTableColumnHeader column={column} title="Created" />,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={t('Common.createdAt')} />,
         cell: ({ row }): JSX.Element => {
           const date = new Date(row.getValue('createdAt'));
           return <div className="text-sm">{date.toLocaleDateString()}</div>;
@@ -116,7 +121,7 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
       },
       {
         id: 'actions',
-        header: 'Actions',
+        header: t('Seller.actions'),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" onClick={() => onView?.(row.original)}>
@@ -134,10 +139,8 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
         enableHiding: false
       }
     ],
-    [onEdit, onView, deleteMutation]
+    [onEdit, onView, deleteMutation, t]
   );
-
-  // Filter fields for search and filtering
   const filterFields = useMemo(
     () => [
       {
@@ -149,7 +152,6 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
     []
   );
 
-  // Initialize table with empty data first to get state
   const { table } = useDataTable({
     data: [],
     columns,
@@ -160,13 +162,9 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
       columnPinning: { right: ['actions'] }
     }
   });
-
-  // Get current table state for API call
   const pagination = table.getState().pagination;
   const sorting = table.getState().sorting;
   const columnFilters = table.getState().columnFilters;
-
-  // Build query parameters from table state
   const queryParamsFromTable = useMemo(() => {
     const searchFilter = columnFilters.find((filter) => filter.id === 'name');
     const sortConfig = sorting[0];
@@ -187,16 +185,13 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
 
     return params;
   }, [pagination, sorting, columnFilters]);
-
-  // Fetch data with dynamic parameters
   const { data: productsResponse, isLoading } = useSellerProductList({
     data: queryParamsFromTable
   });
 
-  const products = productsResponse?.result?.content || [];
-  const pageCount = productsResponse?.result?.totalPages || 0;
+  const products = productsResponse?.content || [];
+  const pageCount = productsResponse?.totalPages || 0;
 
-  // Update table options with fetched data
   table.options.data = products;
   table.options.pageCount = pageCount;
 
@@ -208,7 +203,6 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
       deleteMutation.mutate(id);
     });
 
-    // Clear selection after delete
     table.resetRowSelection();
   };
 
@@ -218,11 +212,11 @@ export const ProductsTable = memo<ProductsTableProps>(({ onEdit, onView, onCreat
         <TasksTableToolbarActions
           table={table}
           createAction={{
-            label: 'Add Product',
+            label: t('Seller.addProduct'),
             action: () => onCreate?.()
           }}
           deleteAction={{
-            label: 'Delete',
+            label: t('Common.delete'),
             action: handleBulkDelete
           }}
         />

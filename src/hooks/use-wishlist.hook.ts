@@ -7,14 +7,12 @@ import { queries } from '~/queries';
 
 import type { WishlistResponse } from '~/types/wishlist';
 
-// Hook để lấy danh sách wishlist
 export function useWishlistList({ enabled = true, retry = false }: { enabled?: boolean; retry?: boolean } = {}): UseQueryResult<ApiResponse<WishlistResponse>> {
   const queryResponse = useQuery({
     ...queries.wishlist.list(),
     retry,
     enabled,
     select: (data) => {
-      // Xử lý data trả về từ API
       if (!data.result) {
         return {
           ...data,

@@ -5,7 +5,7 @@ import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon, Circ
 import { renderPlaceholderImage } from '~/utils';
 
 import { Button, DetailsSection, Helmet, Tooltip } from '~/components/common';
-import { ContentAdminLayout } from '~/components/layouts/admin';
+import { ContentAdminLayout } from '~/components/layouts/admin/content';
 
 export const TooltipPage = memo(() => {
   return (

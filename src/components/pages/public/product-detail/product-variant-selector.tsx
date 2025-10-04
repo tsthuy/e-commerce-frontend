@@ -35,13 +35,10 @@ interface ProductVariantSelectorProps {
 
 export const ProductVariantSelector = memo<ProductVariantSelectorProps>(({ product, selectedAttributes, selectedVariant, quantity, onAttributeChange, onQuantityChange }) => {
   const maxStock = selectedVariant?.stock || product.stock;
-
-  // Get available values for each attribute based on available variants
   const getAvailableValues = (attributeName: string): string[] => {
     const currentSelections = { ...selectedAttributes };
-    delete currentSelections[attributeName]; // Remove current attribute from filter
+    delete currentSelections[attributeName];
 
-    // Find variants that match current selections (excluding the current attribute)
     const matchingVariants = product.variants.filter((variant) => {
       return Object.entries(currentSelections).every(([attrName, attrValue]) => {
         return variant.attributes.some((attr) => {
@@ -51,7 +48,6 @@ export const ProductVariantSelector = memo<ProductVariantSelectorProps>(({ produ
       });
     });
 
-    // Get available values for the current attribute from matching variants
     const availableValues = new Set<string>();
     matchingVariants.forEach((variant) => {
       variant.attributes.forEach((attr) => {
@@ -67,7 +63,6 @@ export const ProductVariantSelector = memo<ProductVariantSelectorProps>(({ produ
 
   return (
     <div className="space-y-6">
-      {/* Attribute Selectors */}
       <div className="space-y-4">
         {product.attributes.map((attribute) => {
           const availableValues = getAvailableValues(attribute.name);
@@ -108,7 +103,6 @@ export const ProductVariantSelector = memo<ProductVariantSelectorProps>(({ produ
         })}
       </div>
 
-      {/* Quantity Selector */}
       <div className="space-y-2">
         <h4 className="text-sm font-medium text-gray-900">Quantity</h4>
         <div className="flex items-center gap-3">
@@ -137,26 +131,6 @@ export const ProductVariantSelector = memo<ProductVariantSelectorProps>(({ produ
           <span className="text-sm text-gray-500">{maxStock} available</span>
         </div>
       </div>
-
-      {/* Selected Variant Info */}
-      {selectedVariant && (
-        <div className="rounded-lg bg-gray-50 p-4">
-          <h4 className="mb-2 text-sm font-medium text-gray-900">Selected Variant</h4>
-          <div className="space-y-1 text-sm text-gray-600">
-            <p>SKU: {selectedVariant.sku}</p>
-            <p>Stock: {selectedVariant.stock} available</p>
-            <div className="flex flex-wrap gap-1">
-              <span>Options:</span>
-              {selectedVariant.attributes.map((attr, index) => (
-                <span key={`${attr.attributeName}-${index}`} className="font-medium">
-                  {attr.attributeValueLabel}
-                  {index < selectedVariant.attributes.length - 1 && ','}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 });
